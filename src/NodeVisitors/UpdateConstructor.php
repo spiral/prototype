@@ -8,10 +8,11 @@
 
 namespace Spiral\Prototyping\NodeVisitors;
 
-use Doctrine\Common\Annotations\DocParser;
 use PhpParser\Builder\Param;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use Spiral\Prototyping\AnnotationLine;
+use Spiral\Prototyping\AnnotationParser;
 
 class UpdateConstructor extends AbstractVisitor
 {
@@ -69,13 +70,26 @@ class UpdateConstructor extends AbstractVisitor
      */
     private function addComments(Doc $doc = null): Doc
     {
-        $text = $doc ? $doc->getText() : "";
+        $an = new AnnotationParser($doc ? $doc->getText() : "");
 
-     //   $parser = new DocParser();
-     //   $v = $parser->parse($text);
+        $params = [];
+        foreach ($this->dependencies as $name => $type) {
+            $params[] = new AnnotationLine(
+                sprintf('%s $%s', $this->shortName($type), $name),
+                'param'
+            );
+        }
 
-     //   dump($v);
+        $placementID = 0;
+        foreach ($an->lines as $index => $line) {
+            $placementID = $index;
 
-        return new Doc($text);
+            if ($line->type == 'param' || $line->type == 'throws' || $line->type == 'return') {
+                break;
+            }
+        }
+
+        $an->lines = $this->injectValues($an->lines, $placementID, $params);
+        return new Doc($an->compile());
     }
 }

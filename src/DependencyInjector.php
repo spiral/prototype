@@ -74,7 +74,6 @@ class DependencyInjector
     public function injectDependencies(string $code, array $dependencies = []): string
     {
         $tr = new NodeTraverser();
-        $tr->addVisitor(new NameResolver());
         $tr->addVisitor(new AddUse($dependencies));
         $tr->addVisitor(new RemoveUse());
         $tr->addVisitor(new RemoveTrait());

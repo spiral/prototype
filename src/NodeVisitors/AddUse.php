@@ -50,7 +50,7 @@ class AddUse extends AbstractVisitor
             $nodes[] = $this->buildUse($name, $type);
         }
 
-        $node->stmts = $this->injectNodes($node->stmts, $placementID, $nodes);
+        $node->stmts = $this->injectValues($node->stmts, $placementID, $nodes);
 
         return $node;
     }

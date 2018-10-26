@@ -28,14 +28,14 @@ abstract class AbstractVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * Inject Child nodes at given index.
+     * Inject values to array at given index.
      *
      * @param array $stmts
      * @param int   $index
      * @param array $child
      * @return array
      */
-    protected function injectNodes(array $stmts, int $index, array $child): array
+    protected function injectValues(array $stmts, int $index, array $child): array
     {
         $before = array_slice($stmts, 0, $index);
         $after = array_slice($stmts, $index);

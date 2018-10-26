@@ -29,8 +29,8 @@ class RemoveTrait extends NodeVisitorAbstract
         }
 
         foreach ($node->traits as $index => $use) {
-            if ($use instanceof Node\Name\FullyQualified) {
-                if (join('\\', $use->parts) == PrototypeTrait::class) {
+            if ($use instanceof Node\Name) {
+                if (join('\\', $use->parts) == 'PrototypeTrait') {
                     unset($node->traits[$index]);
                 }
             }

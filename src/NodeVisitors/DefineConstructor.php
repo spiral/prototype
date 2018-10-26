@@ -41,7 +41,7 @@ class DefineConstructor extends AbstractVisitor
 
         $constructor = $this->buildConstructor();
         $node->setAttribute('constructor', $constructor);
-        $node->stmts = $this->injectNodes($node->stmts, $placementID, [$constructor]);
+        $node->stmts = $this->injectValues($node->stmts, $placementID, [$constructor]);
 
         return $node;
     }

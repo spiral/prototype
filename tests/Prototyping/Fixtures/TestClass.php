@@ -10,6 +10,7 @@ namespace Spiral\Prototyping\Tests\Fixtures;
 
 use Spiral\Core\Exception\InvalidArgumentException;
 use Spiral\Prototyping\Traits\PrototypeTrait;
+use Spiral\Prototyping\Tests\Fixtures\HydratedClass as X;
 
 class TestClass
 {
@@ -18,11 +19,11 @@ class TestClass
     /**
      * TestClass constructor.
      *
-     * @param H $h
+     * @param X $h
      *
      * @throws InvalidArgumentException
      */
-    public function __construct(H $h)
+    public function __construct(X $h)
     {
     }
 

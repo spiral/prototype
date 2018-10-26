@@ -48,7 +48,7 @@ class AddProperty extends AbstractVisitor
             $nodes[] = $this->buildProperty($name, $type);
         }
 
-        $node->stmts = $this->injectNodes($node->stmts, $placementID, $nodes);
+        $node->stmts = $this->injectValues($node->stmts, $placementID, $nodes);
 
         return $node;
     }
