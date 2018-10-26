@@ -13,7 +13,7 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
-class AdPropertyVisitor extends NodeVisitorAbstract
+class AddProperty extends NodeVisitorAbstract
 {
     /** @var array */
     private $dependencies;

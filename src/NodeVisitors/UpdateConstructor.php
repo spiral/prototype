@@ -13,7 +13,7 @@ use PhpParser\BuilderHelpers;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
-class UpConstructorVisitor extends NodeVisitorAbstract
+class UpdateConstructor extends NodeVisitorAbstract
 {
     /** @var array */
     private $dependencies;
@@ -25,6 +25,7 @@ class UpConstructorVisitor extends NodeVisitorAbstract
 
     public function leaveNode(Node $node)
     {
+        return null;
         if (!$node instanceof Node\Stmt\Class_) {
             return null;
         }
@@ -72,7 +73,6 @@ class UpConstructorVisitor extends NodeVisitorAbstract
 
         return $constructor;
     }
-
 
     private function shortName(string $type): string
     {

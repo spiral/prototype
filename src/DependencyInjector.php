@@ -15,11 +15,12 @@ use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use PhpParser\PrettyPrinterAbstract;
-use Spiral\Prototyping\NodeVisitors\AdPropertyVisitor;
-use Spiral\Prototyping\NodeVisitors\AdUseVisitor;
-use Spiral\Prototyping\NodeVisitors\RmTraitVisitor;
-use Spiral\Prototyping\NodeVisitors\RmUseVisitor;
-use Spiral\Prototyping\NodeVisitors\UpConstructorVisitor;
+use Spiral\Prototyping\NodeVisitors\AddProperty;
+use Spiral\Prototyping\NodeVisitors\AddUse;
+use Spiral\Prototyping\NodeVisitors\DefineConstructor;
+use Spiral\Prototyping\NodeVisitors\RemoveTrait;
+use Spiral\Prototyping\NodeVisitors\RemoveUse;
+use Spiral\Prototyping\NodeVisitors\UpdateConstructor;
 
 class DependencyInjector
 {
@@ -60,11 +61,12 @@ class DependencyInjector
     {
         $tr = new NodeTraverser();
         $tr->addVisitor(new NameResolver());
-        $tr->addVisitor(new AdUseVisitor($dependencies));
-        $tr->addVisitor(new RmUseVisitor());
-        $tr->addVisitor(new RmTraitVisitor());
-        $tr->addVisitor(new AdPropertyVisitor($dependencies));
-        $tr->addVisitor(new UpConstructorVisitor($dependencies));
+        $tr->addVisitor(new AddUse($dependencies));
+        $tr->addVisitor(new RemoveUse());
+        $tr->addVisitor(new RemoveTrait());
+        $tr->addVisitor(new AddProperty($dependencies));
+        $tr->addVisitor(new DefineConstructor());
+        $tr->addVisitor(new UpdateConstructor($dependencies));
 
         $nodes = $this->parser->parse($code);
         $tokens = $this->lexer->getTokens();

@@ -14,8 +14,15 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use Spiral\Prototyping\Traits\PrototypeTrait;
 
-class RmUseVisitor extends NodeVisitorAbstract
+/**
+ * Remove PrototypeTrait use.
+ */
+class RemoveUse extends NodeVisitorAbstract
 {
+    /**
+     * @param Node $node
+     * @return int|null|Node|Node[]
+     */
     public function leaveNode(Node $node)
     {
         if (!$node instanceof Node\Stmt\Use_) {

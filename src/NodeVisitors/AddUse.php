@@ -12,16 +12,23 @@ use PhpParser\Builder\Use_;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
-class AdUseVisitor extends NodeVisitorAbstract
+class AddUse extends NodeVisitorAbstract
 {
     /** @var array */
     private $dependencies;
 
+    /**
+     * @param array $dependencies
+     */
     public function __construct(array $dependencies)
     {
         $this->dependencies = $dependencies;
     }
 
+    /**
+     * @param Node $node
+     * @return int|null|Node|Node[]
+     */
     public function leaveNode(Node $node)
     {
         if (!$node instanceof Node\Stmt\Namespace_) {

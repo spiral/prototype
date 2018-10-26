@@ -11,12 +11,22 @@ namespace Spiral\Prototyping\NodeVisitors;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
-class ExPropertyVisitor extends NodeVisitorAbstract
+/**
+ * Locate all declared and requested properties.
+ */
+class LocaleProperties extends NodeVisitorAbstract
 {
+    /** @var array */
     private $properties = [];
 
+    /** @var array */
     private $requested = [];
 
+    /**
+     * Get names of all virtual properties.
+     *
+     * @return array
+     */
     public function getDependencies(): array
     {
         return array_values(array_diff(
