@@ -22,6 +22,9 @@ use Spiral\Prototyping\NodeVisitors\RemoveTrait;
 use Spiral\Prototyping\NodeVisitors\RemoveUse;
 use Spiral\Prototyping\NodeVisitors\UpdateConstructor;
 
+/**
+ * Injects needed class dependencies into given source code.
+ */
 class DependencyInjector
 {
     /** @var Parser */
@@ -30,10 +33,16 @@ class DependencyInjector
     /** @var Lexer */
     private $lexer;
 
+    /** @var null|Standard|PrettyPrinterAbstract */
     private $printer;
 
+    /** @var NodeTraverser */
     private $cloner;
 
+    /**
+     * @param Lexer|null                 $lexer
+     * @param PrettyPrinterAbstract|null $printer
+     */
     public function __construct(Lexer $lexer = null, PrettyPrinterAbstract $printer = null)
     {
         if (empty($lexer)) {
@@ -57,6 +66,11 @@ class DependencyInjector
         $this->printer = $printer ?? new Standard();
     }
 
+    /**
+     * @param string $code
+     * @param array  $dependencies
+     * @return string
+     */
     public function injectDependencies(string $code, array $dependencies = []): string
     {
         $tr = new NodeTraverser();

@@ -30,7 +30,7 @@ class DefineConstructor extends AbstractVisitor
         foreach ($node->stmts as $index => $child) {
             $placementID = $index;
             if ($child instanceof Node\Stmt\ClassMethod) {
-                if ($child->name->name == '__constructor') {
+                if ($child->name->name == '__construct') {
                     $node->setAttribute('constructor', $child);
                     return null;
                 }
@@ -51,7 +51,7 @@ class DefineConstructor extends AbstractVisitor
      */
     private function buildConstructor(): Node\Stmt\ClassMethod
     {
-        $constructor = new Node\Stmt\ClassMethod("__constructor");
+        $constructor = new Node\Stmt\ClassMethod("__construct");
         $constructor->flags = BuilderHelpers::addModifier(
             $constructor->flags,
             Node\Stmt\Class_::MODIFIER_PUBLIC

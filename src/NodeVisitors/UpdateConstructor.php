@@ -8,12 +8,12 @@
 
 namespace Spiral\Prototyping\NodeVisitors;
 
+use Doctrine\Common\Annotations\DocParser;
 use PhpParser\Builder\Param;
-use PhpParser\BuilderHelpers;
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
-use PhpParser\NodeVisitorAbstract;
 
-class UpdateConstructor extends NodeVisitorAbstract
+class UpdateConstructor extends AbstractVisitor
 {
     /** @var array */
     private $dependencies;
@@ -25,58 +25,57 @@ class UpdateConstructor extends NodeVisitorAbstract
 
     public function leaveNode(Node $node)
     {
-        return null;
         if (!$node instanceof Node\Stmt\Class_) {
             return null;
         }
 
-        foreach ($node->stmts as $ch) {
-            if ($ch instanceof Node\Stmt\ClassMethod) {
-                // found first method
-                //    dump($ch);
-            }
-        }
+        /** @var Node\Stmt\ClassMethod $constructor */
+        $constructor = $node->getAttribute('constructor');
 
-        $constructor = $this->getConstructor($node);
+        $this->addDependencies($constructor);
 
-        // inject params
-        // todo: modify doc comment (need doc comment parser)
+        $constructor->setDocComment(
+            $this->addComments($constructor->getDocComment())
+        );
+    }
+
+    /**
+     * Add dependencies to constructor method.
+     *
+     * @param Node\Stmt\ClassMethod $constructor
+     */
+    private function addDependencies(Node\Stmt\ClassMethod $constructor)
+    {
         foreach ($this->dependencies as $name => $type) {
             array_unshift(
                 $constructor->params,
-                (new Param($name))->setType(
-                    new Node\Name($this->shortName($type))
-                )->getNode()
+                (new Param($name))->setType(new Node\Name($this->shortName($type)))->getNode()
             );
 
             $prop = new Node\Expr\PropertyFetch(new Node\Expr\Variable("this"), $name);
 
-            array_unshift($constructor->stmts, new Node\Stmt\Expression(
-                new Node\Expr\Assign($prop, new Node\Expr\Variable($name))
-            ));
+            array_unshift(
+                $constructor->stmts,
+                new Node\Stmt\Expression(new Node\Expr\Assign($prop, new Node\Expr\Variable($name)))
+            );
         }
-
-        // fix doc comment ? or move to another one
-        // define constructor to be moved?
     }
 
-    private function getConstructor(Node\Stmt\Class_ $node)
+    /**
+     * Add PHPDoc comments into __constructor.
+     *
+     * @param Doc|null $doc
+     * @return Doc
+     */
+    private function addComments(Doc $doc = null): Doc
     {
-        $constructor = new Node\Stmt\ClassMethod("__constructor");
-        $constructor->flags = BuilderHelpers::addModifier(
-            $constructor->flags,
-            Node\Stmt\Class_::MODIFIER_PUBLIC
-        );
+        $text = $doc ? $doc->getText() : "";
 
-        // todo: use existed if found
-        array_unshift($node->stmts, $constructor);
+     //   $parser = new DocParser();
+     //   $v = $parser->parse($text);
 
-        return $constructor;
+     //   dump($v);
+
+        return new Doc($text);
     }
-
-    private function shortName(string $type): string
-    {
-        return substr($type, strrpos($type, '\\') + 1);
-    }
-
 }
