@@ -41,7 +41,7 @@ class LocatorTest extends TestCase
     {
         $c = new Container();
         $c->bind(TokenizerConfig::class, new TokenizerConfig([
-            'directories' => [__DIR__ . '/fixtures'],
+            'directories' => [__DIR__ . '/Fixtures'],
             'exclude'     => []
         ]));
 
