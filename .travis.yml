@@ -11,8 +11,6 @@ before_install:
 install:
   - composer install --no-interaction
 
-before_script: echo 'zend.assertions = 0' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml
 
