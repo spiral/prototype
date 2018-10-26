@@ -27,26 +27,23 @@ class DefineConstructor extends AbstractVisitor
         }
 
         $placementID = 0;
-
-        // seeking for the correct placement
         foreach ($node->stmts as $index => $child) {
             $placementID = $index;
             if ($child instanceof Node\Stmt\ClassMethod) {
-                // found existed one
                 if ($child->name->name == '__constructor') {
                     $node->setAttribute('constructor', $child);
                     return null;
                 }
 
-                // first method declaration in a class
                 break;
             }
         }
 
         $constructor = $this->buildConstructor();
         $node->setAttribute('constructor', $constructor);
+        $node->stmts = $this->injectNodes($node->stmts, $placementID, [$constructor]);
 
-        return $this->injectNode($node, $placementID, $constructor);
+        return $node;
     }
 
     /**

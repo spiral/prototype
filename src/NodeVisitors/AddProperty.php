@@ -11,43 +11,59 @@ namespace Spiral\Prototyping\NodeVisitors;
 use PhpParser\Builder\Property;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
-use PhpParser\NodeVisitorAbstract;
 
-class AddProperty extends NodeVisitorAbstract
+class AddProperty extends AbstractVisitor
 {
     /** @var array */
     private $dependencies;
 
+    /**
+     * @param array $dependencies
+     */
     public function __construct(array $dependencies)
     {
         $this->dependencies = $dependencies;
     }
 
+    /**
+     * @param Node $node
+     * @return int|null|Node|Node[]
+     */
     public function leaveNode(Node $node)
     {
         if (!$node instanceof Node\Stmt\Class_) {
             return null;
         }
 
-        // todo: find the right spot
-        foreach ($this->dependencies as $name => $type) {
-            array_unshift($node->stmts, $this->buildProperty($name, $type));
+        $placementID = 0;
+        foreach ($node->stmts as $index => $child) {
+            $placementID = $index;
+            if ($child instanceof Node\Stmt\ClassMethod) {
+                break;
+            }
         }
+
+        $nodes = [];
+        foreach ($this->dependencies as $name => $type) {
+            $nodes[] = $this->buildProperty($name, $type);
+        }
+
+        $node->stmts = $this->injectNodes($node->stmts, $placementID, $nodes);
+
+        return $node;
     }
 
-    private function buildProperty(string $name, string $type)
+    /**
+     * @param string $name
+     * @param string $type
+     * @return Node|Node\Stmt\Property
+     */
+    private function buildProperty(string $name, string $type): Node\Stmt\Property
     {
         $b = new Property($name);
         $b->makeProtected();
-        $b->setDocComment($this->buildDoc($type));
+        $b->setDocComment(new Doc(sprintf("/** @var %s */", $this->shortName($type))));
 
         return $b->getNode();
-    }
-
-    private function buildDoc(string $type): Doc
-    {
-        $name = substr($type, strrpos($type, '\\') + 1);
-
-        return new Doc("/** @var {$name} */");
     }
 }

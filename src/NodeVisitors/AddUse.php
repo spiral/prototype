@@ -10,9 +10,11 @@ namespace Spiral\Prototyping\NodeVisitors;
 
 use PhpParser\Builder\Use_;
 use PhpParser\Node;
-use PhpParser\NodeVisitorAbstract;
 
-class AddUse extends NodeVisitorAbstract
+/**
+ * Add use statement to the code.
+ */
+class AddUse extends AbstractVisitor
 {
     /** @var array */
     private $dependencies;
@@ -35,19 +37,32 @@ class AddUse extends NodeVisitorAbstract
             return null;
         }
 
-        // todo: find the right spot
-        foreach ($this->dependencies as $name => $type) {
-            array_unshift($node->stmts, $this->buildUse($name, $type));
+        $placementID = 0;
+        foreach ($node->stmts as $index => $child) {
+            $placementID = $index;
+            if ($child instanceof Node\Stmt\Class_) {
+                break;
+            }
         }
+
+        $nodes = [];
+        foreach ($this->dependencies as $name => $type) {
+            $nodes[] = $this->buildUse($name, $type);
+        }
+
+        $node->stmts = $this->injectNodes($node->stmts, $placementID, $nodes);
+
+        return $node;
     }
 
-    private function buildUse(string $name, string $type)
+    /**
+     * @param string $name
+     * @param string $type
+     * @return Node\Stmt\Use_
+     */
+    private function buildUse(string $name, string $type): Node\Stmt\Use_
     {
-        $b = new Use_(
-            new Node\Name\FullyQualified($type),
-            Node\Stmt\Use_::TYPE_NORMAL
-        );
-
+        $b = new Use_(new Node\Name($type), Node\Stmt\Use_::TYPE_NORMAL);
         return $b->getNode();
     }
 }

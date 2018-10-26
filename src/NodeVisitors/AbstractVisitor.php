@@ -8,7 +8,6 @@
 
 namespace Spiral\Prototyping\NodeVisitors;
 
-use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\NodeVisitorAbstract;
 
@@ -23,26 +22,24 @@ abstract class AbstractVisitor extends NodeVisitorAbstract
      * @param string $type
      * @return Name
      */
-    protected function buildShortName(string $type): Name
+    protected function shortName(string $type): Name
     {
         return new Name(substr($type, strrpos($type, '\\') + 1));
     }
 
     /**
-     * Inject Child node at given index.
+     * Inject Child nodes at given index.
      *
-     * @param Node\Stmt\Class_ $class
-     * @param int              $index
-     * @param Node             $child
-     * @return Node
+     * @param array $stmts
+     * @param int   $index
+     * @param array $child
+     * @return array
      */
-    protected function injectNode(Node\Stmt\Class_ $class, int $index, Node $child): Node
+    protected function injectNodes(array $stmts, int $index, array $child): array
     {
-        $before = array_slice($class->stmts, 0, $index);
-        $after = array_slice($class->stmts, $index);
+        $before = array_slice($stmts, 0, $index);
+        $after = array_slice($stmts, $index);
 
-        $class->stmts = array_merge($before, [$child], $after);
-
-        return $class;
+        return array_merge($before, $child, $after);
     }
 }
