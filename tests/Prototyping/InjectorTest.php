@@ -30,5 +30,7 @@ class InjectorTest extends TestCase
                 'testClass' => TestClass::class
             ])
         );
+
+        $this->assertTrue(true);
     }
 }
