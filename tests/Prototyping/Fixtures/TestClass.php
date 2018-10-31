@@ -12,15 +12,19 @@ use Spiral\Prototyping\Traits\PrototypeTrait;
 
 class TestClass
 {
-    use PrototypeTrait;
+    use PrototypeTrait, XTrait;
+
+    public $reddit;
+
+    private $magic;
 
     public function getSelf(): self
     {
         return $this->testClass;
     }
 
-    public function testXX()
+    public function getSelf2(): self
     {
-        $this->testClass = 'hello';
+        return $this->testClass;
     }
 }

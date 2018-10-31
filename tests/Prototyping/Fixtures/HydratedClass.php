@@ -22,5 +22,4 @@ class HydratedClass
     {
         return $this->testClass;
     }
-
 }

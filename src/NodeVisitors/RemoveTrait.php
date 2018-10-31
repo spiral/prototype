@@ -11,7 +11,6 @@ namespace Spiral\Prototyping\NodeVisitors;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
-use Spiral\Prototyping\Traits\PrototypeTrait;
 
 /**
  * Remove PrototypeTrait from the class.
@@ -36,6 +35,7 @@ class RemoveTrait extends NodeVisitorAbstract
             }
         }
 
+        $node->traits = array_values($node->traits);
         if (empty($node->traits)) {
             return NodeTraverser::REMOVE_NODE;
         }

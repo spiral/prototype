@@ -6,14 +6,14 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping;
+namespace Spiral\Prototyping\Annotation;
 
 /**
  * Simple annotation parser and compiler.
  */
-class AnnotationParser
+class Parser
 {
-    /** @var AnnotationLine[] */
+    /** @var Line[] */
     public $lines = [];
 
     /**
@@ -24,20 +24,21 @@ class AnnotationParser
         $lines = explode("\n", $comment);
 
         foreach ($lines as $line) {
-            $line = ltrim(trim($line, "\r "), "\t*/\\ ");
+            // strip up comment prefix
+            $line = preg_replace('/[\t ]*[\/]?\*[\/]? ?/', '', $line);
 
-            if (preg_match('/@([^ ]+) (.*)/iu', $line, $matches)) {
-                $this->lines[] = new AnnotationLine($matches[2], $matches[1]);
+            if (preg_match('/ *@([^ ]+) (.*)/iu', $line, $matches)) {
+                $this->lines[] = new Line($matches[2], $matches[1]);
             } else {
-                $this->lines[] = new AnnotationLine($line);
+                $this->lines[] = new Line($line);
             }
         }
 
-        if (isset($this->lines[0]) && $this->lines[0]->value == "") {
+        if (isset($this->lines[0]) && $this->lines[0]->isEmpty()) {
             array_shift($this->lines);
         }
 
-        if (isset($this->lines[count($this->lines) - 1]) && $this->lines[count($this->lines) - 1]->value == "") {
+        if (isset($this->lines[count($this->lines) - 1]) && $this->lines[count($this->lines) - 1]->isEmpty()) {
             array_pop($this->lines);
         }
     }

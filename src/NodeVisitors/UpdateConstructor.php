@@ -11,19 +11,28 @@ namespace Spiral\Prototyping\NodeVisitors;
 use PhpParser\Builder\Param;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
-use Spiral\Prototyping\AnnotationLine;
-use Spiral\Prototyping\AnnotationParser;
+use Spiral\Prototyping\Annotation;
 
+/**
+ * Injects new constructor dependencies and modifies comment.
+ */
 class UpdateConstructor extends AbstractVisitor
 {
     /** @var array */
     private $dependencies;
 
+    /**
+     * @param array $dependencies
+     */
     public function __construct(array $dependencies)
     {
         $this->dependencies = $dependencies;
     }
 
+    /**
+     * @param Node $node
+     * @return int|null|Node|Node[]
+     */
     public function leaveNode(Node $node)
     {
         if (!$node instanceof Node\Stmt\Class_) {
@@ -70,23 +79,35 @@ class UpdateConstructor extends AbstractVisitor
      */
     private function addComments(Doc $doc = null): Doc
     {
-        $an = new AnnotationParser($doc ? $doc->getText() : "");
+        $an = new Annotation\Parser($doc ? $doc->getText() : "");
 
         $params = [];
         foreach ($this->dependencies as $name => $type) {
-            $params[] = new AnnotationLine(
+            $params[] = new Annotation\Line(
                 sprintf('%s $%s', $this->shortName($type), $name),
                 'param'
             );
         }
 
         $placementID = 0;
+        $previous = null;
         foreach ($an->lines as $index => $line) {
-            $placementID = $index;
+            // always next node
+            $placementID = $index + 1;
 
-            if ($line->type == 'param' || $line->type == 'throws' || $line->type == 'return') {
+            // inject before this parameters
+            if ($line->is(['param', 'throws', 'return'])) {
+                // insert before given node
+                $placementID--;
                 break;
             }
+
+            $previous = $line;
+        }
+
+        if (!empty($previous) && !$previous->isEmpty()) {
+            $an->lines = $this->injectValues($an->lines, $placementID, [new Annotation\Line("")]);
+            $placementID++;
         }
 
         $an->lines = $this->injectValues($an->lines, $placementID, $params);

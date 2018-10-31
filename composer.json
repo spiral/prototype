@@ -11,8 +11,8 @@
   ],
   "require": {
     "php": "^7.1",
-    "spiral/core": "^1.0",
-    "spiral/tokenizer": "^2.1",
+    "spiral/framework": "2.0.x-dev",
+    "spiral/console": "^1.1",
     "nikic/php-parser": "^4.1",
     "spiral/debug": "^1.3"
   },

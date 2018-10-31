@@ -24,7 +24,7 @@ class AddUse extends AbstractVisitor
      */
     public function __construct(array $dependencies)
     {
-        $this->dependencies = $dependencies;
+        $this->dependencies = array_unique($dependencies);
     }
 
     /**
@@ -46,8 +46,8 @@ class AddUse extends AbstractVisitor
         }
 
         $nodes = [];
-        foreach ($this->dependencies as $name => $type) {
-            $nodes[] = $this->buildUse($name, $type);
+        foreach ($this->dependencies as $type) {
+            $nodes[] = $this->buildUse($type);
         }
 
         $node->stmts = $this->injectValues($node->stmts, $placementID, $nodes);
@@ -56,11 +56,10 @@ class AddUse extends AbstractVisitor
     }
 
     /**
-     * @param string $name
      * @param string $type
      * @return Node\Stmt\Use_
      */
-    private function buildUse(string $name, string $type): Node\Stmt\Use_
+    private function buildUse(string $type): Node\Stmt\Use_
     {
         $b = new Use_(new Node\Name($type), Node\Stmt\Use_::TYPE_NORMAL);
         return $b->getNode();

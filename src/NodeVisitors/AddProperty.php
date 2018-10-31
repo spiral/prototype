@@ -38,7 +38,7 @@ class AddProperty extends AbstractVisitor
         $placementID = 0;
         foreach ($node->stmts as $index => $child) {
             $placementID = $index;
-            if ($child instanceof Node\Stmt\ClassMethod) {
+            if ($child instanceof Node\Stmt\ClassMethod || $child instanceof Node\Stmt\Property) {
                 break;
             }
         }

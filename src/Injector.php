@@ -11,7 +11,6 @@ namespace Spiral\Prototyping;
 use PhpParser\Lexer;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
-use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use PhpParser\PrettyPrinterAbstract;
@@ -25,7 +24,7 @@ use Spiral\Prototyping\NodeVisitors\UpdateConstructor;
 /**
  * Injects needed class dependencies into given source code.
  */
-class DependencyInjector
+class Injector
 {
     /** @var Parser */
     private $parser;
@@ -84,10 +83,8 @@ class DependencyInjector
         $nodes = $this->parser->parse($code);
         $tokens = $this->lexer->getTokens();
 
-        return $this->printer->printFormatPreserving(
-            $tr->traverse($this->cloner->traverse($nodes)),
-            $nodes,
-            $tokens
-        );
+        $output = $tr->traverse($this->cloner->traverse($nodes));
+
+        return $this->printer->printFormatPreserving($output, $nodes, $tokens);
     }
 }
