@@ -66,6 +66,9 @@ class Injector
     }
 
     /**
+     * Inject dependencies into PHP Class source code. Attention, resulted code will attempt to
+     * preserve formatting but will affect it. Do not forget to add formatting fixer.
+     *
      * @param string $code
      * @param array  $dependencies
      * @return string

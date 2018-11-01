@@ -13,8 +13,7 @@
     "php": "^7.1",
     "spiral/framework": "2.0.x-dev",
     "spiral/console": "^1.1",
-    "nikic/php-parser": "^4.1",
-    "spiral/debug": "^1.3"
+    "nikic/php-parser": "^4.1"
   },
   "require-dev": {
     "phpunit/phpunit": "~7.0",

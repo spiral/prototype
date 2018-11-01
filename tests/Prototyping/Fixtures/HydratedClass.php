@@ -8,7 +8,6 @@
 
 namespace Spiral\Prototyping\Tests\Fixtures;
 
-
 class HydratedClass
 {
     private $testClass;

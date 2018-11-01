@@ -8,7 +8,6 @@
 
 namespace Spiral\Prototyping\Tests;
 
-
 use PHPUnit\Framework\TestCase;
 use Spiral\Prototyping\Extractor;
 

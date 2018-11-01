@@ -9,6 +9,7 @@
 namespace Spiral\Prototyping\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Spiral\Prototyping\Fixer;
 use Spiral\Prototyping\Injector;
 use Spiral\Prototyping\Tests\Fixtures\TestClass;
 
@@ -25,12 +26,13 @@ class InjectorTest extends TestCase
     {
         $i = new Injector();
 
-        dump(
-            $i->injectDependencies(
-                file_get_contents(__DIR__ . '/Fixtures/TestClass.php'),
-                ['testClass' => TestClass::class,]
-            )
+        $r = $i->injectDependencies(
+            file_get_contents(__DIR__ . '/Fixtures/TestClass.php'),
+            ['testClass' => TestClass::class,]
         );
+
+        $f = new Fixer();
+        dump($f->fixCS($r));
 
         $this->assertTrue(true);
     }

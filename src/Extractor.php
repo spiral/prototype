@@ -29,17 +29,17 @@ class Extractor
     /**
      * Get list of all virtual property names.
      *
-     * @param string $filename
+     * @param string $code
      * @return array
      */
-    public function getPrototypedDependencies(string $filename): array
+    public function getPrototypedDependencies(string $code): array
     {
         $v = new LocaleProperties();
 
         $tr = new NodeTraverser();
         $tr->addVisitor($v);
 
-        $tr->traverse($this->parser->parse(file_get_contents($filename)));
+        $tr->traverse($this->parser->parse($code));
 
         return $v->getDependencies();
     }
