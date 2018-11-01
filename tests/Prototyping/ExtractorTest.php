@@ -16,12 +16,18 @@ class ExtractorTest extends TestCase
     public function testExtract()
     {
         $e = new Extractor();
-        $this->assertSame(['testClass'], $e->getPrototypedDependencies(__DIR__ . '/Fixtures/TestClass.php'));
+        $this->assertSame(
+            ['testClass'],
+            $e->getPrototypedDependencies(file_get_contents(__DIR__ . '/Fixtures/TestClass.php'))
+        );
     }
 
     public function testExtractNone()
     {
         $e = new Extractor();
-        $this->assertSame([], $e->getPrototypedDependencies(__DIR__ . '/Fixtures/HydratedClass.php'));
+        $this->assertSame(
+            [],
+            $e->getPrototypedDependencies(file_get_contents(__DIR__ . '/Fixtures/HydratedClass.php'))
+        );
     }
 }

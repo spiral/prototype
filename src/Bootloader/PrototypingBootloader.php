@@ -8,7 +8,6 @@
 
 namespace Spiral\Prototyping\Bootloader;
 
-
 use Spiral\Console\ConsoleConfigurator;
 use Spiral\Core\Bootloader\Bootloader;
 use Spiral\Prototyping\Command\InjectCommand;
