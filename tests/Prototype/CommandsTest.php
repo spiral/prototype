@@ -9,17 +9,20 @@
 namespace Spiral\Prototype\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Spiral\Bootloader\Dispatcher\ConsoleBootloader;
 use Spiral\Console\ConsoleCore;
-use Spiral\Core\Kernel;
-use Spiral\Prototype\Bootloader\PrototypeBootloader;
+use Spiral\Prototype\Tests\Fixtures\TestApp;
+use Spiral\Prototype\Tests\Fixtures\TestClass;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 class CommandsTest extends TestCase
 {
+    const STORE = ['TestClass.php', 'WithConstructor.php'];
+
     /** @var TestApp */
     private $app;
+
+    private $buf = [];
 
     public function setUp()
     {
@@ -28,13 +31,24 @@ class CommandsTest extends TestCase
             'config' => __DIR__,
             'app'    => __DIR__
         ], null, false);
+
+        foreach (self::STORE as $name) {
+            $this->buf[$name] = file_get_contents(__DIR__ . '/Fixtures/' . $name);
+        }
+    }
+
+    public function tearDown()
+    {
+        foreach (self::STORE as $name) {
+            file_put_contents(__DIR__ . '/Fixtures/' . $name, $this->buf[$name]);
+        }
     }
 
     public function testList()
     {
         $inp = new ArrayInput([]);
         $out = new BufferedOutput();
-        $this->app->getConsole()->run('list', $inp, $out);
+        $this->app->get(ConsoleCore::class)->run('list', $inp, $out);
 
         $result = $out->fetch();
 
@@ -46,7 +60,7 @@ class CommandsTest extends TestCase
     {
         $inp = new ArrayInput([]);
         $out = new BufferedOutput();
-        $this->app->getConsole()->run('prototype:list', $inp, $out);
+        $this->app->get(ConsoleCore::class)->run('prototype:list', $inp, $out);
 
         $result = $out->fetch();
 
@@ -60,7 +74,7 @@ class CommandsTest extends TestCase
 
         $inp = new ArrayInput([]);
         $out = new BufferedOutput();
-        $this->app->getConsole()->run('prototype:list', $inp, $out);
+        $this->app->get(ConsoleCore::class)->run('prototype:list', $inp, $out);
 
         $result = $out->fetch();
 
@@ -68,25 +82,29 @@ class CommandsTest extends TestCase
         $this->assertNotContains('undefined', $result);
         $this->assertContains(TestApp::class, $result);
     }
-}
 
-class TestApp extends Kernel
-{
-    const LOAD = [
-        ConsoleBootloader::class,
-        PrototypeBootloader::class
-    ];
-
-    public function bindApp()
+    public function testInject()
     {
-        $this->container->bind('testClass', self::class);
+        $this->app->bindApp();
+
+        $inp = new ArrayInput([]);
+        $out = new BufferedOutput();
+        $this->app->get(ConsoleCore::class)->run('prototype:inject', $inp, $out);
+
+        $result = $out->fetch();
+
+        $this->assertContains(TestClass::class, $result);
+        $this->assertContains(TestApp::class, $result);
     }
 
-    /**
-     * @return ConsoleCore
-     */
-    public function getConsole(): ConsoleCore
+    public function testInjectNone()
     {
-        return $this->container->get(ConsoleCore::class);
+        $inp = new ArrayInput([]);
+        $out = new BufferedOutput();
+        $this->app->get(ConsoleCore::class)->run('prototype:inject', $inp, $out);
+
+        $result = $out->fetch();
+
+        $this->assertSame("", $result);
     }
 }

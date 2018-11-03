@@ -41,6 +41,10 @@ class InjectCommand extends AbstractCommand
 
                     continue 2;
                 }
+
+                if ($dep == null) {
+                    continue 2;
+                }
             }
 
             $this->sprintf(
@@ -48,7 +52,6 @@ class InjectCommand extends AbstractCommand
                 $class->getName(),
                 join("</fg=green>, <fg=green>", array_values($deps))
             );
-
 
             $modified = $injector->injectDependencies(
                 file_get_contents($class->getFileName()),
