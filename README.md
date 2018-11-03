@@ -1,4 +1,4 @@
-Automatic dependency injection
+Automatic dependency injection using AST
 ================================
 [![Latest Stable Version](https://poser.pugx.org/spiral/prototype/version)](https://packagist.org/packages/spiral/prototype)
 [![Build Status](https://travis-ci.org/spiral/prototype.svg?branch=master)](https://travis-ci.org/spiral/prototype)
