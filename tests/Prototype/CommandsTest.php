@@ -10,6 +10,7 @@ namespace Spiral\Prototype\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Console\ConsoleCore;
+use Spiral\Core\Container;
 use Spiral\Prototype\Tests\Fixtures\TestApp;
 use Spiral\Prototype\Tests\Fixtures\TestClass;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -106,5 +107,19 @@ class CommandsTest extends TestCase
         $result = $out->fetch();
 
         $this->assertSame("", $result);
+    }
+
+    public function testInjectInvalid()
+    {
+        $this->app->get(Container::class)->bind('testClass', 'Invalid');
+
+        $inp = new ArrayInput([]);
+        $out = new BufferedOutput();
+        $this->app->get(ConsoleCore::class)->run('prototype:inject', $inp, $out);
+
+        $result = $out->fetch();
+
+        $this->assertContains("Undefined class", $result);
+        $this->assertContains("Invalid", $result);
     }
 }
