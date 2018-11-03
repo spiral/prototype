@@ -10,6 +10,7 @@ namespace Spiral\Prototyping\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Prototyping\Injector;
+use Spiral\Prototyping\Tests\Fixtures\HydratedClass;
 use Spiral\Prototyping\Tests\Fixtures\TestClass;
 
 class InjectorTest extends TestCase
@@ -31,5 +32,18 @@ class InjectorTest extends TestCase
         );
 
         $this->assertContains(TestClass::class, $r);
+    }
+
+    public function testModifyConstructor()
+    {
+        $i = new Injector();
+
+        $r = $i->injectDependencies(
+            file_get_contents(__DIR__ . '/Fixtures/WithConstructor.php'),
+            ['testClass' => TestClass::class]
+        );
+
+        $this->assertContains('@param HydratedClass $h', $r);
+        $this->assertContains('@param TestClass $testClass', $r);
     }
 }
