@@ -1,5 +1,5 @@
 {
-  "name": "spiral/prototyping",
+  "name": "spiral/prototype",
   "type": "library",
   "description": "Automatic dependency injection",
   "license": "MIT",
