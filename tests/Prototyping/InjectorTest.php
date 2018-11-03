@@ -9,7 +9,6 @@
 namespace Spiral\Prototyping\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Spiral\Prototyping\Fixer;
 use Spiral\Prototyping\Injector;
 use Spiral\Prototyping\Tests\Fixtures\TestClass;
 
@@ -22,18 +21,15 @@ class InjectorTest extends TestCase
         }
     }
 
-    public function testExtractNone()
+    public function testSimpleInjection()
     {
         $i = new Injector();
 
         $r = $i->injectDependencies(
             file_get_contents(__DIR__ . '/Fixtures/TestClass.php'),
-            ['testClass' => TestClass::class,]
+            ['testClass' => TestClass::class]
         );
 
-        $f = new Fixer();
-        dump($f->fixCS($r));
-
-        $this->assertTrue(true);
+        $this->assertContains(TestClass::class, $r);
     }
 }

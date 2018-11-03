@@ -17,7 +17,7 @@ class HydratedClass
         $this->testClass = $t;
     }
 
-    public function getSelf(): self
+    public function getTestClass(): TestClass
     {
         return $this->testClass;
     }

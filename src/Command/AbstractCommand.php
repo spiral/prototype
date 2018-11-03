@@ -53,7 +53,7 @@ abstract class AbstractCommand extends Command
     protected function fetchDependencies(\ReflectionClass $class): array
     {
         $e = new Extractor();
-        $deps = $e->getPrototypedDependencies(file_get_contents($class->getFilename()));
+        $deps = $e->getPrototypeNames(file_get_contents($class->getFilename()));
 
         return $this->resolveDependencies($deps);
     }

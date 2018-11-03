@@ -32,13 +32,12 @@ class Extractor
      * @param string $code
      * @return array
      */
-    public function getPrototypedDependencies(string $code): array
+    public function getPrototypeNames(string $code): array
     {
         $v = new LocaleProperties();
 
         $tr = new NodeTraverser();
         $tr->addVisitor($v);
-
         $tr->traverse($this->parser->parse($code));
 
         return $v->getDependencies();

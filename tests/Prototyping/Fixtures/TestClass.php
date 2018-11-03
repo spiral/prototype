@@ -14,7 +14,7 @@ class TestClass
 {
     use PrototypeTrait;
 
-    public function getSelf(): self
+    public function getTestClass(): self
     {
         return $this->testClass;
     }
