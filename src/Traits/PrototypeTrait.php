@@ -35,7 +35,7 @@ trait PrototypeTrait
         try {
             return $container->get($name);
         } catch (ContainerExceptionInterface $e) {
-            throw new ScopeException($e, $e->getCode(), $e->getMessage());
+            throw new ScopeException($e->getMessage(), $e->getCode(), $e);
         }
     }
 }

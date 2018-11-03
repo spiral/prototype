@@ -36,6 +36,20 @@ class TraitTest extends TestCase
         });
     }
 
+    /**
+     * @expectedException \Spiral\Core\Exception\ScopeException
+     */
+    public function testCascade()
+    {
+        $t = new TestClass();
+        $c = new Container();
+        $c->bind('testClass', 'Invalid');
+
+        ContainerScope::runScope($c, function () use ($t) {
+            $t->getTest();
+        });
+    }
+
     public function testOK()
     {
         $t = new TestClass();
