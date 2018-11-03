@@ -6,12 +6,12 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping;
+namespace Spiral\Prototype;
 
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
-use Spiral\Prototyping\NodeVisitors\LocaleProperties;
+use Spiral\Prototype\NodeVisitors\LocaleProperties;
 
 class Extractor
 {

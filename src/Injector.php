@@ -6,7 +6,7 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping;
+namespace Spiral\Prototype;
 
 use PhpParser\Lexer;
 use PhpParser\NodeTraverser;
@@ -14,12 +14,12 @@ use PhpParser\NodeVisitor\CloningVisitor;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use PhpParser\PrettyPrinterAbstract;
-use Spiral\Prototyping\NodeVisitors\AddProperty;
-use Spiral\Prototyping\NodeVisitors\AddUse;
-use Spiral\Prototyping\NodeVisitors\DefineConstructor;
-use Spiral\Prototyping\NodeVisitors\RemoveTrait;
-use Spiral\Prototyping\NodeVisitors\RemoveUse;
-use Spiral\Prototyping\NodeVisitors\UpdateConstructor;
+use Spiral\Prototype\NodeVisitors\AddProperty;
+use Spiral\Prototype\NodeVisitors\AddUse;
+use Spiral\Prototype\NodeVisitors\DefineConstructor;
+use Spiral\Prototype\NodeVisitors\RemoveTrait;
+use Spiral\Prototype\NodeVisitors\RemoveUse;
+use Spiral\Prototype\NodeVisitors\UpdateConstructor;
 
 /**
  * Injects needed class dependencies into given source code.

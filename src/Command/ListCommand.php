@@ -6,7 +6,7 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping\Command;
+namespace Spiral\Prototype\Command;
 
 class ListCommand extends AbstractCommand
 {
@@ -32,10 +32,35 @@ class ListCommand extends AbstractCommand
             $grid->addRow([
                 $class->getName(),
                 join("\n", array_keys($deps)),
-                join("\n", array_values($deps)),
+                $this->mergeValues(array_values($deps))
             ]);
         }
 
         $grid->render();
+    }
+
+    /**
+     * @param array $deps
+     * @return string
+     */
+    private function mergeValues(array $deps): string
+    {
+        $result = [];
+
+        foreach ($deps as $dep) {
+            if ($dep instanceof \Throwable) {
+                $result[] = sprintf("<fg=red>%s</fg=red>", $dep->getMessage());
+                continue;
+            }
+
+            if (is_null($dep)) {
+                $result[] = "<fg=yellow>undefined</fg=yellow>";
+                continue;
+            }
+
+            $result[] = $dep;
+        }
+
+        return join("\n", $result);
     }
 }

@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping;
+namespace Spiral\Prototype;
 
-use Spiral\Prototyping\Traits\PrototypeTrait;
+use Spiral\Prototype\Traits\PrototypeTrait;
 use Spiral\Tokenizer\ClassesInterface;
 
 class Locator

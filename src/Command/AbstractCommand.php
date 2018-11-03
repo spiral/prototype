@@ -6,13 +6,13 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping\Command;
+namespace Spiral\Prototype\Command;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Console\Command;
-use Spiral\Prototyping\Extractor;
-use Spiral\Prototyping\Locator;
+use Spiral\Prototype\Extractor;
+use Spiral\Prototype\Locator;
 use Spiral\Tokenizer\ClassesInterface;
 
 abstract class AbstractCommand extends Command
@@ -41,6 +41,7 @@ abstract class AbstractCommand extends Command
     public function getTargets(): array
     {
         $locator = new Locator($this->classes);
+
         return $locator->getTargetClasses();
     }
 
@@ -71,6 +72,7 @@ abstract class AbstractCommand extends Command
 
         foreach ($deps as $name) {
             if (!$this->container->has($name)) {
+                $result[$name] = null;
                 continue;
             }
 

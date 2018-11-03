@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping\Tests\Fixtures;
+namespace Spiral\Prototype\Tests\Fixtures;
 
-use Spiral\Prototyping\Traits\PrototypeTrait;
+use Spiral\Prototype\Traits\PrototypeTrait;
 
 class TestClass
 {

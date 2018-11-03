@@ -6,12 +6,11 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping\Tests;
+namespace Spiral\Prototype\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Spiral\Prototyping\Injector;
-use Spiral\Prototyping\Tests\Fixtures\HydratedClass;
-use Spiral\Prototyping\Tests\Fixtures\TestClass;
+use Spiral\Prototype\Injector;
+use Spiral\Prototype\Tests\Fixtures\TestClass;
 
 class InjectorTest extends TestCase
 {

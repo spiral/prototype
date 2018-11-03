@@ -6,7 +6,7 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping\Annotation;
+namespace Spiral\Prototype\Annotation;
 
 /**
  * Simple annotation parser and compiler.

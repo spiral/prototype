@@ -6,12 +6,12 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping\NodeVisitors;
+namespace Spiral\Prototype\NodeVisitors;
 
 use PhpParser\Builder\Param;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
-use Spiral\Prototyping\Annotation;
+use Spiral\Prototype\Annotation;
 
 /**
  * Injects new constructor dependencies and modifies comment.

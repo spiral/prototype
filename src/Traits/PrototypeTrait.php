@@ -6,7 +6,7 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping\Traits;
+namespace Spiral\Prototype\Traits;
 
 use Psr\Container\ContainerExceptionInterface;
 use Spiral\Core\ContainerScope;

@@ -6,9 +6,9 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping\Command;
+namespace Spiral\Prototype\Command;
 
-use Spiral\Prototyping\Injector;
+use Spiral\Prototype\Injector;
 
 class InjectCommand extends AbstractCommand
 {

@@ -6,13 +6,13 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping\Tests;
+namespace Spiral\Prototype\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
-use Spiral\Prototyping\Locator;
-use Spiral\Prototyping\Tests\Fixtures\HydratedClass;
-use Spiral\Prototyping\Tests\Fixtures\TestClass;
+use Spiral\Prototype\Locator;
+use Spiral\Prototype\Tests\Fixtures\HydratedClass;
+use Spiral\Prototype\Tests\Fixtures\TestClass;
 use Spiral\Tokenizer\ClassesInterface;
 use Spiral\Tokenizer\ClassLocator;
 use Spiral\Tokenizer\Config\TokenizerConfig;

@@ -6,7 +6,7 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping\Tests\Fixtures;
+namespace Spiral\Prototype\Tests\Fixtures;
 
 class WithConstructor
 {

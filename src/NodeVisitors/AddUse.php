@@ -6,7 +6,7 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping\NodeVisitors;
+namespace Spiral\Prototype\NodeVisitors;
 
 use PhpParser\Builder\Use_;
 use PhpParser\Node;

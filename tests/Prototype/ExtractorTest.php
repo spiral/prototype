@@ -6,10 +6,10 @@
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Prototyping\Tests;
+namespace Spiral\Prototype\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Spiral\Prototyping\Extractor;
+use Spiral\Prototype\Extractor;
 
 class ExtractorTest extends TestCase
 {
