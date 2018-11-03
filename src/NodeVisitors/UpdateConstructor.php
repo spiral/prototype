@@ -47,8 +47,6 @@ class UpdateConstructor extends AbstractVisitor
         $constructor->setDocComment(
             $this->addComments($constructor->getDocComment())
         );
-
-        return $node;
     }
 
     /**

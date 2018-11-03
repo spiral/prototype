@@ -31,7 +31,8 @@ class InjectorTest extends TestCase
             ['testClass' => TestClass::class,]
         );
 
-        // todo: parse and locate node
+        $f = new Fixer();
+        dump($f->fixCS($r));
 
         $this->assertTrue(true);
     }
