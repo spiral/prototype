@@ -8,23 +8,20 @@
 
 namespace Spiral\Prototyping\Command;
 
-use Psr\Container\ContainerInterface;
-use Spiral\Tokenizer\ClassesInterface;
-
 class ListCommand extends AbstractCommand
 {
     const NAME        = "prototype:list";
     const DESCRIPTION = "List all prototyped classes";
 
     /**
-     * @param ClassesInterface   $classes
-     * @param ContainerInterface $container
+     * List all prototype classes.
      */
-    public function perform(ClassesInterface $classes, ContainerInterface $container)
+    public function perform()
     {
         $targets = $this->getTargets();
         if (empty($targets)) {
             $this->writeln("<comment>No prototyped classes found.</comment>");
+
             return;
         }
 

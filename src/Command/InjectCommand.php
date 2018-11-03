@@ -8,10 +8,7 @@
 
 namespace Spiral\Prototyping\Command;
 
-
-use Psr\Container\ContainerInterface;
 use Spiral\Prototyping\Injector;
-use Spiral\Tokenizer\ClassesInterface;
 
 class InjectCommand extends AbstractCommand
 {
@@ -19,14 +16,14 @@ class InjectCommand extends AbstractCommand
     const DESCRIPTION = "Inject all prototype dependencies";
 
     /**
-     * @param ClassesInterface   $classes
-     * @param ContainerInterface $container
+     * Perform command.
      */
-    public function perform(ClassesInterface $classes, ContainerInterface $container)
+    public function perform()
     {
         $targets = $this->getTargets();
         if (empty($targets)) {
             $this->writeln("<comment>No prototyped classes found.</comment>");
+
             return;
         }
 
@@ -53,8 +50,12 @@ class InjectCommand extends AbstractCommand
             );
 
 
-            $source = $injector->injectDependencies(file_get_contents($class->getFileName()), $deps);
-            file_put_contents($class->getFileName(), $source);
+            $modified = $injector->injectDependencies(
+                file_get_contents($class->getFileName()),
+                $deps
+            );
+
+            file_put_contents($class->getFileName(), $modified);
         }
     }
 }

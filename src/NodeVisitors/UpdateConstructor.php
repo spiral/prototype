@@ -47,6 +47,8 @@ class UpdateConstructor extends AbstractVisitor
         $constructor->setDocComment(
             $this->addComments($constructor->getDocComment())
         );
+
+        return $node;
     }
 
     /**
@@ -111,6 +113,7 @@ class UpdateConstructor extends AbstractVisitor
         }
 
         $an->lines = $this->injectValues($an->lines, $placementID, $params);
+
         return new Doc($an->compile());
     }
 }

@@ -62,6 +62,7 @@ class AddUse extends AbstractVisitor
     private function buildUse(string $type): Node\Stmt\Use_
     {
         $b = new Use_(new Node\Name($type), Node\Stmt\Use_::TYPE_NORMAL);
+
         return $b->getNode();
     }
 }
