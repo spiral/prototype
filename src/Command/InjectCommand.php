@@ -8,6 +8,7 @@
 
 namespace Spiral\Prototype\Command;
 
+use PhpParser\Node\Arg;
 use Spiral\Prototype\Injector;
 
 class InjectCommand extends AbstractCommand
@@ -29,36 +30,65 @@ class InjectCommand extends AbstractCommand
 
         $injector = new Injector();
         foreach ($targets as $class) {
-            $deps = $this->fetchDependencies($class);
-
-            foreach ($deps as $dep) {
-                if ($dep instanceof \Throwable) {
+            $dependencies = $this->fetchDependencies($class);
+            foreach ($dependencies as $dependency) {
+                if ($dependency instanceof \Throwable) {
                     $this->sprintf(
-                        "<fg=red>•</fg=red> %s: <fg=red>%s</fg=red>",
+                        "<fg=red>•</fg=red> %s: <fg=red>%s [f: %s, l: %s]</fg=red>\n",
                         $class->getName(),
-                        $dep->getMessage()
+                        $dependency->getMessage(),
+                        $dependency->getFile(),
+                        $dependency->getLine()
                     );
 
                     continue 2;
                 }
 
-                if ($dep == null) {
+                if ($dependency == null) {
                     continue 2;
                 }
             }
 
             $this->sprintf(
-                "<fg=green>•</fg=green> %s: injecting <fg=green>%s</fg=green>",
+                "<fg=green>•</fg=green> %s: injecting %s\n",
                 $class->getName(),
-                join("</fg=green>, <fg=green>", array_values($deps))
+                $this->wrapDependencies($dependencies, "<fg=green>%s</fg=green>")
             );
 
-            $modified = $injector->injectDependencies(
-                file_get_contents($class->getFileName()),
-                $deps
-            );
+            $classDefinition = $this->fetchDefinition($class, $dependencies);
 
-            file_put_contents($class->getFileName(), $modified);
+            try {
+                $modified = $injector->injectDependencies(
+                    file_get_contents($class->getFileName()),
+                    $classDefinition
+                );
+
+                file_put_contents($class->getFileName(), $modified);
+            } catch (\Throwable $e) {
+                $this->sprintf(
+                    "<fg=red>•</fg=red> %s: <fg=red>%s [f: %s, l: %s]</fg=red>\n",
+                    $class->getName(),
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine()
+                );
+            }
         }
+    }
+
+    /**
+     * @param \Spiral\Prototype\Dependency[] $dependencies
+     * @param string                         $format
+     *
+     * @return string
+     */
+    private function wrapDependencies(array $dependencies, string $format): string
+    {
+        $output = [];
+        foreach ($dependencies as $dependency) {
+            $output[] = sprintf($format, "{$dependency->var} ({$dependency->type->fullName})");
+        }
+
+        return join(', ', $output);
     }
 }

@@ -11,26 +11,31 @@ namespace Spiral\Prototype\NodeVisitors;
 use PhpParser\Builder\Param;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PhpParser\NodeVisitorAbstract;
 use Spiral\Prototype\Annotation;
+use Spiral\Prototype\ClassDefinition;
+use Spiral\Prototype\Dependency;
+use Spiral\Prototype\Utils;
 
 /**
  * Injects new constructor dependencies and modifies comment.
  */
-class UpdateConstructor extends AbstractVisitor
+class UpdateConstructor extends NodeVisitorAbstract
 {
-    /** @var array */
-    private $dependencies;
+    /** @var ClassDefinition */
+    private $definition;
 
     /**
-     * @param array $dependencies
+     * @param ClassDefinition $definition
      */
-    public function __construct(array $dependencies)
+    public function __construct(ClassDefinition $definition)
     {
-        $this->dependencies = $dependencies;
+        $this->definition = $definition;
     }
 
     /**
      * @param Node $node
+     *
      * @return int|null|Node|Node[]
      */
     public function leaveNode(Node $node)
@@ -39,8 +44,10 @@ class UpdateConstructor extends AbstractVisitor
             return null;
         }
 
-        /** @var Node\Stmt\ClassMethod $constructor */
-        $constructor = $node->getAttribute('constructor');
+        $constructor = $this->getConstructorAttribute($node);
+        if (!$this->definition->hasConstructor && $this->definition->constructorParams) {
+            $this->addParentConstructorCall($constructor);
+        }
 
         $this->addDependencies($constructor);
 
@@ -58,25 +65,58 @@ class UpdateConstructor extends AbstractVisitor
      */
     private function addDependencies(Node\Stmt\ClassMethod $constructor)
     {
-        foreach ($this->dependencies as $name => $type) {
-            array_unshift(
-                $constructor->params,
-                (new Param($name))->setType(new Node\Name($this->shortName($type)))->getNode()
-            );
+        foreach ($this->definition->dependencies as $name => $dependency) {
+            $constructor->params[] = (new Param($dependency->var))->setType(new Node\Name($this->getPropertyType($dependency)))->getNode();
 
-            $prop = new Node\Expr\PropertyFetch(new Node\Expr\Variable("this"), $name);
+            $prop = new Node\Expr\PropertyFetch(new Node\Expr\Variable("this"), $dependency->property);
 
             array_unshift(
                 $constructor->stmts,
-                new Node\Stmt\Expression(new Node\Expr\Assign($prop, new Node\Expr\Variable($name)))
+                new Node\Stmt\Expression(new Node\Expr\Assign($prop, new Node\Expr\Variable($dependency->var)))
             );
         }
     }
 
+    private function addParentConstructorCall(Node\Stmt\ClassMethod $constructor)
+    {
+        $parentConstructorDependencies = [];
+        foreach ($this->definition->constructorParams as $param) {
+            $parentConstructorDependencies[] = new Node\Arg(new Node\Expr\Variable($param->name));
+
+            $cp = new Param($param->name);
+            if (!empty($param->type)) {
+                $type = $this->getParamType($param);
+                if ($param->nullable) {
+                    $type = "?$type";
+                }
+
+                $cp->setType(new Node\Name($type));
+            }
+
+            if ($param->hasDefault) {
+                $cp->setDefault($param->default);
+            }
+            $constructor->params[] = $cp->getNode();
+        }
+
+        if ($parentConstructorDependencies) {
+            array_unshift(
+                $constructor->stmts,
+                new Node\Stmt\Expression(new Node\Expr\StaticCall(new Node\Name('parent'), '__construct', $parentConstructorDependencies))
+            );
+        }
+    }
+
+    private function getConstructorAttribute(Node\Stmt\Class_ $node): Node\Stmt\ClassMethod
+    {
+        return $node->getAttribute('constructor');
+    }
+
     /**
-     * Add PHPDoc comments into __constructor.
+     * Add PHPDoc comments into __construct.
      *
      * @param Doc|null $doc
+     *
      * @return Doc
      */
     private function addComments(Doc $doc = null): Doc
@@ -84,9 +124,31 @@ class UpdateConstructor extends AbstractVisitor
         $an = new Annotation\Parser($doc ? $doc->getText() : "");
 
         $params = [];
-        foreach ($this->dependencies as $name => $type) {
+
+        if (!$this->definition->hasConstructor) {
+            foreach ($this->definition->constructorParams as $param) {
+                if (!empty($param->type)) {
+                    $type = $this->getParamType($param);
+                    if ($param->nullable) {
+                        $type = "$type|null";
+                    }
+
+                    $params[] = new Annotation\Line(
+                        sprintf('%s $%s', $type, $param->name),
+                        'param'
+                    );
+                } else {
+                    $params[] = new Annotation\Line(
+                        sprintf('$%s', $param->name),
+                        'param'
+                    );
+                }
+            }
+        }
+
+        foreach ($this->definition->dependencies as $name => $dependency) {
             $params[] = new Annotation\Line(
-                sprintf('%s $%s', $this->shortName($type), $name),
+                sprintf('%s $%s', $this->getPropertyType($dependency), $dependency->var),
                 'param'
             );
         }
@@ -108,12 +170,42 @@ class UpdateConstructor extends AbstractVisitor
         }
 
         if (!empty($previous) && !$previous->isEmpty()) {
-            $an->lines = $this->injectValues($an->lines, $placementID, [new Annotation\Line("")]);
+            $an->lines = Utils::injectValues($an->lines, $placementID, [new Annotation\Line("")]);
             $placementID++;
         }
 
-        $an->lines = $this->injectValues($an->lines, $placementID, $params);
+        $an->lines = Utils::injectValues($an->lines, $placementID, $params);
 
         return new Doc($an->compile());
+    }
+
+    private function getPropertyType(Dependency $dependency): string
+    {
+        foreach ($this->definition->getStmts() as $stmt) {
+            if ($stmt->name === $dependency->type->fullName) {
+                if ($stmt->alias) {
+                    return $stmt->alias;
+                }
+            }
+        }
+
+        return $dependency->type->getAliasOrShortName();
+    }
+
+    private function getParamType(ClassDefinition\ConstructorParam $param): string
+    {
+        foreach ($this->definition->getStmts() as $stmt) {
+            if ($stmt->name === $param->type->fullName) {
+                if ($stmt->alias) {
+                    return $stmt->alias;
+                }
+            }
+        }
+
+        if ($param->type->alias) {
+            return $param->type->alias;
+        }
+
+        return $param->type->getSlashedShortName($param->isBuiltIn());
     }
 }
