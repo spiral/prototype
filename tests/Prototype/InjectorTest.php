@@ -9,6 +9,7 @@
 namespace Spiral\Prototype\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Spiral\Core\Container;
 use Spiral\Prototype\ClassDefinition;
 use Spiral\Prototype\Dependency;
 use Spiral\Prototype\Injector;
@@ -52,7 +53,8 @@ class InjectorTest extends TestCase
 
     private function getDefinition(string $filename, array $dependencies): ClassDefinition
     {
-        $extractor = new ClassDefinition\Extractor();
+        $container = new Container();
+        $extractor = $container->get(ClassDefinition\Extractor::class);
 
         return $extractor->extract(file_get_contents($filename), $this->convertDependencies($dependencies));
     }
