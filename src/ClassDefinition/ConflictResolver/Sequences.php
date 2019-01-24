@@ -4,29 +4,35 @@ namespace Spiral\Prototype\ClassDefinition\ConflictResolver;
 
 class Sequences
 {
-    public function find(array $names, int $originSequence): int
+    /**
+     * Examples:
+     * [], <any> => 0
+     *
+     *
+     * @param array $sequences
+     * @param int   $originSequence
+     *
+     * @return int
+     */
+    public function find(array $sequences, int $originSequence): int
     {
-        if (empty($names)) {
-            return 0;
-        }
-
-        $sequences = array_keys($names);
-        $skipped = $this->skippedSequences($sequences);
-
-        if (isset($skipped[$originSequence])) {
+        if (empty($sequences) || $originSequence > max($sequences)) {
             return $originSequence;
         }
 
-        if (isset($skipped[1]) && isset($sequences[0])) {
-            //we do not add "1" as postfix: $var, $var2, $var3, etc
-            unset($skipped[1]);
+        $gaps = $this->skippedSequences($sequences);
+
+        if (isset($gaps[$originSequence])) {
+            return $originSequence;
         }
 
-        if (empty($skipped)) {
+        //we do not add "1" as postfix: $var, $var2, $var3, etc
+        unset($gaps[1]);
+        if (empty($gaps)) {
             return max($sequences) + 1;
         }
 
-        return current($skipped);
+        return min($gaps);
     }
 
     private function skippedSequences(array $sequences): array

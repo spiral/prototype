@@ -3,6 +3,7 @@
 namespace Spiral\Prototype\ClassDefinition\ConflictResolver;
 
 use Spiral\Prototype\ClassDefinition;
+use Spiral\Prototype\Utils;
 
 class Namespaces
 {
@@ -77,7 +78,7 @@ class Namespaces
                         continue;
                     }
 
-                    $sequence = $this->sequences->find($counters[$namespace->name], $namespace->sequence);
+                    $sequence = $this->sequences->find(array_keys($counters[$namespace->name]), $namespace->sequence);
                     if ($sequence !== $namespace->sequence) {
                         $namespace->sequence = $sequence;
 
@@ -98,7 +99,7 @@ class Namespaces
                     continue;
                 }
 
-                $sequence = $this->sequences->find($counters[$namespace->name], $namespace->sequence);
+                $sequence = $this->sequences->find(array_keys($counters[$namespace->name]), $namespace->sequence);
                 if ($sequence !== $namespace->sequence) {
                     $namespace->sequence = $sequence;
 
@@ -139,7 +140,7 @@ class Namespaces
         if (preg_match("/\d+$/", $shortName, $match)) {
             $sequence = (int)$match[0];
             if ($sequence > 0) {
-                return Namespace_::createWithSequence($shortName, $fullName, $sequence);
+                return Namespace_::createWithSequence(Utils::trimTrailingDigits($shortName, $sequence), $fullName, $sequence);
             }
         }
 

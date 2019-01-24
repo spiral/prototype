@@ -2,20 +2,12 @@
 
 namespace Spiral\Prototype\ClassDefinition\ConflictResolver;
 
-use Spiral\Prototype\Utils;
-
-class Name_
+class Name_ extends AbstractEntity
 {
-    /** @var string */
-    public $name;
-
-    /** @var int */
-    public $sequence = 0;
-
     public static function createWithSequence(string $name, int $sequence): Name_
     {
         $self = new self();
-        $self->name = Utils::trimTrailingDigits($name, $sequence);
+        $self->name = $name;
         $self->sequence = $sequence;
 
         return $self;
@@ -27,19 +19,5 @@ class Name_
         $self->name = $name;
 
         return $self;
-    }
-
-    public function fullName(): string
-    {
-        $name = $this->name;
-        if ($this->sequence > 0) {
-            $name .= $this->sequence;
-        }
-
-        return $name;
-    }
-
-    private function __construct()
-    {
     }
 }

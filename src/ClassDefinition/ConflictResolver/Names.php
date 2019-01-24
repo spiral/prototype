@@ -3,6 +3,7 @@
 namespace Spiral\Prototype\ClassDefinition\ConflictResolver;
 
 use Spiral\Prototype\ClassDefinition;
+use Spiral\Prototype\Utils;
 
 class Names
 {
@@ -57,7 +58,7 @@ class Names
         foreach ($definition->dependencies as $dependency) {
             $name = $this->parseName($dependency->var);
             if (isset($counters[$name->name])) {
-                $sequence = $this->sequences->find($counters[$name->name], $name->sequence);
+                $sequence = $this->sequences->find(array_keys($counters[$name->name]), $name->sequence);
                 if ($sequence !== $name->sequence) {
                     $name->sequence = $sequence;
 
@@ -76,7 +77,7 @@ class Names
         if (preg_match("/\d+$/", $name, $match)) {
             $sequence = (int)$match[0];
             if ($sequence > 0) {
-                return Name_::createWithSequence($name, $sequence);
+                return Name_::createWithSequence(Utils::trimTrailingDigits($name, $sequence), $sequence);
             }
         }
 
