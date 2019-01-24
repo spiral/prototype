@@ -7,13 +7,18 @@ class Utils
     /**
      * Create short name (without namespaces).
      *
-     * @param string $type
+     * @param string $name
      *
      * @return string
      */
-    public static function shortName(string $type): string
+    public static function shortName(string $name): string
     {
-        return mb_substr($type, mb_strrpos($type, '\\') + 1);
+        $pos = mb_strrpos($name, '\\');
+        if ($pos === false) {
+            return $name;
+        }
+
+        return mb_substr($name, $pos + 1);
     }
 
     /**
@@ -43,6 +48,11 @@ class Utils
      */
     public static function trimTrailingDigits(string $name, int $number): string
     {
-        return mb_substr($name, 0, mb_strripos($name, $number));
+        $pos = mb_strripos($name, $number);
+        if ($pos === false) {
+            return $name;
+        }
+
+        return mb_substr($name, 0, $pos);
     }
 }
