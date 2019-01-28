@@ -36,7 +36,6 @@ class CreateClassDefinition extends NodeVisitorAbstract
             }
         }
 
-        $returnNode = null;
         if ($node instanceof Node\Stmt\Class_) {
             $this->definition->class = $node->name->name;
 

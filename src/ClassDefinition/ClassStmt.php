@@ -8,13 +8,18 @@ class ClassStmt
 {
     /** @var string */
     public $name;
+
+    /** @var string */
     public $shortName;
 
     /** @var string|null */
     public $alias;
 
     /** @var bool */
-    public $imported;
+    private $imported;
+
+    /** @var string */
+    private $isInstantiation;
 
     public static function createFromImport(string $name, ?string $alias): ClassStmt
     {
@@ -30,6 +35,7 @@ class ClassStmt
         $stmt->name = $name;
         $stmt->shortName = Utils::shortName($name);
         $stmt->imported = $imported;
+        $stmt->isInstantiation = true;
 
         return $stmt;
     }
@@ -37,6 +43,11 @@ class ClassStmt
     public function __toString(): string
     {
         return join('.', [$this->name, $this->alias ?? null, $this->imported ? 'true' : 'false']);
+    }
+
+    public function withoutAlias(): bool
+    {
+        return !$this->alias && $this->imported;
     }
 
     private function __construct()

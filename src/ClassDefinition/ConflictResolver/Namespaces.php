@@ -25,26 +25,39 @@ class Namespaces
 
     private function getReservedNamespaces(ClassDefinition $definition)
     {
-        $names = [];
+        $namespaces = [];
+        $namespaces = $this->getReservedNamespacesWithAlias($definition, $namespaces);
+        $namespaces = $this->getReservedNamespacesWithoutAlias($definition, $namespaces);
+
+        return $namespaces;
+    }
+
+    private function getReservedNamespacesWithAlias(ClassDefinition $definition, array $namespaces): array
+    {
         foreach ($definition->getStmts() as $stmt) {
             if (!$stmt->alias) {
                 continue;
             }
 
-            $names[$stmt->alias] = $stmt->name;
+            $namespaces[$stmt->alias] = $stmt->name;
         }
 
+        return $namespaces;
+    }
+
+    private function getReservedNamespacesWithoutAlias(ClassDefinition $definition, array $namespaces): array
+    {
         foreach ($definition->getStmts() as $stmt) {
-            if ($stmt->alias || !$stmt->imported) {
+            if (!$stmt->withoutAlias()) {
                 continue;
             }
 
-            if (!isset($names[$stmt->shortName])) {
-                $names[$stmt->shortName] = $stmt->name;
+            if (!isset($namespaces[$stmt->shortName])) {
+                $namespaces[$stmt->shortName] = $stmt->name;
             }
         }
 
-        return $names;
+        return $namespaces;
     }
 
     private function initiateCounters(array $namespaces): array
@@ -74,7 +87,7 @@ class Namespaces
 
                 $namespace = $this->parseNamespaceFromType($param->type);
                 if (isset($counters[$namespace->name])) {
-                    if ($this->sameNamespace($counters[$namespace->name], $namespace)) {
+                    if ($this->getAlreadyImportedNamespace($counters[$namespace->name], $namespace)) {
                         continue;
                     }
 
@@ -95,7 +108,10 @@ class Namespaces
         foreach ($definition->dependencies as $dependency) {
             $namespace = $this->parseNamespaceFromType($dependency->type);
             if (isset($counters[$namespace->name])) {
-                if ($this->sameNamespace($counters[$namespace->name], $namespace)) {
+                $alreadyImported = $this->getAlreadyImportedNamespace($counters[$namespace->name], $namespace);
+                if (!empty($alreadyImported)) {
+                    $dependency->type->alias = $alreadyImported->fullName();
+
                     continue;
                 }
 
@@ -117,17 +133,17 @@ class Namespaces
      * @param Namespace_[] $counters
      * @param Namespace_   $namespace
      *
-     * @return bool
+     * @return Namespace_|null
      */
-    private function sameNamespace(array $counters, Namespace_ $namespace): bool
+    private function getAlreadyImportedNamespace(array $counters, Namespace_ $namespace): ?Namespace_
     {
         foreach ($counters as $counter) {
             if ($counter->equals($namespace)) {
-                return true;
+                return $counter;
             }
         }
 
-        return false;
+        return null;
     }
 
     private function parseNamespaceFromType(ClassDefinition\Type $type): Namespace_

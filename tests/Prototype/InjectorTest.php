@@ -13,6 +13,7 @@ use Spiral\Core\Container;
 use Spiral\Prototype\ClassDefinition;
 use Spiral\Prototype\Dependency;
 use Spiral\Prototype\Injector;
+use Spiral\Prototype\Tests\Fixtures\Dependencies;
 use Spiral\Prototype\Tests\Fixtures\TestClass;
 
 class InjectorTest extends TestCase
@@ -56,16 +57,6 @@ class InjectorTest extends TestCase
         $container = new Container();
         $extractor = $container->get(ClassDefinition\Extractor::class);
 
-        return $extractor->extract(file_get_contents($filename), $this->convertDependencies($dependencies));
-    }
-
-    private function convertDependencies(array $deps): array
-    {
-        $converted = [];
-        foreach ($deps as $name => $type) {
-            $converted[$name] = Dependency::create($type, $name);
-        }
-
-        return $converted;
+        return $extractor->extract(file_get_contents($filename), Dependencies::convert($dependencies));
     }
 }
