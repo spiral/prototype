@@ -19,7 +19,7 @@ class Params
         }
     }
 
-    private function paramsSource(Test $t1, Test $t4, TestAlias $a1, SubFolder\Test $st)
+    private function paramsSource(Test $t1, Test $t4, ?TestAlias $a1, SubFolder\Test $st = null, string $t2 = 'value')
     {
     }
 }
