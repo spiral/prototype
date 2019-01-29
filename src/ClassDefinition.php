@@ -27,17 +27,21 @@ class ClassDefinition
     /** @var Dependency[] */
     public $dependencies = [];
 
-    static public function createEmpty(): ClassDefinition
+    static public function create(string $class): ClassDefinition
     {
-        return new self();
+        $self = new self();
+        $self->class = $class;
+
+        return $self;
     }
 
-    static public function createFromNamespace(string $namespace): ClassDefinition
+    static public function createWithNamespace(string $class, string $namespace): ClassDefinition
     {
-        $cr = new self();
-        $cr->namespace = $namespace;
+        $self = new self();
+        $self->class = $class;
+        $self->namespace = $namespace;
 
-        return $cr;
+        return $self;
     }
 
     public function addImportUsage(string $name, ?string $alias)

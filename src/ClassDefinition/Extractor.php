@@ -9,8 +9,9 @@ use Spiral\Prototype\Annotation\Parser;
 use Spiral\Prototype\ClassDefinition;
 use Spiral\Prototype\ClassDefinition\ConflictResolver;
 use Spiral\Prototype\Dependency;
-use Spiral\Prototype\NodeVisitors\CreateClassDefinition;
-use Spiral\Prototype\NodeVisitors\LocateConstructorVariables;
+use Spiral\Prototype\NodeVisitors\ClassDefinition\LocateStatements;
+use Spiral\Prototype\NodeVisitors\ClassDefinition\DeclareClass;
+use Spiral\Prototype\NodeVisitors\ClassDefinition\LocateVariables;
 
 class Extractor
 {
@@ -38,18 +39,35 @@ class Extractor
      */
     public function extract(string $code, array $dependencies): ClassDefinition
     {
-        $def = new CreateClassDefinition(ClassDefinition::createEmpty());
-        $vars = new LocateConstructorVariables();
-        $this->traverse($code, $def, $vars);
-
-        $definition = $def->getClassDefinition();
-        $this->fillConstructorParams($definition);
-        $this->fillConstructorVars($vars, $definition);
-
-        //will be omitted when deps are real Dependency objects
+        $definition = $this->makeDefinition($code);
         $definition->dependencies = $dependencies;
 
-        return $this->resolveConflicts($definition);
+        $stmts = new LocateStatements();
+        $vars = new LocateVariables();
+        $this->traverse($code, $stmts, $vars);
+
+        $this->fillStmts($definition, $stmts->getImports(), $stmts->getInstantiations());
+        $this->fillConstructorParams($definition);
+        $this->fillConstructorVars($vars->getVars(), $definition);
+        $this->resolveConflicts($definition);
+
+        return $definition;
+    }
+
+    private function makeDefinition(string $code): ClassDefinition
+    {
+        $declarator = new DeclareClass();
+        $this->traverse($code, $declarator);
+
+        if (empty($declarator->getClass())) {
+            throw new \RuntimeException('Class not declared');
+        }
+
+        if ($declarator->getNamespace()) {
+            return ClassDefinition::createWithNamespace($declarator->getClass(), $declarator->getNamespace());
+        }
+
+        return ClassDefinition::create($declarator->getClass());
     }
 
     private function traverse(string $code, NodeVisitor ...$visitors)
@@ -61,6 +79,17 @@ class Extractor
         }
 
         $tr->traverse($this->parser->parse($code));
+    }
+
+    private function fillStmts(ClassDefinition $definition, array $imports, array $instantiations)
+    {
+        foreach ($imports as $import) {
+            $definition->addImportUsage($import['name'], $import['alias']);
+        }
+
+        foreach ($instantiations as $instantiation) {
+            $definition->addInstantiation($instantiation);
+        }
     }
 
     private function fillConstructorParams(ClassDefinition $definition)
@@ -81,12 +110,11 @@ class Extractor
      * Collect all variable definitions from constructor method body.
      * Vars which are however also inserted via method are ignored (and still used as constructor params).
      *
-     * @param LocateConstructorVariables $vars
-     * @param ClassDefinition            $definition
+     * @param array           $vars
+     * @param ClassDefinition $definition
      */
-    private function fillConstructorVars(LocateConstructorVariables $vars, ClassDefinition $definition)
+    private function fillConstructorVars(array $vars, ClassDefinition $definition)
     {
-        $vars = $vars->getVars();
         foreach ($vars as $k => $var) {
             if (isset($definition->constructorParams[$var])) {
                 unset($vars[$k]);
@@ -96,11 +124,9 @@ class Extractor
         $definition->constructorVars = $vars;
     }
 
-    private function resolveConflicts(ClassDefinition $definition): ClassDefinition
+    private function resolveConflicts(ClassDefinition $definition)
     {
         $this->namesResolver->resolve($definition);
         $this->namespacesResolver->resolve($definition);
-
-        return $definition;
     }
 }

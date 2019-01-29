@@ -25,7 +25,7 @@ class NamespacesTest extends TestCase
      */
     public function testFind(array $stmts, array $dependencies, array $expected)
     {
-        $cd = ClassDefinition::createEmpty();
+        $cd = ClassDefinition::create();
 
         foreach ($stmts as $alias => $name) {
             $cd->addImportUsage($name, $alias);

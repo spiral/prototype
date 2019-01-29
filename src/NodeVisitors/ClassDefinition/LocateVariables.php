@@ -1,11 +1,11 @@
 <?php
 
-namespace Spiral\Prototype\NodeVisitors;
+namespace Spiral\Prototype\NodeVisitors\ClassDefinition;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
-class LocateConstructorVariables extends NodeVisitorAbstract
+class LocateVariables extends NodeVisitorAbstract
 {
     private $vars = [];
 
