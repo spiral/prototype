@@ -15,14 +15,6 @@ class Type
     /** @var string|null */
     public $fullName;
 
-    public static function createWithAlias(string $name, string $alias): Type
-    {
-        $type = self::create($name);
-        $type->alias = $alias;
-
-        return $type;
-    }
-
     public static function create(string $name): Type
     {
         $type = new self();
@@ -37,11 +29,6 @@ class Type
         $type->fullName = $fullName;
 
         return $type;
-    }
-
-    public static function createEmpty(): Type
-    {
-        return new self();
     }
 
     private function hasShortName(string $type): bool
