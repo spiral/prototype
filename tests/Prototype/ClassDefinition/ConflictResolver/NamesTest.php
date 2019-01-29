@@ -21,7 +21,7 @@ class NamesTest extends TestCase
      */
     public function testFind(string $method, array $vars, array $dependencies, array $expected)
     {
-        $cd = ClassDefinition::create();
+        $cd = ClassDefinition::create('class\name');
         $cd->constructorVars = $vars;
 
         foreach (Fixtures\Params::getParams($method) as $param) {
