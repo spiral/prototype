@@ -18,4 +18,10 @@ class TestClass
     {
         return $this->testClass;
     }
+
+    public function method()
+    {
+        $test2 = $this->test2;
+        $test = $this->test;
+    }
 }
