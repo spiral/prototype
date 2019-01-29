@@ -49,9 +49,10 @@ abstract class AbstractCommand extends Command
 
     protected function fetchDefinition(\ReflectionClass $class, array $dependencies): ClassDefinition
     {
+        /** @var ClassDefinition\Extractor $extractor */
         $extractor = $this->container->get(ClassDefinition\Extractor::class);
 
-        return $extractor->extract(file_get_contents($class->getFilename()), $dependencies);
+        return $extractor->extract($class->getFilename(), $dependencies);
     }
 
     /**

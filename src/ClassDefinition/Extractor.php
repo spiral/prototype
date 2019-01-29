@@ -8,7 +8,7 @@ use PhpParser\ParserFactory;
 use Spiral\Prototype\Annotation\Parser;
 use Spiral\Prototype\ClassDefinition;
 use Spiral\Prototype\ClassDefinition\ConflictResolver;
-use Spiral\Prototype\Dependency;
+use Spiral\Prototype\Exception\ClassNotDeclaredException;
 use Spiral\Prototype\NodeVisitors\ClassDefinition\LocateStatements;
 use Spiral\Prototype\NodeVisitors\ClassDefinition\DeclareClass;
 use Spiral\Prototype\NodeVisitors\ClassDefinition\LocateVariables;
@@ -32,19 +32,20 @@ class Extractor
     }
 
     /**
-     * @param string       $code
-     * @param Dependency[] $dependencies
+     * @param string $filename
+     * @param array  $dependencies
      *
      * @return ClassDefinition
+     * @throws ClassNotDeclaredException
      */
-    public function extract(string $code, array $dependencies): ClassDefinition
+    public function extract(string $filename, array $dependencies): ClassDefinition
     {
-        $definition = $this->makeDefinition($code);
+        $definition = $this->makeDefinition($filename);
         $definition->dependencies = $dependencies;
 
         $stmts = new LocateStatements();
         $vars = new LocateVariables();
-        $this->traverse($code, $stmts, $vars);
+        $this->traverse($filename, $stmts, $vars);
 
         $this->fillStmts($definition, $stmts->getImports(), $stmts->getInstantiations());
         $this->fillConstructorParams($definition);
@@ -54,13 +55,19 @@ class Extractor
         return $definition;
     }
 
-    private function makeDefinition(string $code): ClassDefinition
+    /**
+     * @param string $filename
+     *
+     * @return ClassDefinition
+     * @throws ClassNotDeclaredException
+     */
+    private function makeDefinition(string $filename): ClassDefinition
     {
         $declarator = new DeclareClass();
-        $this->traverse($code, $declarator);
+        $this->traverse($filename, $declarator);
 
         if (empty($declarator->getClass())) {
-            throw new \RuntimeException('Class not declared');
+            throw new ClassNotDeclaredException($filename);
         }
 
         if ($declarator->getNamespace()) {
@@ -70,7 +77,7 @@ class Extractor
         return ClassDefinition::create($declarator->getClass());
     }
 
-    private function traverse(string $code, NodeVisitor ...$visitors)
+    private function traverse(string $filename, NodeVisitor ...$visitors)
     {
         $tr = new NodeTraverser();
 
@@ -78,7 +85,7 @@ class Extractor
             $tr->addVisitor($visitor);
         }
 
-        $tr->traverse($this->parser->parse($code));
+        $tr->traverse($this->parser->parse(file_get_contents($filename)));
     }
 
     private function fillStmts(ClassDefinition $definition, array $imports, array $instantiations)

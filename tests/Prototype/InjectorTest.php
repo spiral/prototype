@@ -24,6 +24,9 @@ class InjectorTest extends TestCase
         }
     }
 
+    /**
+     * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
+     */
     public function testSimpleInjection()
     {
         $i = new Injector();
@@ -37,6 +40,9 @@ class InjectorTest extends TestCase
         $this->assertContains(TestClass::class, $r);
     }
 
+    /**
+     * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
+     */
     public function testParentConstructorCallInjection()
     {
         $i = new Injector();
@@ -51,6 +57,9 @@ class InjectorTest extends TestCase
         $this->assertContains('parent::__construct(', $r);
     }
 
+    /**
+     * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
+     */
     public function testNoParentConstructorCallInjection()
     {
         $i = new Injector();
@@ -65,6 +74,9 @@ class InjectorTest extends TestCase
         $this->assertNotContains('parent::__construct(', $r);
     }
 
+    /**
+     * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
+     */
     public function testModifyConstructor()
     {
         $i = new Injector();
@@ -79,11 +91,22 @@ class InjectorTest extends TestCase
         $this->assertContains('@param TestClass $testClass', $r);
     }
 
+    /**
+     * @param string $filename
+     * @param array  $dependencies
+     *
+     * @return ClassDefinition
+     * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
+     */
     private function getDefinition(string $filename, array $dependencies): ClassDefinition
     {
-        $container = new Container();
-        $extractor = $container->get(ClassDefinition\Extractor::class);
+        return $this->getExtractor()->extract($filename, Dependencies::convert($dependencies));
+    }
 
-        return $extractor->extract(file_get_contents($filename), Dependencies::convert($dependencies));
+    private function getExtractor(): ClassDefinition\Extractor
+    {
+        $container = new Container();
+
+        return $container->get(ClassDefinition\Extractor::class);
     }
 }
