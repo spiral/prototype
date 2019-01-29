@@ -31,7 +31,7 @@ class NamespacesTest extends TestCase
             $cd->addImportUsage($name, $alias);
         }
 
-        foreach (Fixtures\Params::getParams() as $param) {
+        foreach (Fixtures\Params::getParams('paramsSource') as $param) {
             $cd->addParam($param);
         }
 
