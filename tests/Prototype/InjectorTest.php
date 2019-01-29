@@ -11,7 +11,6 @@ namespace Spiral\Prototype\Tests;
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
 use Spiral\Prototype\ClassDefinition;
-use Spiral\Prototype\Dependency;
 use Spiral\Prototype\Injector;
 use Spiral\Prototype\Tests\Fixtures\Dependencies;
 use Spiral\Prototype\Tests\Fixtures\TestClass;
@@ -31,11 +30,39 @@ class InjectorTest extends TestCase
 
         $filename = __DIR__ . '/Fixtures/TestClass.php';
         $r = $i->injectDependencies(
-            file_get_contents(__DIR__ . '/Fixtures/TestClass.php'),
+            file_get_contents($filename),
             $this->getDefinition($filename, ['testClass' => TestClass::class])
         );
 
         $this->assertContains(TestClass::class, $r);
+    }
+
+    public function testParentConstructorCallInjection()
+    {
+        $i = new Injector();
+
+        $filename = __DIR__ . '/Fixtures/ChildClass.php';
+        $r = $i->injectDependencies(
+            file_get_contents($filename),
+            $this->getDefinition($filename, ['testClass' => TestClass::class])
+        );
+
+        $this->assertContains(TestClass::class, $r);
+        $this->assertContains('parent::__construct(', $r);
+    }
+
+    public function testNoParentConstructorCallInjection()
+    {
+        $i = new Injector();
+
+        $filename = __DIR__ . '/Fixtures/ChildWithConstructorClass.php';
+        $r = $i->injectDependencies(
+            file_get_contents($filename),
+            $this->getDefinition($filename, ['testClass' => TestClass::class])
+        );
+
+        $this->assertContains(TestClass::class, $r);
+        $this->assertNotContains('parent::__construct(', $r);
     }
 
     public function testModifyConstructor()

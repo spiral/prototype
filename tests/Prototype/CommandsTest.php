@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 class CommandsTest extends TestCase
 {
-    const STORE = ['TestClass.php', 'WithConstructor.php'];
+    const STORE = ['TestClass.php', 'ChildClass.php', 'ChildWithConstructorClass.php', 'WithConstructor.php'];
 
     /** @var TestApp */
     private $app;
