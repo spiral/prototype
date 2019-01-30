@@ -15,5 +15,6 @@ class WithComplexConstructor
         ?int $int = 123,
         \StdClass $nullableClass2 = null
     ) {
+        $var2 = new ATest3();
     }
 }

@@ -15,7 +15,7 @@ class ExtractorTest extends TestCase
     public function testNoClass()
     {
         $this->expectException(ClassNotDeclaredException::class);
-        $this->getExtractor()->extract(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'noClass.php', []);
+        $this->getExtractor()->extract(dirname(__DIR__) . '/Fixtures/noClass.php', []);
     }
 
     private function getExtractor(): Extractor

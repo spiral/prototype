@@ -1,6 +1,6 @@
 <?php
 
-namespace Spiral\Prototype\Tests\ClassDefinition;
+namespace Spiral\Prototype\Tests\ClassDefinition\ConflictResolver;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
@@ -18,7 +18,7 @@ class ConflictResolverTest extends TestCase
     {
         $i = new Injector();
 
-        $filename = __DIR__ . '/ConflictResolver/Fixtures/TestClass.php';
+        $filename = __DIR__ . '/Fixtures/TestClass.php';
         $r = $i->injectDependencies(
             file_get_contents($filename),
             $this->getDefinition($filename, [
@@ -49,7 +49,7 @@ class ConflictResolverTest extends TestCase
     {
         $i = new Injector();
 
-        $filename = __DIR__ . '/ConflictResolver/Fixtures/TestClassWithImports.php';
+        $filename = __DIR__ . '/Fixtures/TestClassWithImports.php';
         $r = $i->injectDependencies(
             file_get_contents($filename),
             $this->getDefinition($filename, [
@@ -82,7 +82,7 @@ class ConflictResolverTest extends TestCase
     {
         $i = new Injector();
 
-        $filename = __DIR__ . '/ConflictResolver/Fixtures/ChildClass.php';
+        $filename = __DIR__ . '/Fixtures/ChildClass.php';
         $r = $i->injectDependencies(
             file_get_contents($filename),
             $this->getDefinition($filename, [
