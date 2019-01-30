@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
 use Spiral\Prototype\ClassDefinition;
 use Spiral\Prototype\Injector;
+use Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures as ResolverFixtures;
 use Spiral\Prototype\Tests\Fixtures\Dependencies;
 use Spiral\Prototype\Tests\Fixtures\TestClass;
 
@@ -89,6 +90,54 @@ class InjectorTest extends TestCase
 
         $this->assertContains('@param HydratedClass $h', $r);
         $this->assertContains('@param TestClass $testClass', $r);
+    }
+
+    /**
+     * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
+     */
+    public function testParentConstructorParamsTypeDefinition()
+    {
+        $i = new Injector();
+
+        $filename = __DIR__ . '/ClassDefinition/ConflictResolver/Fixtures/ChildClass.php';
+        $r = $i->injectDependencies(
+            file_get_contents($filename),
+            $this->getDefinition($filename, [
+                'test'  => ResolverFixtures\Test::class,
+                'test2' => ResolverFixtures\SubFolder\Test::class,
+                'test3' => ResolverFixtures\ATest3::class,
+            ])
+        );
+
+        $this->assertContains('string $str1,', $r);
+        $this->assertContains('* @param string $str', $r);
+
+        $this->assertContains(', $var,', $r); //adding ", " to show that there's no type
+        $this->assertContains(' * @param $var', $r);
+
+        //Parameter type ATest3 has an alias in a child class
+        $this->assertContains('ATestAlias $testApp,', $r);
+        $this->assertNotContains('ATest3 $testApp,', $r);
+        $this->assertContains('@param ATestAlias $testApp', $r);
+        $this->assertNotContains('@param ATest3 $testApp', $r);
+
+        $this->assertContains('?string $str2,', $r);
+        $this->assertContains('* @param string|null $str2', $r);
+
+        $this->assertContains('?\StdClass $nullableClass1,', $r);
+        $this->assertContains('* @param \StdClass|null $nullableClass1', $r);
+
+        $this->assertContains('?Test $test1 = null,', $r);
+        $this->assertContains('* @param Test|null $test1', $r);
+
+        $this->assertContains('?string $str3 = null,', $r);
+        $this->assertContains('* @param string|null $str3', $r);
+
+        $this->assertContains('?int $int = 123,', $r);
+        $this->assertContains('* @param int|null $int', $r);
+
+        $this->assertContains('?\StdClass $nullableClass2 = null,', $r);
+        $this->assertContains('* @param \StdClass|null $nullableClass2', $r);
     }
 
     /**

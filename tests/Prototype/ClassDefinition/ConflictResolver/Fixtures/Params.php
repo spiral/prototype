@@ -28,4 +28,8 @@ class Params
     private function paramsSource2(Test $t1, Test $t4, ?TestAlias $a1, SubFolder\Test $st = null, string $t2 = 'value')
     {
     }
+
+    private function paramsSource3(Test $t, Test $t4, ?TestAlias $a1, SubFolder\Test $st = null)
+    {
+    }
 }

@@ -93,6 +93,20 @@ class NamespacesTest extends TestCase
                     'v8' => 'type6',
                 ]
             ],
+            [
+                [],
+                //has conflicts
+                [
+                    'v1' => 'a\\b\\type',
+                    'v2' => 'a\\b\\c\\type',
+                    'v3' => 'a\\b\\c\\type3',
+                ],
+                [
+                    'v1' => 'type',
+                    'v2' => 'type2',
+                    'v3' => 'type3',
+                ]
+            ],
         ];
     }
 

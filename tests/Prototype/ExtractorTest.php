@@ -17,7 +17,7 @@ class ExtractorTest extends TestCase
     {
         $e = new Extractor();
 
-        $expected = ['test', 'test2', 'testClass'];
+        $expected = ['test', 'test2', 'test3', 'testClass'];
         $prototypes = $e->getPrototypeNames(file_get_contents(__DIR__ . '/Fixtures/TestClass.php'));
         sort($prototypes);
         $this->assertSame($expected, $prototypes);

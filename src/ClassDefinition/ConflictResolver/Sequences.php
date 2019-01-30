@@ -29,7 +29,12 @@ class Sequences
         //we do not add "1" as postfix: $var, $var2, $var3, etc
         unset($gaps[1]);
         if (empty($gaps)) {
-            return max($sequences) + 1;
+            $max = max($sequences);
+            if ($max === 0) {
+                return 2;
+            }
+
+            return $max + 1;
         }
 
         return min($gaps);

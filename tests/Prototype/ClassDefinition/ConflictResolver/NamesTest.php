@@ -43,25 +43,22 @@ class NamesTest extends TestCase
     {
         return [
             [
-                //no conflicts
                 'paramsSource',
                 [],
                 ['v2' => 'type1', 'v' => 'type2', 'vv' => 'type3',],
                 ['v2', 'v', 'vv']
             ],
             [
-                //has conflicts
                 'paramsSource',
                 ['v', 'v2'],
                 ['v2' => 'type1', 'v' => 'type2', 'vv' => 'type3', 't1' => 'type4', 't2' => 'type4', 't4' => 'type4', 't6' => 'type4'],
                 ['v3', 'v4', 'vv', 't', 't2', 't3', 't6']
             ],
             [
-                //has conflicts
-                'paramsSource2',
-                ['v', 'v2'],
-                ['v2' => 'type1', 'v' => 'type2', 'vv' => 'type3', 't1' => 'type4', 't2' => 'type4', 't4' => 'type4', 't6' => 'type4'],
-                ['v3', 'v4', 'vv', 't', 't3', 't5', 't6']
+                'paramsSource3',
+                [],
+                ['t' => 'type', 't3' => 'type3'],
+                ['t2', 't3']
             ],
         ];
     }
