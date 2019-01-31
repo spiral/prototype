@@ -47,7 +47,7 @@ class Extractor
         $vars = new LocateVariables();
         $this->traverse($filename, $stmts, $vars);
 
-        $this->fillStmts($definition, $stmts->getImports(), $stmts->getInstantiations());
+        $this->fillStmts($definition, $stmts->getImports());
         $this->fillConstructorParams($definition);
         $this->fillConstructorVars($vars->getVars(), $definition);
         $this->resolveConflicts($definition);
@@ -88,14 +88,10 @@ class Extractor
         $tr->traverse($this->parser->parse(file_get_contents($filename)));
     }
 
-    private function fillStmts(ClassDefinition $definition, array $imports, array $instantiations)
+    private function fillStmts(ClassDefinition $definition, array $imports)
     {
         foreach ($imports as $import) {
             $definition->addImportUsage($import['name'], $import['alias']);
-        }
-
-        foreach ($instantiations as $instantiation) {
-            $definition->addInstantiation($instantiation);
         }
     }
 

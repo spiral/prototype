@@ -6,12 +6,11 @@ use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Pick class's namespace, name, imports and object instantiations.
+ * Pick class's namespace, name, imports.
  */
 class LocateStatements extends NodeVisitorAbstract
 {
     private $imports = [];
-    private $instantiations = [];
 
     /**
      * @param Node $node
@@ -37,20 +36,11 @@ class LocateStatements extends NodeVisitorAbstract
             }
         }
 
-        if ($node instanceof Node\Name\FullyQualified) {
-            $this->instantiations[] = $node->toString();
-        }
-
         return null;
     }
 
     public function getImports(): array
     {
         return $this->imports;
-    }
-
-    public function getInstantiations(): array
-    {
-        return $this->instantiations;
     }
 }

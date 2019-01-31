@@ -48,13 +48,11 @@ class Namespaces
     private function getReservedNamespacesWithoutAlias(ClassDefinition $definition, array $namespaces): array
     {
         foreach ($definition->getStmts() as $stmt) {
-            if (!$stmt->withoutAlias()) {
+            if ($stmt->alias || isset($namespaces[$stmt->shortName])) {
                 continue;
             }
 
-            if (!isset($namespaces[$stmt->shortName])) {
-                $namespaces[$stmt->shortName] = $stmt->name;
-            }
+            $namespaces[$stmt->shortName] = $stmt->name;
         }
 
         return $namespaces;

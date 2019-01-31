@@ -46,12 +46,7 @@ class ClassDefinition
 
     public function addImportUsage(string $name, ?string $alias)
     {
-        $this->addStmt(ClassDefinition\ClassStmt::createFromImport($name, $alias));
-    }
-
-    public function addInstantiation(string $name)
-    {
-        $this->addStmt(ClassDefinition\ClassStmt::createFromInstantiation($name, $this->isImported($name)));
+        $this->addStmt(ClassDefinition\ClassStmt::create($name, $alias));
     }
 
     /**
@@ -70,17 +65,6 @@ class ClassDefinition
     private function addStmt(ClassDefinition\ClassStmt $stmt)
     {
         $this->stmts[(string)$stmt] = $stmt;
-    }
-
-    private function isImported(string $name): bool
-    {
-        foreach ($this->stmts as $import) {
-            if ($import->name === $name) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function __construct()
