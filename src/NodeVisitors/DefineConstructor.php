@@ -10,11 +10,13 @@ namespace Spiral\Prototype\NodeVisitors;
 
 use PhpParser\BuilderHelpers;
 use PhpParser\Node;
+use PhpParser\NodeVisitorAbstract;
+use Spiral\Prototype\Utils;
 
 /**
- * Ensure correct placement and presence of __constructor.
+ * Ensure correct placement and presence of __construct.
  */
-class DefineConstructor extends AbstractVisitor
+class DefineConstructor extends NodeVisitorAbstract
 {
     /**
      * @param Node $node
@@ -32,6 +34,7 @@ class DefineConstructor extends AbstractVisitor
             if ($child instanceof Node\Stmt\ClassMethod) {
                 if ($child->name->name == '__construct') {
                     $node->setAttribute('constructor', $child);
+
                     return null;
                 }
 
@@ -41,7 +44,7 @@ class DefineConstructor extends AbstractVisitor
 
         $constructor = $this->buildConstructor();
         $node->setAttribute('constructor', $constructor);
-        $node->stmts = $this->injectValues($node->stmts, $placementID, [$constructor]);
+        $node->stmts = Utils::injectValues($node->stmts, $placementID, [$constructor]);
 
         return $node;
     }

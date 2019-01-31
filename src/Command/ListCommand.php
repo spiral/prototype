@@ -28,11 +28,11 @@ class ListCommand extends AbstractCommand
         $grid = $this->table(['Class:', 'Dependencies:', 'Resolution:']);
 
         foreach ($targets as $class) {
-            $deps = $this->fetchDependencies($class);
+            $dependencies = $this->fetchDependencies($class);
             $grid->addRow([
                 $class->getName(),
-                join("\n", array_keys($deps)),
-                $this->mergeValues(array_values($deps))
+                join("\n", array_keys($dependencies)),
+                $this->mergeValues($dependencies)
             ]);
         }
 
@@ -40,25 +40,26 @@ class ListCommand extends AbstractCommand
     }
 
     /**
-     * @param array $deps
+     * @param \Spiral\Prototype\Dependency[] $dependencies
+     *
      * @return string
      */
-    private function mergeValues(array $deps): string
+    private function mergeValues(array $dependencies): string
     {
         $result = [];
 
-        foreach ($deps as $dep) {
-            if ($dep instanceof \Throwable) {
-                $result[] = sprintf("<fg=red>%s</fg=red>", $dep->getMessage());
+        foreach ($dependencies as $dependency) {
+            if ($dependency instanceof \Throwable) {
+                $result[] = sprintf("<fg=red>%s</fg=red>", $dependency->getMessage());
                 continue;
             }
 
-            if (is_null($dep)) {
+            if (is_null($dependency)) {
                 $result[] = "<fg=yellow>undefined</fg=yellow>";
                 continue;
             }
 
-            $result[] = $dep;
+            $result[] = $dependency->type->fullName;
         }
 
         return join("\n", $result);

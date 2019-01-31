@@ -11,6 +11,8 @@ namespace Spiral\Prototype\Command;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Console\Command;
+use Spiral\Prototype\ClassDefinition;
+use Spiral\Prototype\Dependency;
 use Spiral\Prototype\Extractor;
 use Spiral\Prototype\Locator;
 use Spiral\Tokenizer\ClassesInterface;
@@ -45,18 +47,27 @@ abstract class AbstractCommand extends Command
         return $locator->getTargetClasses();
     }
 
+    protected function fetchDefinition(\ReflectionClass $class, array $dependencies): ClassDefinition
+    {
+        /** @var ClassDefinition\Extractor $extractor */
+        $extractor = $this->container->get(ClassDefinition\Extractor::class);
+
+        return $extractor->extract($class->getFilename(), $dependencies);
+    }
+
     /**
      * Fetch class dependencies.
      *
      * @param \ReflectionClass $class
+     *
      * @return array
      */
     protected function fetchDependencies(\ReflectionClass $class): array
     {
-        $e = new Extractor();
-        $deps = $e->getPrototypeNames(file_get_contents($class->getFilename()));
+        $extractor = $this->container->get(Extractor::class);
+        $dependencies = $extractor->getPrototypeNames(file_get_contents($class->getFilename()));
 
-        return $this->resolveDependencies($deps);
+        return $this->resolveDependencies($dependencies);
     }
 
     /**
@@ -64,7 +75,8 @@ abstract class AbstractCommand extends Command
      * an instance of container exception.
      *
      * @param array $deps
-     * @return array
+     *
+     * @return array|Dependency[]
      */
     private function resolveDependencies(array $deps): array
     {
@@ -77,7 +89,7 @@ abstract class AbstractCommand extends Command
             }
 
             try {
-                $result[$name] = get_class($this->container->get($name));
+                $result[$name] = Dependency::create(get_class($this->container->get($name)), $name);
             } catch (ContainerExceptionInterface $e) {
                 $result[$name] = $e;
             }

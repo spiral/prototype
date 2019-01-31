@@ -69,19 +69,19 @@ class Injector
      * Inject dependencies into PHP Class source code. Attention, resulted code will attempt to
      * preserve formatting but will affect it. Do not forget to add formatting fixer.
      *
-     * @param string $code
-     * @param array  $dependencies
+     * @param string          $code
+     * @param ClassDefinition $definition
      * @return string
      */
-    public function injectDependencies(string $code, array $dependencies = []): string
+    public function injectDependencies(string $code, ClassDefinition $definition): string
     {
         $tr = new NodeTraverser();
-        $tr->addVisitor(new AddUse($dependencies));
+        $tr->addVisitor(new AddUse($definition));
         $tr->addVisitor(new RemoveUse());
         $tr->addVisitor(new RemoveTrait());
-        $tr->addVisitor(new AddProperty($dependencies));
+        $tr->addVisitor(new AddProperty($definition));
         $tr->addVisitor(new DefineConstructor());
-        $tr->addVisitor(new UpdateConstructor($dependencies));
+        $tr->addVisitor(new UpdateConstructor($definition));
 
         $nodes = $this->parser->parse($code);
         $tokens = $this->lexer->getTokens();

@@ -11,7 +11,7 @@ namespace Spiral\Prototype;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
-use Spiral\Prototype\NodeVisitors\LocaleProperties;
+use Spiral\Prototype\NodeVisitors\LocateProperties;
 
 class Extractor
 {
@@ -34,7 +34,7 @@ class Extractor
      */
     public function getPrototypeNames(string $code): array
     {
-        $v = new LocaleProperties();
+        $v = new LocateProperties();
 
         $tr = new NodeTraverser();
         $tr->addVisitor($v);

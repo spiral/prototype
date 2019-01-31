@@ -14,7 +14,7 @@ use PhpParser\NodeVisitorAbstract;
 /**
  * Locate all declared and requested properties.
  */
-class LocaleProperties extends NodeVisitorAbstract
+class LocateProperties extends NodeVisitorAbstract
 {
     /** @var array */
     private $properties = [];
@@ -39,6 +39,7 @@ class LocaleProperties extends NodeVisitorAbstract
      * Detected declared and requested nodes.
      *
      * @param Node $node
+     *
      * @return int|null|Node
      */
     public function enterNode(Node $node)

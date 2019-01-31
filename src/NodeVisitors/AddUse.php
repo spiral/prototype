@@ -10,25 +10,32 @@ namespace Spiral\Prototype\NodeVisitors;
 
 use PhpParser\Builder\Use_;
 use PhpParser\Node;
+use PhpParser\NodeVisitorAbstract;
+use Spiral\Prototype\ClassDefinition;
+use Spiral\Prototype\Utils;
 
 /**
  * Add use statement to the code.
  */
-class AddUse extends AbstractVisitor
+class AddUse extends NodeVisitorAbstract
 {
-    /** @var array */
-    private $dependencies;
+    /** @var ClassDefinition */
+    private $definition;
+
+    /** @var Node\Stmt\Use_[] */
+    private $nodes = [];
 
     /**
-     * @param array $dependencies
+     * @param ClassDefinition $definition
      */
-    public function __construct(array $dependencies)
+    public function __construct(ClassDefinition $definition)
     {
-        $this->dependencies = array_unique($dependencies);
+        $this->definition = $definition;
     }
 
     /**
      * @param Node $node
+     *
      * @return int|null|Node|Node[]
      */
     public function leaveNode(Node $node)
@@ -37,31 +44,106 @@ class AddUse extends AbstractVisitor
             return null;
         }
 
-        $placementID = 0;
-        foreach ($node->stmts as $index => $child) {
-            $placementID = $index;
-            if ($child instanceof Node\Stmt\Class_) {
-                break;
+        $imported = [];
+        if (!$this->definition->hasConstructor && $this->definition->constructorParams) {
+            foreach ($this->definition->constructorParams as $param) {
+                if (!empty($param->type) && $param->type->fullName) {
+                    $import = [$param->type->fullName, $param->type->alias];
+                    if (in_array($import, $imported)) {
+                        continue;
+                    }
+
+                    $imported[] = $import;
+                    $this->nodes[] = $this->buildUse($param->type->fullName, $param->type->alias);
+                }
             }
         }
 
-        $nodes = [];
-        foreach ($this->dependencies as $type) {
-            $nodes[] = $this->buildUse($type);
+        foreach ($this->definition->dependencies as $dependency) {
+            $import = [$dependency->type->fullName, $dependency->type->alias];
+            if (in_array($import, $imported)) {
+                continue;
+            }
+
+            $imported[] = $import;
+            $this->nodes[] = $this->buildUse($dependency->type->fullName, $dependency->type->alias);
         }
 
-        $node->stmts = $this->injectValues($node->stmts, $placementID, $nodes);
+        $placementID = $this->definePlacementID($node);
+        $node->stmts = Utils::injectValues($node->stmts, $placementID, $this->removeDuplicates($node->stmts, $this->nodes));
 
         return $node;
     }
 
+    private function definePlacementID(Node\Stmt\Namespace_ $node): int
+    {
+        foreach ($node->stmts as $index => $child) {
+            if ($child instanceof Node\Stmt\Class_) {
+                return $index;
+            }
+        }
+
+        return 0;
+    }
+
     /**
-     * @param string $type
+     * @param Node\Stmt[]      $stmts
+     * @param Node\Stmt\Use_[] $nodes
+     *
+     * @return Node\Stmt\Use_[]
+     */
+    private function removeDuplicates(array $stmts, array $nodes): array
+    {
+        $uses = $this->getExistingUseParts($stmts);
+
+        foreach ($nodes as $i => $node) {
+            if (!$node instanceof Node\Stmt\Use_) {
+                continue;
+            }
+
+            foreach ($node->uses as $use) {
+                if (in_array($use->name->parts, $uses)) {
+                    unset($nodes[$i]);
+                }
+            }
+        }
+
+        return $nodes;
+    }
+
+    /**
+     * @param Node\Stmt[] $stmts
+     *
+     * @return array
+     */
+    private function getExistingUseParts(array $stmts): array
+    {
+        $uses = [];
+        foreach ($stmts as $stmt) {
+            if (!$stmt instanceof Node\Stmt\Use_) {
+                continue;
+            }
+
+            foreach ($stmt->uses as $use) {
+                $uses[] = $use->name->parts;
+            }
+        }
+
+        return $uses;
+    }
+
+    /**
+     * @param string      $type
+     * @param string|null $alias
+     *
      * @return Node\Stmt\Use_
      */
-    private function buildUse(string $type): Node\Stmt\Use_
+    private function buildUse(string $type, ?string $alias = null): Node\Stmt\Use_
     {
         $b = new Use_(new Node\Name($type), Node\Stmt\Use_::TYPE_NORMAL);
+        if (!empty($alias)) {
+            $b->as($alias);
+        }
 
         return $b->getNode();
     }

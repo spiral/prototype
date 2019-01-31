@@ -11,22 +11,27 @@ namespace Spiral\Prototype\NodeVisitors;
 use PhpParser\Builder\Property;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PhpParser\NodeVisitorAbstract;
+use Spiral\Prototype\ClassDefinition;
+use Spiral\Prototype\Dependency;
+use Spiral\Prototype\Utils;
 
-class AddProperty extends AbstractVisitor
+class AddProperty extends NodeVisitorAbstract
 {
-    /** @var array */
-    private $dependencies;
+    /** @var ClassDefinition */
+    private $definition;
 
     /**
-     * @param array $dependencies
+     * @param ClassDefinition $definition
      */
-    public function __construct(array $dependencies)
+    public function __construct(ClassDefinition $definition)
     {
-        $this->dependencies = $dependencies;
+        $this->definition = $definition;
     }
 
     /**
      * @param Node $node
+     *
      * @return int|null|Node|Node[]
      */
     public function leaveNode(Node $node)
@@ -35,35 +40,47 @@ class AddProperty extends AbstractVisitor
             return null;
         }
 
-        $placementID = 0;
-        foreach ($node->stmts as $index => $child) {
-            $placementID = $index;
-            if ($child instanceof Node\Stmt\ClassMethod || $child instanceof Node\Stmt\Property) {
-                break;
-            }
-        }
-
         $nodes = [];
-        foreach ($this->dependencies as $name => $type) {
-            $nodes[] = $this->buildProperty($name, $type);
+        foreach ($this->definition->dependencies as $dependency) {
+            $nodes[] = $this->buildProperty($dependency);
         }
 
-        $node->stmts = $this->injectValues($node->stmts, $placementID, $nodes);
+        $placementID = $this->definePlacementID($node);
+        $node->stmts = Utils::injectValues($node->stmts, $placementID, $nodes);
 
         return $node;
     }
 
-    /**
-     * @param string $name
-     * @param string $type
-     * @return Node|Node\Stmt\Property
-     */
-    private function buildProperty(string $name, string $type): Node\Stmt\Property
+    private function definePlacementID(Node\Stmt\Class_ $node): int
     {
-        $b = new Property($name);
+        foreach ($node->stmts as $index => $child) {
+            if ($child instanceof Node\Stmt\ClassMethod || $child instanceof Node\Stmt\Property) {
+                return $index;
+            }
+        }
+
+        return 0;
+    }
+
+    private function buildProperty(Dependency $dependency): Node\Stmt\Property
+    {
+        $b = new Property($dependency->property);
         $b->makeProtected();
-        $b->setDocComment(new Doc(sprintf("/** @var %s */", $this->shortName($type))));
+        $b->setDocComment(new Doc(sprintf("/** @var %s */", $this->getPropertyType($dependency))));
 
         return $b->getNode();
+    }
+
+    private function getPropertyType(Dependency $dependency): string
+    {
+        foreach ($this->definition->getStmts() as $stmt) {
+            if ($stmt->name === $dependency->type->fullName) {
+                if ($stmt->alias) {
+                    return $stmt->alias;
+                }
+            }
+        }
+
+        return $dependency->type->getAliasOrShortName();
     }
 }
