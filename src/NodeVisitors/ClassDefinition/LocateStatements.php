@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Spiral\Prototype\NodeVisitors\ClassDefinition;
 
@@ -23,7 +24,7 @@ class LocateStatements extends NodeVisitorAbstract
             foreach ($node->uses as $use) {
                 $this->imports[] = [
                     'name'  => join('\\', $use->name->parts),
-                    'alias' => $use->alias
+                    'alias' => !empty($use->alias) ? $use->alias->name : null
                 ];
             }
         }

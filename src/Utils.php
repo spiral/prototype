@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Spiral\Prototype;
 
@@ -48,7 +49,7 @@ class Utils
      */
     public static function trimTrailingDigits(string $name, int $number): string
     {
-        $pos = mb_strripos($name, $number);
+        $pos = mb_strripos($name, (string)$number);
         if ($pos === false) {
             return $name;
         }
