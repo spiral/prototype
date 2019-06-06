@@ -1,11 +1,17 @@
 <?php
+/**
+ * Spiral Framework.
+ *
+ * @license   MIT
+ * @author    Anton Titov (Wolfy-J)
+ */
 declare(strict_types=1);
 
 namespace Spiral\Prototype\ClassDefinition;
 
 use Spiral\Prototype\Utils;
 
-class ClassStmt
+final class ClassStmt
 {
     /** @var string */
     public $name;
@@ -16,6 +22,11 @@ class ClassStmt
     /** @var string|null */
     public $alias;
 
+    /**
+     * @param string      $name
+     * @param string|null $alias
+     * @return ClassStmt
+     */
     public static function create(string $name, ?string $alias): ClassStmt
     {
         $stmt = new self();
@@ -26,6 +37,9 @@ class ClassStmt
         return $stmt;
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         if ($this->alias) {
@@ -35,6 +49,9 @@ class ClassStmt
         return $this->name;
     }
 
+    /**
+     * ClassStmt constructor.
+     */
     private function __construct()
     {
     }

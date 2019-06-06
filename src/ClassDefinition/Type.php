@@ -1,11 +1,17 @@
 <?php
+/**
+ * Spiral Framework.
+ *
+ * @license   MIT
+ * @author    Anton Titov (Wolfy-J)
+ */
 declare(strict_types=1);
 
 namespace Spiral\Prototype\ClassDefinition;
 
 use Spiral\Prototype\Utils;
 
-class Type
+final class Type
 {
     /** @var string|null */
     public $shortName;
@@ -16,6 +22,10 @@ class Type
     /** @var string|null */
     public $fullName;
 
+    /**
+     * @param string $name
+     * @return Type
+     */
     public static function create(string $name): Type
     {
         $type = new self();
@@ -32,16 +42,27 @@ class Type
         return $type;
     }
 
+    /**
+     * @param string $type
+     * @return bool
+     */
     private function hasShortName(string $type): bool
     {
         return mb_strpos($type, '\\') !== false;
     }
 
+    /**
+     * @return string
+     */
     public function getAliasOrShortName(): string
     {
         return $this->alias ?: $this->shortName;
     }
 
+    /**
+     * @param bool $builtIn
+     * @return string
+     */
     public function getSlashedShortName(bool $builtIn): string
     {
         $type = $this->shortName;

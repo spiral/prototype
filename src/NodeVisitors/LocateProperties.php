@@ -1,11 +1,11 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype\NodeVisitors;
 
@@ -15,7 +15,7 @@ use PhpParser\NodeVisitorAbstract;
 /**
  * Locate all declared and requested properties.
  */
-class LocateProperties extends NodeVisitorAbstract
+final class LocateProperties extends NodeVisitorAbstract
 {
     /** @var array */
     private $properties = [];
@@ -40,7 +40,6 @@ class LocateProperties extends NodeVisitorAbstract
      * Detected declared and requested nodes.
      *
      * @param Node $node
-     *
      * @return int|null|Node
      */
     public function enterNode(Node $node)

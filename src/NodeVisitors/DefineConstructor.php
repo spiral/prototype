@@ -1,11 +1,11 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype\NodeVisitors;
 
@@ -17,7 +17,7 @@ use Spiral\Prototype\Utils;
 /**
  * Ensure correct placement and presence of __construct.
  */
-class DefineConstructor extends NodeVisitorAbstract
+final class DefineConstructor extends NodeVisitorAbstract
 {
     /**
      * @param Node $node

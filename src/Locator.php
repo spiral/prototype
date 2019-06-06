@@ -1,18 +1,18 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype;
 
 use Spiral\Prototype\Traits\PrototypeTrait;
 use Spiral\Tokenizer\ClassesInterface;
 
-class Locator
+final class Locator
 {
     /** @var ClassesInterface */
     private $classes;

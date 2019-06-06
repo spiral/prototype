@@ -1,18 +1,18 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype\Annotation;
 
 /**
  * Simple annotation parser and compiler.
  */
-class Parser
+final class Parser
 {
     /** @var Line[] */
     public $lines = [];

@@ -1,11 +1,11 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype\Traits;
 
@@ -29,7 +29,7 @@ trait PrototypeTrait
         $container = ContainerScope::getContainer();
         if (empty($container) || !$container->has($name)) {
             throw new ScopeException(
-                "Unable to get prototyped dependency `{$name}`, invalid container scope."
+                "Unable to get prototyped dependency `{$name}`, invalid container scope"
             );
         }
 

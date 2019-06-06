@@ -1,11 +1,17 @@
 <?php
+/**
+ * Spiral Framework.
+ *
+ * @license   MIT
+ * @author    Anton Titov (Wolfy-J)
+ */
 declare(strict_types=1);
 
 namespace Spiral\Prototype;
 
 use Spiral\Prototype\ClassDefinition\Type;
 
-class Dependency
+final class Dependency
 {
     /** @var Type */
     public $type;
@@ -16,6 +22,11 @@ class Dependency
     /** @var string */
     public $var;
 
+    /**
+     * @param string $type
+     * @param string $name
+     * @return Dependency
+     */
     public static function create(string $type, string $name): Dependency
     {
         $dependency = new self();
@@ -26,6 +37,9 @@ class Dependency
         return $dependency;
     }
 
+    /**
+     * Dependency constructor.
+     */
     private function __construct()
     {
     }

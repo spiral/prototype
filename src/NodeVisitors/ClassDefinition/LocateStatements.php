@@ -1,4 +1,10 @@
 <?php
+/**
+ * Spiral Framework.
+ *
+ * @license   MIT
+ * @author    Anton Titov (Wolfy-J)
+ */
 declare(strict_types=1);
 
 namespace Spiral\Prototype\NodeVisitors\ClassDefinition;
@@ -9,13 +15,13 @@ use PhpParser\NodeVisitorAbstract;
 /**
  * Pick class's namespace, name, imports.
  */
-class LocateStatements extends NodeVisitorAbstract
+final class LocateStatements extends NodeVisitorAbstract
 {
+    /** @var array */
     private $imports = [];
 
     /**
      * @param Node $node
-     *
      * @return int|null|Node|Node[]
      */
     public function enterNode(Node $node)
@@ -40,6 +46,9 @@ class LocateStatements extends NodeVisitorAbstract
         return null;
     }
 
+    /**
+     * @return array
+     */
     public function getImports(): array
     {
         return $this->imports;

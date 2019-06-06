@@ -1,11 +1,11 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype;
 
@@ -14,7 +14,7 @@ use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Spiral\Prototype\NodeVisitors\LocateProperties;
 
-class Extractor
+final class Extractor
 {
     /** @var Parser */
     private $parser;

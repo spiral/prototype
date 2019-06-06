@@ -1,11 +1,11 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype\NodeVisitors;
 
@@ -17,7 +17,7 @@ use Spiral\Prototype\ClassDefinition;
 use Spiral\Prototype\Dependency;
 use Spiral\Prototype\Utils;
 
-class AddProperty extends NodeVisitorAbstract
+final class AddProperty extends NodeVisitorAbstract
 {
     /** @var ClassDefinition */
     private $definition;
@@ -32,7 +32,6 @@ class AddProperty extends NodeVisitorAbstract
 
     /**
      * @param Node $node
-     *
      * @return int|null|Node|Node[]
      */
     public function leaveNode(Node $node)
@@ -52,6 +51,10 @@ class AddProperty extends NodeVisitorAbstract
         return $node;
     }
 
+    /**
+     * @param Node\Stmt\Class_ $node
+     * @return int
+     */
     private function definePlacementID(Node\Stmt\Class_ $node): int
     {
         foreach ($node->stmts as $index => $child) {
@@ -63,6 +66,10 @@ class AddProperty extends NodeVisitorAbstract
         return 0;
     }
 
+    /**
+     * @param Dependency $dependency
+     * @return Node\Stmt\Property
+     */
     private function buildProperty(Dependency $dependency): Node\Stmt\Property
     {
         $b = new Property($dependency->property);
@@ -72,6 +79,10 @@ class AddProperty extends NodeVisitorAbstract
         return $b->getNode();
     }
 
+    /**
+     * @param Dependency $dependency
+     * @return string
+     */
     private function getPropertyType(Dependency $dependency): string
     {
         foreach ($this->definition->getStmts() as $stmt) {

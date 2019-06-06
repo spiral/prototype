@@ -1,14 +1,13 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype\NodeVisitors;
-
 
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
@@ -18,7 +17,7 @@ use Spiral\Prototype\Traits\PrototypeTrait;
 /**
  * Remove PrototypeTrait use.
  */
-class RemoveUse extends NodeVisitorAbstract
+final class RemoveUse extends NodeVisitorAbstract
 {
     /**
      * @param Node $node

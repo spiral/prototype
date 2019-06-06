@@ -1,36 +1,38 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype\Bootloader;
 
-use Spiral\Config\ConfiguratorInterface;
-use Spiral\Config\Patch\AppendPatch;
-use Spiral\Core\Bootloader\Bootloader;
+use Spiral\Boot\Bootloader\Bootloader;
+use Spiral\Boot\Bootloader\DependedInterface;
+use Spiral\Bootloader\ConsoleBootloader;
 use Spiral\Prototype\Command\InjectCommand;
 use Spiral\Prototype\Command\ListCommand;
 
-class PrototypeBootloader extends Bootloader
+final class PrototypeBootloader extends Bootloader implements DependedInterface
 {
-    const BOOT = true;
+    /**
+     * @param ConsoleBootloader $console
+     */
+    public function boot(ConsoleBootloader $console)
+    {
+        $console->addCommand(ListCommand::class);
+        $console->addCommand(InjectCommand::class);
+    }
 
     /**
-     * @param ConfiguratorInterface $configurator
+     * @return array
      */
-    public function boot(ConfiguratorInterface $configurator)
+    public function defineDependencies(): array
     {
-        $configurator->modify(
-            'console',
-            new AppendPatch('commands', null, ListCommand::class)
-        );
-        $configurator->modify(
-            'console',
-            new AppendPatch('commands', null, InjectCommand::class)
-        );
+        return [
+            ConsoleBootloader::class
+        ];
     }
 }

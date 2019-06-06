@@ -1,9 +1,15 @@
 <?php
+/**
+ * Spiral Framework.
+ *
+ * @license   MIT
+ * @author    Anton Titov (Wolfy-J)
+ */
 declare(strict_types=1);
 
 namespace Spiral\Prototype\ClassDefinition\ConflictResolver;
 
-class Sequences
+final class Sequences
 {
     /**
      * Examples:
@@ -12,7 +18,6 @@ class Sequences
      *
      * @param array $sequences
      * @param int   $originSequence
-     *
      * @return int
      */
     public function find(array $sequences, int $originSequence): int
@@ -41,6 +46,10 @@ class Sequences
         return min($gaps);
     }
 
+    /**
+     * @param array $sequences
+     * @return array
+     */
     private function skippedSequences(array $sequences): array
     {
         $skipped = [];

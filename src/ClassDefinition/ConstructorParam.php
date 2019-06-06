@@ -1,9 +1,15 @@
 <?php
+/**
+ * Spiral Framework.
+ *
+ * @license   MIT
+ * @author    Anton Titov (Wolfy-J)
+ */
 declare(strict_types=1);
 
 namespace Spiral\Prototype\ClassDefinition;
 
-class ConstructorParam
+final class ConstructorParam
 {
     /** @var string */
     public $name;
@@ -23,6 +29,12 @@ class ConstructorParam
     /** @var bool */
     private $builtIn;
 
+    /**
+     * @param \ReflectionParameter $parameter
+     * @return ConstructorParam
+     *
+     * @throws \ReflectionException
+     */
     public static function createFromReflection(\ReflectionParameter $parameter): ConstructorParam
     {
         $stmt = new self();
@@ -42,11 +54,17 @@ class ConstructorParam
         return $stmt;
     }
 
+    /**
+     * @return bool
+     */
     public function isBuiltIn(): bool
     {
         return $this->builtIn;
     }
 
+    /**
+     * ConstructorParam constructor.
+     */
     private function __construct()
     {
     }

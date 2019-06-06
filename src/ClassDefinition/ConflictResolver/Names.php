@@ -1,4 +1,10 @@
 <?php
+/**
+ * Spiral Framework.
+ *
+ * @license   MIT
+ * @author    Anton Titov (Wolfy-J)
+ */
 declare(strict_types=1);
 
 namespace Spiral\Prototype\ClassDefinition\ConflictResolver;
@@ -6,16 +12,22 @@ namespace Spiral\Prototype\ClassDefinition\ConflictResolver;
 use Spiral\Prototype\ClassDefinition;
 use Spiral\Prototype\Utils;
 
-class Names
+final class Names
 {
     /** @var Sequences */
     private $sequences;
 
+    /**
+     * @param Sequences $sequences
+     */
     public function __construct(Sequences $sequences)
     {
         $this->sequences = $sequences;
     }
 
+    /**
+     * @param ClassDefinition $definition
+     */
     public function resolve(ClassDefinition $definition)
     {
         $reservedNames = $this->getConstructorReservedNames($definition);
@@ -24,6 +36,10 @@ class Names
         $this->addPostfixes($definition, $counters);
     }
 
+    /**
+     * @param ClassDefinition $definition
+     * @return array
+     */
     private function getConstructorReservedNames(ClassDefinition $definition): array
     {
         $names = [];
@@ -38,6 +54,10 @@ class Names
         return $names;
     }
 
+    /**
+     * @param array $names
+     * @return array
+     */
     private function initiateCounters(array $names): array
     {
         $counters = [];
@@ -54,6 +74,10 @@ class Names
         return $counters;
     }
 
+    /**
+     * @param ClassDefinition $definition
+     * @param array           $counters
+     */
     private function addPostfixes(ClassDefinition $definition, array $counters)
     {
         foreach ($definition->dependencies as $dependency) {
@@ -73,6 +97,10 @@ class Names
         }
     }
 
+    /**
+     * @param string $name
+     * @return Name_
+     */
     private function parseName(string $name): Name_
     {
         if (preg_match("/\d+$/", $name, $match)) {

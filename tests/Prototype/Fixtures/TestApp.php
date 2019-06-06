@@ -8,15 +8,13 @@
 
 namespace Spiral\Prototype\Tests\Fixtures;
 
-use Spiral\Bootloader\Dispatcher\ConsoleBootloader;
-use Spiral\Core\Kernel;
+use Spiral\Framework\Kernel;
 use Spiral\Prototype\Bootloader\PrototypeBootloader;
 use Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures;
 
 class TestApp extends Kernel
 {
     const LOAD = [
-        ConsoleBootloader::class,
         PrototypeBootloader::class
     ];
 

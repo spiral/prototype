@@ -1,11 +1,11 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype\NodeVisitors;
 
@@ -21,7 +21,7 @@ use Spiral\Prototype\Utils;
 /**
  * Injects new constructor dependencies and modifies comment.
  */
-class UpdateConstructor extends NodeVisitorAbstract
+final class UpdateConstructor extends NodeVisitorAbstract
 {
     /** @var ClassDefinition */
     private $definition;
@@ -36,7 +36,6 @@ class UpdateConstructor extends NodeVisitorAbstract
 
     /**
      * @param Node $node
-     *
      * @return int|null|Node|Node[]
      */
     public function leaveNode(Node $node)
@@ -78,6 +77,9 @@ class UpdateConstructor extends NodeVisitorAbstract
         }
     }
 
+    /**
+     * @param Node\Stmt\ClassMethod $constructor
+     */
     private function addParentConstructorCall(Node\Stmt\ClassMethod $constructor)
     {
         $parentConstructorDependencies = [];
@@ -103,11 +105,16 @@ class UpdateConstructor extends NodeVisitorAbstract
         if ($parentConstructorDependencies) {
             array_unshift(
                 $constructor->stmts,
-                new Node\Stmt\Expression(new Node\Expr\StaticCall(new Node\Name('parent'), '__construct', $parentConstructorDependencies))
+                new Node\Stmt\Expression(new Node\Expr\StaticCall(new Node\Name('parent'), '__construct',
+                    $parentConstructorDependencies))
             );
         }
     }
 
+    /**
+     * @param Node\Stmt\Class_ $node
+     * @return Node\Stmt\ClassMethod
+     */
     private function getConstructorAttribute(Node\Stmt\Class_ $node): Node\Stmt\ClassMethod
     {
         return $node->getAttribute('constructor');
@@ -117,7 +124,6 @@ class UpdateConstructor extends NodeVisitorAbstract
      * Add PHPDoc comments into __construct.
      *
      * @param Doc|null $doc
-     *
      * @return Doc
      */
     private function addComments(Doc $doc = null): Doc
@@ -180,6 +186,10 @@ class UpdateConstructor extends NodeVisitorAbstract
         return new Doc($an->compile());
     }
 
+    /**
+     * @param Dependency $dependency
+     * @return string
+     */
     private function getPropertyType(Dependency $dependency): string
     {
         foreach ($this->definition->getStmts() as $stmt) {
@@ -193,6 +203,10 @@ class UpdateConstructor extends NodeVisitorAbstract
         return $dependency->type->getAliasOrShortName();
     }
 
+    /**
+     * @param ClassDefinition\ConstructorParam $param
+     * @return string
+     */
     private function getParamType(ClassDefinition\ConstructorParam $param): string
     {
         foreach ($this->definition->getStmts() as $stmt) {

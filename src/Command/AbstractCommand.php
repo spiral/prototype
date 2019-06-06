@@ -1,11 +1,11 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype\Command;
 
@@ -48,6 +48,13 @@ abstract class AbstractCommand extends Command
         return $locator->getTargetClasses();
     }
 
+    /**
+     * @param \ReflectionClass $class
+     * @param array            $dependencies
+     * @return ClassDefinition
+     *
+     * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
+     */
     protected function fetchDefinition(\ReflectionClass $class, array $dependencies): ClassDefinition
     {
         /** @var ClassDefinition\Extractor $extractor */
@@ -60,7 +67,6 @@ abstract class AbstractCommand extends Command
      * Fetch class dependencies.
      *
      * @param \ReflectionClass $class
-     *
      * @return array
      */
     protected function fetchDependencies(\ReflectionClass $class): array
@@ -76,7 +82,6 @@ abstract class AbstractCommand extends Command
      * an instance of container exception.
      *
      * @param array $deps
-     *
      * @return array|Dependency[]
      */
     private function resolveDependencies(array $deps): array

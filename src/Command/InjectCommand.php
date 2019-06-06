@@ -1,18 +1,17 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype\Command;
 
-use PhpParser\Node\Arg;
 use Spiral\Prototype\Injector;
 
-class InjectCommand extends AbstractCommand
+final class InjectCommand extends AbstractCommand
 {
     const NAME        = "prototype:inject";
     const DESCRIPTION = "Inject all prototype dependencies";
@@ -80,7 +79,6 @@ class InjectCommand extends AbstractCommand
     /**
      * @param \Spiral\Prototype\Dependency[] $dependencies
      * @param string                         $format
-     *
      * @return string
      */
     private function wrapDependencies(array $dependencies, string $format): string

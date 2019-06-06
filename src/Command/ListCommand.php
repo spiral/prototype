@@ -1,15 +1,15 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype\Command;
 
-class ListCommand extends AbstractCommand
+final class ListCommand extends AbstractCommand
 {
     const NAME        = "prototype:list";
     const DESCRIPTION = "List all prototyped classes";
@@ -42,7 +42,6 @@ class ListCommand extends AbstractCommand
 
     /**
      * @param \Spiral\Prototype\Dependency[] $dependencies
-     *
      * @return string
      */
     private function mergeValues(array $dependencies): string

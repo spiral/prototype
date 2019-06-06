@@ -1,15 +1,20 @@
 <?php
+/**
+ * Spiral Framework.
+ *
+ * @license   MIT
+ * @author    Anton Titov (Wolfy-J)
+ */
 declare(strict_types=1);
 
 namespace Spiral\Prototype;
 
-class Utils
+final class Utils
 {
     /**
      * Create short name (without namespaces).
      *
      * @param string $name
-     *
      * @return string
      */
     public static function shortName(string $name): string
@@ -28,7 +33,6 @@ class Utils
      * @param array $stmts
      * @param int   $index
      * @param array $child
-     *
      * @return array
      */
     public static function injectValues(array $stmts, int $index, array $child): array
@@ -44,7 +48,6 @@ class Utils
      *
      * @param string $name
      * @param int    $number
-     *
      * @return string
      */
     public static function trimTrailingDigits(string $name, int $number): string

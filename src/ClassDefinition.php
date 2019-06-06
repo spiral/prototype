@@ -1,11 +1,17 @@
 <?php
+/**
+ * Spiral Framework.
+ *
+ * @license   MIT
+ * @author    Anton Titov (Wolfy-J)
+ */
 declare(strict_types=1);
 
 namespace Spiral\Prototype;
 
 use Spiral\Prototype\ClassDefinition\ConstructorParam;
 
-class ClassDefinition
+final class ClassDefinition
 {
     /** @var string */
     public $namespace;
@@ -28,6 +34,10 @@ class ClassDefinition
     /** @var Dependency[] */
     public $dependencies = [];
 
+    /**
+     * @param string $class
+     * @return ClassDefinition
+     */
     static public function create(string $class): ClassDefinition
     {
         $self = new self();
@@ -36,6 +46,11 @@ class ClassDefinition
         return $self;
     }
 
+    /**
+     * @param string $class
+     * @param string $namespace
+     * @return ClassDefinition
+     */
     static public function createWithNamespace(string $class, string $namespace): ClassDefinition
     {
         $self = new self();
@@ -45,6 +60,10 @@ class ClassDefinition
         return $self;
     }
 
+    /**
+     * @param string      $name
+     * @param string|null $alias
+     */
     public function addImportUsage(string $name, ?string $alias)
     {
         $this->addStmt(ClassDefinition\ClassStmt::create($name, $alias));
@@ -58,16 +77,27 @@ class ClassDefinition
         return $this->stmts;
     }
 
+    /**
+     * @param \ReflectionParameter $parameter
+     *
+     * @throws \ReflectionException
+     */
     public function addParam(\ReflectionParameter $parameter)
     {
         $this->constructorParams[$parameter->name] = ConstructorParam::createFromReflection($parameter);
     }
 
+    /**
+     * @param ClassDefinition\ClassStmt $stmt
+     */
     private function addStmt(ClassDefinition\ClassStmt $stmt)
     {
         $this->stmts[(string)$stmt] = $stmt;
     }
 
+    /**
+     * ClassDefinition constructor.
+     */
     private function __construct()
     {
     }

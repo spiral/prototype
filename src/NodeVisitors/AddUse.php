@@ -1,11 +1,11 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype\NodeVisitors;
 
@@ -18,7 +18,7 @@ use Spiral\Prototype\Utils;
 /**
  * Add use statement to the code.
  */
-class AddUse extends NodeVisitorAbstract
+final class AddUse extends NodeVisitorAbstract
 {
     /** @var ClassDefinition */
     private $definition;
@@ -36,7 +36,6 @@ class AddUse extends NodeVisitorAbstract
 
     /**
      * @param Node $node
-     *
      * @return int|null|Node|Node[]
      */
     public function leaveNode(Node $node)
@@ -71,11 +70,16 @@ class AddUse extends NodeVisitorAbstract
         }
 
         $placementID = $this->definePlacementID($node);
-        $node->stmts = Utils::injectValues($node->stmts, $placementID, $this->removeDuplicates($node->stmts, $this->nodes));
+        $node->stmts = Utils::injectValues($node->stmts, $placementID,
+            $this->removeDuplicates($node->stmts, $this->nodes));
 
         return $node;
     }
 
+    /**
+     * @param Node\Stmt\Namespace_ $node
+     * @return int
+     */
     private function definePlacementID(Node\Stmt\Namespace_ $node): int
     {
         foreach ($node->stmts as $index => $child) {
@@ -90,7 +94,6 @@ class AddUse extends NodeVisitorAbstract
     /**
      * @param Node\Stmt[]      $stmts
      * @param Node\Stmt\Use_[] $nodes
-     *
      * @return Node\Stmt\Use_[]
      */
     private function removeDuplicates(array $stmts, array $nodes): array
@@ -114,7 +117,6 @@ class AddUse extends NodeVisitorAbstract
 
     /**
      * @param Node\Stmt[] $stmts
-     *
      * @return array
      */
     private function getExistingUseParts(array $stmts): array
@@ -136,7 +138,6 @@ class AddUse extends NodeVisitorAbstract
     /**
      * @param string      $type
      * @param string|null $alias
-     *
      * @return Node\Stmt\Use_
      */
     private function buildUse(string $type, ?string $alias = null): Node\Stmt\Use_

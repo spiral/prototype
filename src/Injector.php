@@ -1,11 +1,11 @@
 <?php
-declare(strict_types=1);
 /**
  * Spiral Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+declare(strict_types=1);
 
 namespace Spiral\Prototype;
 
@@ -25,7 +25,7 @@ use Spiral\Prototype\NodeVisitors\UpdateConstructor;
 /**
  * Injects needed class dependencies into given source code.
  */
-class Injector
+final class Injector
 {
     /** @var Parser */
     private $parser;

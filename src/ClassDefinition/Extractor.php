@@ -1,4 +1,10 @@
 <?php
+/**
+ * Spiral Framework.
+ *
+ * @license   MIT
+ * @author    Anton Titov (Wolfy-J)
+ */
 declare(strict_types=1);
 
 namespace Spiral\Prototype\ClassDefinition;
@@ -10,11 +16,11 @@ use Spiral\Prototype\Annotation\Parser;
 use Spiral\Prototype\ClassDefinition;
 use Spiral\Prototype\ClassDefinition\ConflictResolver;
 use Spiral\Prototype\Exception\ClassNotDeclaredException;
-use Spiral\Prototype\NodeVisitors\ClassDefinition\LocateStatements;
 use Spiral\Prototype\NodeVisitors\ClassDefinition\DeclareClass;
+use Spiral\Prototype\NodeVisitors\ClassDefinition\LocateStatements;
 use Spiral\Prototype\NodeVisitors\ClassDefinition\LocateVariables;
 
-class Extractor
+final class Extractor
 {
     /** @var Parser */
     private $parser;
@@ -25,8 +31,11 @@ class Extractor
     /** @var ConflictResolver\Namespaces */
     private $namespacesResolver;
 
-    public function __construct(ConflictResolver\Names $namesResolver, ConflictResolver\Namespaces $namespacesResolver, Parser $parser = null)
-    {
+    public function __construct(
+        ConflictResolver\Names $namesResolver,
+        ConflictResolver\Namespaces $namespacesResolver,
+        Parser $parser = null
+    ) {
         $this->namesResolver = $namesResolver;
         $this->namespacesResolver = $namespacesResolver;
         $this->parser = $parser ?? (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
@@ -35,8 +44,8 @@ class Extractor
     /**
      * @param string $filename
      * @param array  $dependencies
-     *
      * @return ClassDefinition
+     *
      * @throws ClassNotDeclaredException
      */
     public function extract(string $filename, array $dependencies): ClassDefinition
@@ -58,8 +67,8 @@ class Extractor
 
     /**
      * @param string $filename
-     *
      * @return ClassDefinition
+     *
      * @throws ClassNotDeclaredException
      */
     private function makeDefinition(string $filename): ClassDefinition
@@ -78,6 +87,10 @@ class Extractor
         return ClassDefinition::create($declarator->getClass());
     }
 
+    /**
+     * @param string      $filename
+     * @param NodeVisitor ...$visitors
+     */
     private function traverse(string $filename, NodeVisitor ...$visitors)
     {
         $tr = new NodeTraverser();
@@ -89,6 +102,10 @@ class Extractor
         $tr->traverse($this->parser->parse(file_get_contents($filename)));
     }
 
+    /**
+     * @param ClassDefinition $definition
+     * @param array           $imports
+     */
     private function fillStmts(ClassDefinition $definition, array $imports)
     {
         foreach ($imports as $import) {
@@ -96,6 +113,11 @@ class Extractor
         }
     }
 
+    /**
+     * @param ClassDefinition $definition
+     *
+     * @throws \ReflectionException
+     */
     private function fillConstructorParams(ClassDefinition $definition)
     {
         $reflection = new \ReflectionClass("{$definition->namespace}\\{$definition->class}");
@@ -128,6 +150,9 @@ class Extractor
         $definition->constructorVars = $vars;
     }
 
+    /**
+     * @param ClassDefinition $definition
+     */
     private function resolveConflicts(ClassDefinition $definition)
     {
         $this->namesResolver->resolve($definition);
