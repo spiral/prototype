@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Spiral\Prototype\Command;
 
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
 use Spiral\Console\Command;
 use Spiral\Prototype\ClassDefinition;
 use Spiral\Prototype\Dependency;
@@ -20,21 +19,15 @@ use Spiral\Tokenizer\ClassesInterface;
 
 abstract class AbstractCommand extends Command
 {
-    /** @var ContainerInterface */
-    private $container;
-
     /** @var ClassesInterface */
     private $classes;
 
     /**
-     * @param ContainerInterface $container
-     * @param ClassesInterface   $classes
+     * @param ClassesInterface $classes
      */
-    public function __construct(ContainerInterface $container, ClassesInterface $classes)
+    public function __construct(ClassesInterface $classes)
     {
         parent::__construct(null);
-
-        $this->container = $container;
         $this->classes = $classes;
     }
 

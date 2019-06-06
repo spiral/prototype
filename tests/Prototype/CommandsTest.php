@@ -9,7 +9,7 @@
 namespace Spiral\Prototype\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Spiral\Console\ConsoleCore;
+use Spiral\Console\Console;
 use Spiral\Core\Container;
 use Spiral\Prototype\Tests\Fixtures\TestApp;
 use Spiral\Prototype\Tests\Fixtures\TestClass;
@@ -49,7 +49,7 @@ class CommandsTest extends TestCase
     {
         $inp = new ArrayInput([]);
         $out = new BufferedOutput();
-        $this->app->get(ConsoleCore::class)->run('list', $inp, $out);
+        $this->app->get(Console::class)->run('list', $inp, $out);
 
         $result = $out->fetch();
 
@@ -61,7 +61,7 @@ class CommandsTest extends TestCase
     {
         $inp = new ArrayInput([]);
         $out = new BufferedOutput();
-        $this->app->get(ConsoleCore::class)->run('prototype:list', $inp, $out);
+        $this->app->get(Console::class)->run('prototype:list', $inp, $out);
 
         $result = $out->fetch();
 
@@ -75,7 +75,7 @@ class CommandsTest extends TestCase
 
         $inp = new ArrayInput([]);
         $out = new BufferedOutput();
-        $this->app->get(ConsoleCore::class)->run('prototype:list', $inp, $out);
+        $this->app->get(Console::class)->run('prototype:list', $inp, $out);
 
         $result = $out->fetch();
 
@@ -90,7 +90,7 @@ class CommandsTest extends TestCase
 
         $inp = new ArrayInput([]);
         $out = new BufferedOutput();
-        $this->app->get(ConsoleCore::class)->run('prototype:inject', $inp, $out);
+        $this->app->get(Console::class)->run('prototype:inject', $inp, $out);
 
         $result = $out->fetch();
 
@@ -102,7 +102,7 @@ class CommandsTest extends TestCase
     {
         $inp = new ArrayInput([]);
         $out = new BufferedOutput();
-        $this->app->get(ConsoleCore::class)->run('prototype:inject', $inp, $out);
+        $this->app->get(Console::class)->run('prototype:inject', $inp, $out);
 
         $result = $out->fetch();
 
@@ -115,7 +115,7 @@ class CommandsTest extends TestCase
 
         $inp = new ArrayInput([]);
         $out = new BufferedOutput();
-        $this->app->get(ConsoleCore::class)->run('prototype:inject', $inp, $out);
+        $this->app->get(Console::class)->run('prototype:inject', $inp, $out);
 
         $result = $out->fetch();
 

@@ -17,7 +17,6 @@ use Spiral\Tokenizer\ClassesInterface;
 use Spiral\Tokenizer\ClassLocator;
 use Spiral\Tokenizer\Config\TokenizerConfig;
 use Spiral\Tokenizer\Tokenizer;
-use Spiral\Tokenizer\TokenizerInterface;
 
 class LocatorTest extends TestCase
 {
@@ -45,7 +44,6 @@ class LocatorTest extends TestCase
             'exclude'     => []
         ]));
 
-        $c->bind(TokenizerInterface::class, Tokenizer::class);
         $c->bind(ClassesInterface::class, ClassLocator::class);
 
         return $c->get(ClassesInterface::class);
