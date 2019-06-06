@@ -10,16 +10,22 @@ declare(strict_types=1);
 namespace Spiral\Prototype\Command;
 
 use Spiral\Prototype\Injector;
+use Symfony\Component\Console\Input\InputOption;
 
 final class InjectCommand extends AbstractCommand
 {
-    const NAME        = "prototype:inject";
-    const DESCRIPTION = "Inject all prototype dependencies";
+    public const NAME        = "prototype:inject";
+    public const DESCRIPTION = "Inject all prototype dependencies";
+    public const OPTIONS     = [
+        ['remove', 'r', InputOption::VALUE_OPTIONAL, 'Remove PrototypeTrait', false]
+    ];
 
     /**
      * Perform command.
+     *
+     * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
-    public function perform()
+    public function perform(): void
     {
         $targets = $this->getTargets();
         if (empty($targets)) {
@@ -44,7 +50,7 @@ final class InjectCommand extends AbstractCommand
                     continue 2;
                 }
 
-                if ($dependency == null) {
+                if ($dependency === null) {
                     continue 2;
                 }
             }
@@ -60,7 +66,8 @@ final class InjectCommand extends AbstractCommand
             try {
                 $modified = $injector->injectDependencies(
                     file_get_contents($class->getFileName()),
-                    $classDefinition
+                    $classDefinition,
+                    $this->option('remove')
                 );
 
                 file_put_contents($class->getFileName(), $modified);

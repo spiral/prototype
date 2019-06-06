@@ -28,7 +28,7 @@ final class Namespaces
     /**
      * @param ClassDefinition $definition
      */
-    public function resolve(ClassDefinition $definition)
+    public function resolve(ClassDefinition $definition): void
     {
         $namespaces = $this->getReservedNamespaces($definition);
         $counters = $this->initiateCounters($namespaces);
@@ -40,7 +40,7 @@ final class Namespaces
      * @param ClassDefinition $definition
      * @return array
      */
-    private function getReservedNamespaces(ClassDefinition $definition)
+    private function getReservedNamespaces(ClassDefinition $definition): array
     {
         $namespaces = [];
         $namespaces = $this->getReservedNamespacesWithAlias($definition, $namespaces);
@@ -109,7 +109,7 @@ final class Namespaces
      * @param ClassDefinition $definition
      * @param array           $counters
      */
-    private function resolveImportsNamespaces(ClassDefinition $definition, array $counters)
+    private function resolveImportsNamespaces(ClassDefinition $definition, array $counters): void
     {
         if (!$definition->hasConstructor && $definition->constructorParams) {
             foreach ($definition->constructorParams as $param) {
@@ -142,7 +142,7 @@ final class Namespaces
             $namespace = $this->parseNamespaceFromType($dependency->type);
             if (isset($counters[$namespace->name])) {
                 $alreadyImported = $this->getAlreadyImportedNamespace($counters[$namespace->name], $namespace);
-                if (!empty($alreadyImported)) {
+                if ($alreadyImported !== null) {
                     $dependency->type->alias = $alreadyImported->fullName();
 
                     continue;
@@ -197,8 +197,7 @@ final class Namespaces
         if (preg_match("/\d+$/", $shortName, $match)) {
             $sequence = (int)$match[0];
             if ($sequence > 0) {
-                return Namespace_::createWithSequence(Utils::trimTrailingDigits($shortName, $sequence), $fullName,
-                    $sequence);
+                return Namespace_::createWithSequence(Utils::trimTrailingDigits($shortName, $sequence), $fullName, $sequence);
             }
         }
 

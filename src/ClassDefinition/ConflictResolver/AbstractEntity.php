@@ -14,7 +14,7 @@ abstract class AbstractEntity
     /** @var string */
     public $name;
 
-    /** @var string */
+    /** @var int */
     public $sequence = 0;
 
     /**

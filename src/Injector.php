@@ -45,7 +45,7 @@ final class Injector
      */
     public function __construct(Lexer $lexer = null, PrettyPrinterAbstract $printer = null)
     {
-        if (empty($lexer)) {
+        if ($lexer === null) {
             $lexer = new Lexer\Emulative([
                 'usedAttributes' => [
                     'comments',
@@ -72,14 +72,19 @@ final class Injector
      *
      * @param string          $code
      * @param ClassDefinition $definition
+     * @param bool            $removeTrait
      * @return string
      */
-    public function injectDependencies(string $code, ClassDefinition $definition): string
+    public function injectDependencies(string $code, ClassDefinition $definition, bool $removeTrait = false): string
     {
         $tr = new NodeTraverser();
         $tr->addVisitor(new AddUse($definition));
-        $tr->addVisitor(new RemoveUse());
-        $tr->addVisitor(new RemoveTrait());
+
+        if ($removeTrait) {
+            $tr->addVisitor(new RemoveUse());
+            $tr->addVisitor(new RemoveTrait());
+        }
+
         $tr->addVisitor(new AddProperty($definition));
         $tr->addVisitor(new DefineConstructor());
         $tr->addVisitor(new UpdateConstructor($definition));

@@ -36,7 +36,7 @@ final class Line
      */
     public function is(array $type): bool
     {
-        return in_array(strtolower($this->type), $type);
+        return in_array(strtolower($this->type), $type, true);
     }
 
     /**
@@ -44,7 +44,7 @@ final class Line
      */
     public function isStructured(): bool
     {
-        return $this->type != null;
+        return $this->type !== null;
     }
 
     /**
@@ -52,6 +52,6 @@ final class Line
      */
     public function isEmpty(): bool
     {
-        return !$this->isStructured() && trim($this->value) == "";
+        return !$this->isStructured() && trim($this->value) === '';
     }
 }

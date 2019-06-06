@@ -33,7 +33,7 @@ final class DefineConstructor extends NodeVisitorAbstract
         foreach ($node->stmts as $index => $child) {
             $placementID = $index;
             if ($child instanceof Node\Stmt\ClassMethod) {
-                if ($child->name->name == '__construct') {
+                if ($child->name->name === '__construct') {
                     $node->setAttribute('constructor', $child);
 
                     return null;

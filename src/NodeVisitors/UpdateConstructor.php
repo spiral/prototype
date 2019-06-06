@@ -63,7 +63,7 @@ final class UpdateConstructor extends NodeVisitorAbstract
      *
      * @param Node\Stmt\ClassMethod $constructor
      */
-    private function addDependencies(Node\Stmt\ClassMethod $constructor)
+    private function addDependencies(Node\Stmt\ClassMethod $constructor): void
     {
         foreach ($this->definition->dependencies as $name => $dependency) {
             $constructor->params[] = (new Param($dependency->var))->setType(new Node\Name($this->getPropertyType($dependency)))->getNode();
@@ -80,7 +80,7 @@ final class UpdateConstructor extends NodeVisitorAbstract
     /**
      * @param Node\Stmt\ClassMethod $constructor
      */
-    private function addParentConstructorCall(Node\Stmt\ClassMethod $constructor)
+    private function addParentConstructorCall(Node\Stmt\ClassMethod $constructor): void
     {
         $parentConstructorDependencies = [];
         foreach ($this->definition->constructorParams as $param) {
@@ -176,7 +176,7 @@ final class UpdateConstructor extends NodeVisitorAbstract
             $previous = $line;
         }
 
-        if (!empty($previous) && !$previous->isEmpty()) {
+        if ($previous !== null && !$previous->isEmpty()) {
             $an->lines = Utils::injectValues($an->lines, $placementID, [new Annotation\Line("")]);
             $placementID++;
         }

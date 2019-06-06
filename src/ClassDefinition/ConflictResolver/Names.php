@@ -28,7 +28,7 @@ final class Names
     /**
      * @param ClassDefinition $definition
      */
-    public function resolve(ClassDefinition $definition)
+    public function resolve(ClassDefinition $definition): void
     {
         $reservedNames = $this->getConstructorReservedNames($definition);
         $counters = $this->initiateCounters($reservedNames);
@@ -78,7 +78,7 @@ final class Names
      * @param ClassDefinition $definition
      * @param array           $counters
      */
-    private function addPostfixes(ClassDefinition $definition, array $counters)
+    private function addPostfixes(ClassDefinition $definition, array $counters): void
     {
         foreach ($definition->dependencies as $dependency) {
             $name = $this->parseName($dependency->var);

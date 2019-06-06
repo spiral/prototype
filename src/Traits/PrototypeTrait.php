@@ -27,7 +27,7 @@ trait PrototypeTrait
     public function __get(string $name)
     {
         $container = ContainerScope::getContainer();
-        if (empty($container) || !$container->has($name)) {
+        if ($container === null || !$container->has($name)) {
             throw new ScopeException(
                 "Unable to get prototyped dependency `{$name}`, invalid container scope"
             );

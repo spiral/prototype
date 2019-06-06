@@ -16,7 +16,7 @@ final class Sequences
      * [], <any> => 0
      *
      *
-     * @param array $sequences
+     * @param int[] $sequences
      * @param int   $originSequence
      * @return int
      */
@@ -53,8 +53,9 @@ final class Sequences
     private function skippedSequences(array $sequences): array
     {
         $skipped = [];
-        for ($i = 0; $i < max($sequences); $i++) {
-            if (!in_array($i, $sequences)) {
+        $max = max($sequences);
+        for ($i = 0; $i < $max; $i++) {
+            if (!in_array($i, $sequences, true)) {
                 $skipped[$i] = $i;
             }
         }

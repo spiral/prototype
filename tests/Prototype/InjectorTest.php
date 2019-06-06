@@ -44,6 +44,30 @@ class InjectorTest extends TestCase
     /**
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
+    public function testTraitRemove(): void
+    {
+        $i = new Injector();
+
+        $filename = __DIR__ . '/Fixtures/TestClass.php';
+        $r = $i->injectDependencies(
+            file_get_contents($filename),
+            $this->getDefinition($filename, ['testClass' => TestClass::class])
+        );
+
+        $this->assertContains('use PrototypeTrait;', $r);
+
+        $r = $i->injectDependencies(
+            file_get_contents($filename),
+            $this->getDefinition($filename, ['testClass' => TestClass::class]),
+            true
+        );
+
+        $this->assertNotContains('use PrototypeTrait;', $r);
+    }
+
+    /**
+     * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
+     */
     public function testParentConstructorCallInjection()
     {
         $i = new Injector();

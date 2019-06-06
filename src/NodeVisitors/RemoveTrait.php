@@ -12,6 +12,8 @@ namespace Spiral\Prototype\NodeVisitors;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
+use Spiral\Prototype\Traits\PrototypeTrait;
+use Spiral\Prototype\Utils;
 
 /**
  * Remove PrototypeTrait from the class.
@@ -30,7 +32,8 @@ final class RemoveTrait extends NodeVisitorAbstract
 
         foreach ($node->traits as $index => $use) {
             if ($use instanceof Node\Name) {
-                if (join('\\', $use->parts) == 'PrototypeTrait') {
+                $name = $this->trimSlashes(join('\\', $use->parts));
+                if (in_array($name, [$this->trimSlashes(PrototypeTrait::class), Utils::shortName(PrototypeTrait::class)], true)) {
                     unset($node->traits[$index]);
                 }
             }
@@ -42,5 +45,10 @@ final class RemoveTrait extends NodeVisitorAbstract
         }
 
         return $node;
+    }
+
+    private function trimSlashes(string $str): string
+    {
+        return trim($str, '\\');
     }
 }

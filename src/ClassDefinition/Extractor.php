@@ -47,6 +47,7 @@ final class Extractor
      * @return ClassDefinition
      *
      * @throws ClassNotDeclaredException
+     * @throws \ReflectionException
      */
     public function extract(string $filename, array $dependencies): ClassDefinition
     {
@@ -91,7 +92,7 @@ final class Extractor
      * @param string      $filename
      * @param NodeVisitor ...$visitors
      */
-    private function traverse(string $filename, NodeVisitor ...$visitors)
+    private function traverse(string $filename, NodeVisitor ...$visitors): void
     {
         $tr = new NodeTraverser();
 
@@ -106,7 +107,7 @@ final class Extractor
      * @param ClassDefinition $definition
      * @param array           $imports
      */
-    private function fillStmts(ClassDefinition $definition, array $imports)
+    private function fillStmts(ClassDefinition $definition, array $imports): void
     {
         foreach ($imports as $import) {
             $definition->addImportUsage($import['name'], $import['alias']);
@@ -118,12 +119,12 @@ final class Extractor
      *
      * @throws \ReflectionException
      */
-    private function fillConstructorParams(ClassDefinition $definition)
+    private function fillConstructorParams(ClassDefinition $definition): void
     {
         $reflection = new \ReflectionClass("{$definition->namespace}\\{$definition->class}");
 
         $constructor = $reflection->getConstructor();
-        if (!empty($constructor)) {
+        if ($constructor !== null) {
             $definition->hasConstructor = $constructor->getDeclaringClass()->getName() === $reflection->getName();
 
             foreach ($reflection->getConstructor()->getParameters() as $parameter) {
@@ -139,7 +140,7 @@ final class Extractor
      * @param array           $vars
      * @param ClassDefinition $definition
      */
-    private function fillConstructorVars(array $vars, ClassDefinition $definition)
+    private function fillConstructorVars(array $vars, ClassDefinition $definition): void
     {
         foreach ($vars as $k => $var) {
             if (isset($definition->constructorParams[$var])) {
@@ -153,7 +154,7 @@ final class Extractor
     /**
      * @param ClassDefinition $definition
      */
-    private function resolveConflicts(ClassDefinition $definition)
+    private function resolveConflicts(ClassDefinition $definition): void
     {
         $this->namesResolver->resolve($definition);
         $this->namespacesResolver->resolve($definition);

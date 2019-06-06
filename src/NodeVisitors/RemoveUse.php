@@ -30,7 +30,7 @@ final class RemoveUse extends NodeVisitorAbstract
         }
 
         foreach ($node->uses as $index => $use) {
-            if ($use->name->toString() == PrototypeTrait::class) {
+            if ($use->name->toString() === PrototypeTrait::class) {
                 unset($node->uses[$index]);
             }
         }

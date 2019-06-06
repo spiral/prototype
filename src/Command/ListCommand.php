@@ -17,7 +17,7 @@ final class ListCommand extends AbstractCommand
     /**
      * List all prototype classes.
      */
-    public function perform()
+    public function perform(): void
     {
         $targets = $this->getTargets();
         if (empty($targets)) {

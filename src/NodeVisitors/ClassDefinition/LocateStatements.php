@@ -37,7 +37,7 @@ final class LocateStatements extends NodeVisitorAbstract
 
         if ($node instanceof Node\Stmt\Class_) {
             foreach ($node->stmts as $stmt) {
-                if ($stmt instanceof Node\Stmt\ClassMethod && $stmt->name == '__construct') {
+                if ($stmt instanceof Node\Stmt\ClassMethod && $stmt->name === '__construct') {
                     return $stmt;
                 }
             }

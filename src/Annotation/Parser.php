@@ -54,7 +54,7 @@ final class Parser
 
         // skip first and last tokens
         foreach ($this->lines as $line) {
-            if ($line->type == null) {
+            if ($line->type === null) {
                 $result[] = sprintf(' * %s', $line->value);
                 continue;
             }

@@ -38,7 +38,7 @@ final class ClassDefinition
      * @param string $class
      * @return ClassDefinition
      */
-    static public function create(string $class): ClassDefinition
+    public static function create(string $class): ClassDefinition
     {
         $self = new self();
         $self->class = $class;
@@ -51,7 +51,7 @@ final class ClassDefinition
      * @param string $namespace
      * @return ClassDefinition
      */
-    static public function createWithNamespace(string $class, string $namespace): ClassDefinition
+    public static function createWithNamespace(string $class, string $namespace): ClassDefinition
     {
         $self = new self();
         $self->class = $class;
@@ -64,7 +64,7 @@ final class ClassDefinition
      * @param string      $name
      * @param string|null $alias
      */
-    public function addImportUsage(string $name, ?string $alias)
+    public function addImportUsage(string $name, ?string $alias): void
     {
         $this->addStmt(ClassDefinition\ClassStmt::create($name, $alias));
     }
@@ -82,7 +82,7 @@ final class ClassDefinition
      *
      * @throws \ReflectionException
      */
-    public function addParam(\ReflectionParameter $parameter)
+    public function addParam(\ReflectionParameter $parameter): void
     {
         $this->constructorParams[$parameter->name] = ConstructorParam::createFromReflection($parameter);
     }
@@ -90,7 +90,7 @@ final class ClassDefinition
     /**
      * @param ClassDefinition\ClassStmt $stmt
      */
-    private function addStmt(ClassDefinition\ClassStmt $stmt)
+    private function addStmt(ClassDefinition\ClassStmt $stmt): void
     {
         $this->stmts[(string)$stmt] = $stmt;
     }

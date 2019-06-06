@@ -49,7 +49,7 @@ final class AddUse extends NodeVisitorAbstract
             foreach ($this->definition->constructorParams as $param) {
                 if (!empty($param->type) && $param->type->fullName) {
                     $import = [$param->type->fullName, $param->type->alias];
-                    if (in_array($import, $imported)) {
+                    if (in_array($import, $imported, true)) {
                         continue;
                     }
 
@@ -61,7 +61,7 @@ final class AddUse extends NodeVisitorAbstract
 
         foreach ($this->definition->dependencies as $dependency) {
             $import = [$dependency->type->fullName, $dependency->type->alias];
-            if (in_array($import, $imported)) {
+            if (in_array($import, $imported, true)) {
                 continue;
             }
 
@@ -106,7 +106,7 @@ final class AddUse extends NodeVisitorAbstract
             }
 
             foreach ($node->uses as $use) {
-                if (in_array($use->name->parts, $uses)) {
+                if (in_array($use->name->parts, $uses, true)) {
                     unset($nodes[$i]);
                 }
             }
