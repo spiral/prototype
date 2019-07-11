@@ -16,7 +16,7 @@ use Spiral\Prototype\Command;
 
 final class PrototypeBootloader extends Bootloader\Bootloader implements Bootloader\DependedInterface
 {
-    public const MEMORY_SECTION = 'prototype:shortcuts';
+    public const MEMORY_SECTION = 'prototypeShortcuts';
 
     private const SHORTCUTS = [
     ];
@@ -44,7 +44,9 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Bootloa
      */
     public function defineBindings(): array
     {
-        return array_merge($this->memory->loadData(self::MEMORY_SECTION), static::SHORTCUTS, static::BINDINGS);
+        $memorized = (array)$this->memory->loadData(self::MEMORY_SECTION);
+
+        return array_merge($memorized,  static::SHORTCUTS, static::BINDINGS);
     }
 
     /**

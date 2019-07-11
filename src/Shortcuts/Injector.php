@@ -9,79 +9,112 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype\Shortcuts;
 
-use PhpParser\Lexer;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor\CloningVisitor;
-use PhpParser\Parser;
-use PhpParser\PrettyPrinter\Standard;
-use PhpParser\PrettyPrinterAbstract;
-use Spiral\Prototype\NodeVisitors\Shortcuts\AddShortcut;
+use Psr\Container\ContainerExceptionInterface;
+use Spiral\Boot\MemoryInterface;
+use Spiral\Core\Container;
+use Spiral\Prototype\Bootloader\PrototypeBootloader;
 
 /**
  * Injects needed shortcuts into a bootloader
  */
 final class Injector
 {
-    /** @var Parser */
-    private $parser;
+    /** @var \Spiral\Boot\MemoryInterface */
+    private $memory;
 
-    /** @var Lexer */
-    private $lexer;
+    private const SECTION = PrototypeBootloader::MEMORY_SECTION;
+    /** @var \Psr\Container\ContainerInterface */
+    private $container;
 
-    /** @var null|Standard|PrettyPrinterAbstract */
-    private $printer;
-
-    /** @var NodeTraverser */
-    private $cloner;
-
-    /**
-     * @param Lexer|null                 $lexer
-     * @param PrettyPrinterAbstract|null $printer
-     */
-    public function __construct(Lexer $lexer = null, PrettyPrinterAbstract $printer = null)
+    public function __construct(MemoryInterface $memory, Container $container)
     {
-        if ($lexer === null) {
-            $lexer = new Lexer\Emulative([
-                'usedAttributes' => [
-                    'comments',
-                    'startLine',
-                    'endLine',
-                    'startTokenPos',
-                    'endTokenPos',
-                ],
-            ]);
-        }
-
-        $this->lexer = $lexer;
-        $this->parser = new Parser\Php7($this->lexer);
-
-        $this->cloner = new NodeTraverser();
-        $this->cloner->addVisitor(new CloningVisitor());
-
-        $this->printer = $printer ?? new Standard();
+        $this->memory = $memory;
+        $this->container = $container;
     }
 
-    /**
-     * Inject shortcut into PHP Class source code. Attention, resulted code will attempt to
-     * preserve formatting but will affect it. Do not forget to add formatting fixer.
-     *
-     * @param string $code
-     * @param string $shortcut
-     * @param string $binding
-     * @param string $constName
-     * @param bool   $useConst
-     * @return string
-     */
-    public function injectShortcut(string $code, string $shortcut, string $binding, string $constName, bool $useConst): string
+    public function inject(string $shortcut, string $binding): Result
     {
-        $tr = new NodeTraverser();
-        $tr->addVisitor(new AddShortcut($shortcut, $binding, $constName, $useConst));
+        $shortcuts = $this->getShortcuts();
+        if ($this->shortcutAlreadyDefined($shortcuts, $shortcut, $binding)) {
+            return Result::defined();
+        }
 
-        $nodes = $this->parser->parse($code);
-        $tokens = $this->lexer->getTokens();
+        if ($this->shortcutAlreadyBound($shortcuts, $shortcut, $binding)) {
+            return Result::bound($this->boundTo($shortcuts, $shortcut));
+        }
 
-        $output = $tr->traverse($this->cloner->traverse($nodes));
+        if (!$this->isResolved($binding)) {
+            return Result::unresolved();
+        }
 
-        return $this->printer->printFormatPreserving($output, $nodes, $tokens);
+        $this->memory->saveData(self::SECTION, array_merge($shortcuts, [$shortcut => $binding]));
+        $this->container->bind($shortcut, $binding);
+
+        return Result::resolved();
+    }
+
+    private function getShortcuts(): array
+    {
+        $shortcuts = $this->memory->loadData(self::SECTION);
+        if (empty($shortcuts) || !is_array($shortcuts)) {
+            $shortcuts = [];
+        }
+
+        return $shortcuts;
+    }
+
+    private function shortcutAlreadyDefined(array $shortcuts, string $shortcut, string $binding): bool
+    {
+        if (isset($shortcuts[$shortcut])) {
+            return strcasecmp($shortcuts[$shortcut], $binding) === 0;
+        }
+
+        return false;
+    }
+
+    private function shortcutAlreadyBound($shortcuts, string $shortcut, string $binding): bool
+    {
+        if (isset($shortcuts[$shortcut])) {
+            return strcasecmp($shortcuts[$shortcut], $binding) !== 0;
+        }
+
+        return isset($this->container->getBindings()[$shortcut]);
+    }
+
+    private function boundTo($shortcuts, string $shortcut): string
+    {
+        if (isset($shortcuts[$shortcut])) {
+            return $shortcuts[$shortcut];
+        }
+
+        $bound = $this->container->getBindings()[$shortcut];
+
+        if (is_object($bound)) {
+            return get_class($bound);
+        }
+        if (is_scalar($bound)) {
+            return (string)$bound;
+        }
+
+        return json_encode($bound);
+    }
+
+    private function isResolved(string $binding): bool
+    {
+        try {
+            $this->container->get($binding);
+
+            return true;
+        } catch (ContainerExceptionInterface $e) {
+        }
+
+        try {
+            $reflection = new \ReflectionClass($binding);
+
+            return !$reflection->isAbstract() && !$reflection->isTrait() && !$reflection->isInterface();
+        } catch (\Throwable $e) {
+        }
+
+        return false;
     }
 }

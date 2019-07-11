@@ -14,6 +14,8 @@ use Spiral\Console\Console;
 use Spiral\Core\Container;
 use Spiral\Prototype\Bootloader\PrototypeBootloader;
 use Spiral\Prototype\Shortcuts;
+use Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures\ATest3;
+use Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures\ATest3Interface;
 use Spiral\Prototype\Tests\Fixtures\TestApp;
 use Spiral\Prototype\Tests\Fixtures\TestClass;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -51,24 +53,25 @@ class CommandsTest extends TestCase
     public function testShortcuts(): void
     {
         $this->app->bindApp();
-        /** @var MemoryInterface $memory */
-        $memory = $this->app->get(MemoryInterface::class);
-        print_r($memory->loadData(PrototypeBootloader::MEMORY_SECTION));
+
+        $out = new BufferedOutput();
+        $inp = new ArrayInput([
+            'shortcut' => 'at',
+            'binding'  => ATest3::class
+        ]);
+        $this->app->get(Console::class)->run('prototype:addShortcut', $inp, $out);
+        $result = $out->fetch();
 
         $inp = new ArrayInput([
-            'shortcut' => 'so',
-            'binding'  => 'Spiral\Prototype\Tests\CommandsTest',
-            '-s'       => true
+            'shortcut' => 'at',
+            'binding'  => ATest3Interface::class
         ]);
         $out = new BufferedOutput();
         $this->app->get(Console::class)->run('prototype:addShortcut', $inp, $out);
 
         $result = $out->fetch();
-        print_r($result);
-
-        /** @var MemoryInterface $memory */
-        $memory = $this->app->get(MemoryInterface::class);
-        print_r($memory->loadData(PrototypeBootloader::MEMORY_SECTION));
+        $at = $this->app->get('at');
+        $this->assertNotNull($at);
     }
 
     public function testList(): void
@@ -95,7 +98,7 @@ class CommandsTest extends TestCase
         $this->assertContains('undefined', $result);
     }
 
-    public function testListPrototypesBinded(): void
+    public function testListPrototypesBound(): void
     {
         $this->app->bindApp();
 
@@ -111,7 +114,7 @@ class CommandsTest extends TestCase
         $this->assertContains(TestApp::class, $result);
     }
 
-    public function testListPrototypesBindedWithoutResolve(): void
+    public function testListPrototypesBoundWithoutResolve(): void
     {
         $this->app->bindWithoutResolver();
 
