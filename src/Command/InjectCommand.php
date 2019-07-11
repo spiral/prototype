@@ -14,8 +14,8 @@ use Symfony\Component\Console\Input\InputOption;
 
 final class InjectCommand extends AbstractCommand
 {
-    public const NAME        = "prototype:inject";
-    public const DESCRIPTION = "Inject all prototype dependencies";
+    public const NAME        = 'prototype:inject';
+    public const DESCRIPTION = 'Inject all prototype dependencies';
     public const OPTIONS     = [
         ['remove', 'r', InputOption::VALUE_OPTIONAL, 'Remove PrototypeTrait', false]
     ];
@@ -23,13 +23,14 @@ final class InjectCommand extends AbstractCommand
     /**
      * Perform command.
      *
+     * @throws \ReflectionException
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
     public function perform(): void
     {
         $targets = $this->getTargets();
         if (empty($targets)) {
-            $this->writeln("<comment>No prototyped classes found.</comment>");
+            $this->writeln('<comment>No prototyped classes found.</comment>');
 
             return;
         }
@@ -58,7 +59,7 @@ final class InjectCommand extends AbstractCommand
             $this->sprintf(
                 "<fg=green>•</fg=green> %s: injecting %s\n",
                 $class->getName(),
-                $this->wrapDependencies($dependencies, "<fg=green>%s</fg=green>")
+                $this->wrapDependencies($dependencies, '<fg=green>%s</fg=green>')
             );
 
             $classDefinition = $this->fetchDefinition($class, $dependencies);

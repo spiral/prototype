@@ -9,8 +9,11 @@
 namespace Spiral\Prototype\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Spiral\Boot\MemoryInterface;
 use Spiral\Console\Console;
 use Spiral\Core\Container;
+use Spiral\Prototype\Bootloader\PrototypeBootloader;
+use Spiral\Prototype\Shortcuts;
 use Spiral\Prototype\Tests\Fixtures\TestApp;
 use Spiral\Prototype\Tests\Fixtures\TestClass;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -43,6 +46,29 @@ class CommandsTest extends TestCase
         foreach (self::STORE as $name) {
             file_put_contents(__DIR__ . '/Fixtures/' . $name, $this->buf[$name]);
         }
+    }
+
+    public function testShortcuts(): void
+    {
+        $this->app->bindApp();
+        /** @var MemoryInterface $memory */
+        $memory = $this->app->get(MemoryInterface::class);
+        print_r($memory->loadData(PrototypeBootloader::MEMORY_SECTION));
+
+        $inp = new ArrayInput([
+            'shortcut' => 'so',
+            'binding'  => 'Spiral\Prototype\Tests\CommandsTest',
+            '-s'       => true
+        ]);
+        $out = new BufferedOutput();
+        $this->app->get(Console::class)->run('prototype:addShortcut', $inp, $out);
+
+        $result = $out->fetch();
+        print_r($result);
+
+        /** @var MemoryInterface $memory */
+        $memory = $this->app->get(MemoryInterface::class);
+        print_r($memory->loadData(PrototypeBootloader::MEMORY_SECTION));
     }
 
     public function testList(): void
