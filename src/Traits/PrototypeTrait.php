@@ -16,7 +16,7 @@ use Spiral\Core\Exception\ScopeException;
 trait PrototypeTrait
 {
     /**
-     * Automatic resolution of scoped dependecy to it's value. Relies
+     * Automatic resolution of scoped dependency to it's value. Relies
      * on global container scope.
      *
      * @param string $name

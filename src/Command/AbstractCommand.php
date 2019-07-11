@@ -45,7 +45,7 @@ abstract class AbstractCommand extends Command
      * @param \ReflectionClass $class
      * @param array            $dependencies
      * @return ClassDefinition
-     *
+     * @throws \ReflectionException
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
     protected function fetchDefinition(\ReflectionClass $class, array $dependencies): ClassDefinition
@@ -64,6 +64,7 @@ abstract class AbstractCommand extends Command
      */
     protected function fetchDependencies(\ReflectionClass $class): array
     {
+        /** @var Extractor $extractor */
         $extractor = $this->container->get(Extractor::class);
         $dependencies = $extractor->getPrototypeNames(file_get_contents($class->getFilename()));
 
