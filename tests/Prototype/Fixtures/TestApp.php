@@ -18,13 +18,18 @@ class TestApp extends Kernel
         PrototypeBootloader::class
     ];
 
-    public function bindApp()
+    public function bindApp(): void
+    {
+        $this->bindWithoutResolver();
+        $this->container->bind(Fixtures\ATest3Interface::class, Fixtures\ATest3::class);
+    }
+
+    public function bindWithoutResolver(): void
     {
         $this->container->bind('testClass', self::class);
         $this->container->bind('test', Fixtures\Test::class);
         $this->container->bind('test2', Fixtures\SubFolder\Test::class);
         $this->container->bind('test3', Fixtures\ATest3Interface::class);
-        $this->container->bind(Fixtures\ATest3Interface::class, Fixtures\ATest3::class);
     }
 
     public function get(string $target)

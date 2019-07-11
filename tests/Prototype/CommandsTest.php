@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 class CommandsTest extends TestCase
 {
-    const STORE = ['TestClass.php', 'ChildClass.php', 'ChildWithConstructorClass.php', 'WithConstructor.php'];
+    private const STORE = ['TestClass.php', 'ChildClass.php', 'ChildWithConstructorClass.php', 'WithConstructor.php'];
 
     /** @var TestApp */
     private $app;
@@ -45,7 +45,7 @@ class CommandsTest extends TestCase
         }
     }
 
-    public function testList()
+    public function testList(): void
     {
         $inp = new ArrayInput([]);
         $out = new BufferedOutput();
@@ -57,7 +57,7 @@ class CommandsTest extends TestCase
         $this->assertContains('prototype:inject', $result);
     }
 
-    public function testListPrototypes()
+    public function testListPrototypes(): void
     {
         $inp = new ArrayInput([]);
         $out = new BufferedOutput();
@@ -69,7 +69,7 @@ class CommandsTest extends TestCase
         $this->assertContains('undefined', $result);
     }
 
-    public function testListPrototypesBinded()
+    public function testListPrototypesBinded(): void
     {
         $this->app->bindApp();
 
@@ -81,10 +81,26 @@ class CommandsTest extends TestCase
 
         $this->assertContains('testClass', $result);
         $this->assertNotContains('undefined', $result);
+        $this->assertNotContains('Undefined class', $result);
         $this->assertContains(TestApp::class, $result);
     }
 
-    public function testInject()
+    public function testListPrototypesBindedWithoutResolve(): void
+    {
+        $this->app->bindWithoutResolver();
+
+        $inp = new ArrayInput([]);
+        $out = new BufferedOutput();
+        $this->app->get(Console::class)->run('prototype:list', $inp, $out);
+
+        $result = $out->fetch();
+
+        $this->assertContains('testClass', $result);
+        $this->assertContains('Undefined class', $result);
+        $this->assertContains(TestApp::class, $result);
+    }
+
+    public function testInject(): void
     {
         $this->app->bindApp();
 
@@ -98,7 +114,7 @@ class CommandsTest extends TestCase
         $this->assertContains(TestApp::class, $result);
     }
 
-    public function testInjectNone()
+    public function testInjectNone(): void
     {
         $inp = new ArrayInput([]);
         $out = new BufferedOutput();
@@ -109,7 +125,7 @@ class CommandsTest extends TestCase
         $this->assertSame("", $result);
     }
 
-    public function testInjectInvalid()
+    public function testInjectInvalid(): void
     {
         $this->app->get(Container::class)->bind('testClass', 'Invalid');
 
