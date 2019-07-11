@@ -83,18 +83,30 @@ abstract class AbstractCommand extends Command
         $result = [];
 
         foreach ($deps as $name) {
-            if (!$this->container->has($name)) {
-                $result[$name] = null;
-                continue;
-            }
-
-            try {
-                $result[$name] = Dependency::create(get_class($this->container->get($name)), $name);
-            } catch (ContainerExceptionInterface $e) {
-                $result[$name] = $e;
-            }
+            $result[$name] = $this->resolveDependency($name);
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $name
+     * @return \Exception|ContainerExceptionInterface|null|string
+     */
+    private function resolveDependency(string $name)
+    {
+        if (!$this->container->has($name)) {
+            return null;
+        }
+
+        $binding = $this->container->getBindings()[$name];
+
+        try {
+            $this->container->get($name);
+
+            return Dependency::create($binding, $name);
+        } catch (ContainerExceptionInterface $e) {
+            return $e;
+        }
     }
 }
