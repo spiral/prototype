@@ -11,8 +11,8 @@ namespace Spiral\Prototype\Command;
 
 final class ListCommand extends AbstractCommand
 {
-    const NAME        = "prototype:list";
-    const DESCRIPTION = "List all prototyped classes";
+    public const NAME        = 'prototype:list';
+    public const DESCRIPTION = 'List all prototyped classes';
 
     /**
      * List all prototype classes.
@@ -21,7 +21,7 @@ final class ListCommand extends AbstractCommand
     {
         $targets = $this->getTargets();
         if (empty($targets)) {
-            $this->writeln("<comment>No prototyped classes found.</comment>");
+            $this->writeln('<comment>No prototyped classes found.</comment>');
 
             return;
         }
@@ -50,12 +50,12 @@ final class ListCommand extends AbstractCommand
 
         foreach ($dependencies as $dependency) {
             if ($dependency instanceof \Throwable) {
-                $result[] = sprintf("<fg=red>%s</fg=red>", $dependency->getMessage());
+                $result[] = sprintf('<fg=red>%s</fg=red>', $dependency->getMessage());
                 continue;
             }
 
-            if (is_null($dependency)) {
-                $result[] = "<fg=yellow>undefined</fg=yellow>";
+            if ($dependency === null) {
+                $result[] = '<fg=yellow>undefined</fg=yellow>';
                 continue;
             }
 

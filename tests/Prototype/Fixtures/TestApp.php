@@ -8,9 +8,13 @@
 
 namespace Spiral\Prototype\Tests\Fixtures;
 
+use Spiral\Files\Files;
+use Spiral\Files\FilesInterface;
 use Spiral\Framework\Kernel;
 use Spiral\Prototype\Bootloader\PrototypeBootloader;
 use Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures;
+use Spiral\Prototype\Tests\Commands\Fixtures\InterfaceResolver;
+use Spiral\Prototype\Tests\Commands\Fixtures\ResolvedInterface;
 
 class TestApp extends Kernel
 {
@@ -22,6 +26,8 @@ class TestApp extends Kernel
     {
         $this->bindWithoutResolver();
         $this->container->bind(Fixtures\ATest3Interface::class, Fixtures\ATest3::class);
+        $this->container->bind(ResolvedInterface::class, InterfaceResolver::class);
+        $this->container->bind(FilesInterface::class, Files::class);
     }
 
     public function bindWithoutResolver(): void

@@ -27,7 +27,7 @@ class TraitTest extends TestCase
     /**
      * @expectedException \Spiral\Core\Exception\ScopeException
      */
-    public function testNoScopeBinded()
+    public function testNoScopeBound()
     {
         $t = new TestClass();
 

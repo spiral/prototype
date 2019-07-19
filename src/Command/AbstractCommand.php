@@ -99,6 +99,10 @@ abstract class AbstractCommand extends Command
             return null;
         }
 
+        if (!isset($this->container->getBindings()[$name])) {
+            return null;
+        }
+
         $binding = $this->container->getBindings()[$name];
 
         try {
