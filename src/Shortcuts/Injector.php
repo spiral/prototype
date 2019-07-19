@@ -23,7 +23,8 @@ final class Injector
     private $memory;
 
     private const SECTION = PrototypeBootloader::MEMORY_SECTION;
-    /** @var \Psr\Container\ContainerInterface */
+
+    /** @var Container */
     private $container;
 
     public function __construct(MemoryInterface $memory, Container $container)
@@ -53,11 +54,23 @@ final class Injector
         return Result::resolved();
     }
 
+    public function drop(): array
+    {
+        $shortcuts = $this->getShortcuts();
+        $this->memory->saveData(self::SECTION, []);
+
+        foreach (array_keys($shortcuts) as $shortcut) {
+            $this->container->removeBinding($shortcut);
+        }
+
+        return $shortcuts;
+    }
+
     private function getShortcuts(): array
     {
         $shortcuts = $this->memory->loadData(self::SECTION);
         if (empty($shortcuts) || !is_array($shortcuts)) {
-            $shortcuts = [];
+            return [];
         }
 
         return $shortcuts;
@@ -65,11 +78,7 @@ final class Injector
 
     private function shortcutAlreadyDefined(array $shortcuts, string $shortcut, string $binding): bool
     {
-        if (isset($shortcuts[$shortcut])) {
-            return strcasecmp($shortcuts[$shortcut], $binding) === 0;
-        }
-
-        return false;
+        return isset($shortcuts[$shortcut]) && strcasecmp($shortcuts[$shortcut], $binding) === 0;
     }
 
     private function shortcutAlreadyBound($shortcuts, string $shortcut, string $binding): bool
@@ -92,6 +101,7 @@ final class Injector
         if (is_object($bound)) {
             return get_class($bound);
         }
+
         if (is_scalar($bound)) {
             return (string)$bound;
         }

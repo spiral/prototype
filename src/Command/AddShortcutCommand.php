@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype\Command;
 
-use Spiral\Boot\MemoryInterface;
 use Spiral\Prototype\Shortcuts;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -22,7 +21,7 @@ final class AddShortcutCommand extends AbstractCommand
         ['binding', InputArgument::REQUIRED, 'Shortcut binding'],
     ];
 
-    public function perform(Shortcuts\Validator $validator, MemoryInterface $memory, Shortcuts\Injector $injector): void
+    public function perform(Shortcuts\Validator $validator, Shortcuts\Injector $injector): void
     {
         $shortcut = $this->input->getArgument('shortcut');
         $binding = trim($this->input->getArgument('binding'), '\\');
@@ -36,7 +35,7 @@ final class AddShortcutCommand extends AbstractCommand
 
         $result = $injector->inject($shortcut, $binding);
         if ($result->defined) {
-            $this->output->writeln("<comment>Shortcut `$shortcut:$binding` is already defined:</comment>");
+            $this->output->writeln("<comment>Shortcut `$shortcut:$binding` is already added:</comment>");
 
             return;
         }

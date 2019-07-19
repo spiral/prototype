@@ -11,6 +11,7 @@
   ],
   "require": {
     "php": "^7.1",
+    "ext-json": "*",
     "spiral/console": "^1.1",
     "spiral/framework": "^2.0",
     "nikic/php-parser": "^4.1"

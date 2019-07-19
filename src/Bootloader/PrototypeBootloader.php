@@ -37,6 +37,7 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Bootloa
         $console->addCommand(Command\ListCommand::class);
         $console->addCommand(Command\InjectCommand::class);
         $console->addCommand(Command\AddShortcutCommand::class);
+        $console->addCommand(Command\DropShortcutsCommand::class);
     }
 
     /**
@@ -46,7 +47,7 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Bootloa
     {
         $memorized = (array)$this->memory->loadData(self::MEMORY_SECTION);
 
-        return array_merge($memorized,  static::SHORTCUTS, static::BINDINGS);
+        return array_merge($memorized, static::SHORTCUTS, static::BINDINGS);
     }
 
     /**
