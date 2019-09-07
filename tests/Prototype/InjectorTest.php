@@ -10,7 +10,7 @@ namespace Spiral\Prototype\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
-use Spiral\Prototype\ClassDefinition;
+use Spiral\Prototype\ClassNode;
 use Spiral\Prototype\Injector;
 use Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures as ResolverFixtures;
 use Spiral\Prototype\Tests\Fixtures\Dependencies;
@@ -168,18 +168,18 @@ class InjectorTest extends TestCase
      * @param string $filename
      * @param array  $dependencies
      *
-     * @return ClassDefinition
+     * @return ClassNode
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
-    private function getDefinition(string $filename, array $dependencies): ClassDefinition
+    private function getDefinition(string $filename, array $dependencies): ClassNode
     {
         return $this->getExtractor()->extract($filename, Dependencies::convert($dependencies));
     }
 
-    private function getExtractor(): ClassDefinition\Extractor
+    private function getExtractor(): ClassDefinition\DefinitionExtractor
     {
         $container = new Container();
 
-        return $container->get(ClassDefinition\Extractor::class);
+        return $container->get(ClassDefinition\DefinitionExtractor::class);
     }
 }

@@ -4,7 +4,7 @@ namespace Spiral\Prototype\Tests\ClassDefinition\ConflictResolver;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
-use Spiral\Prototype\ClassDefinition\ConflictResolver\Sequences;
+use Spiral\Prototype\ClassNode\ConflictResolver\Sequences;
 
 class SequenceTest extends TestCase
 {

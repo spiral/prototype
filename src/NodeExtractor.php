@@ -7,20 +7,22 @@
  */
 declare(strict_types=1);
 
-namespace Spiral\Prototype\ClassDefinition;
+namespace Spiral\Prototype;
 
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor;
 use PhpParser\ParserFactory;
 use Spiral\Prototype\Annotation\Parser;
-use Spiral\Prototype\ClassDefinition;
-use Spiral\Prototype\ClassDefinition\ConflictResolver;
+use Spiral\Prototype\ClassNode\ConflictResolver;
 use Spiral\Prototype\Exception\ClassNotDeclaredException;
 use Spiral\Prototype\NodeVisitors\ClassDefinition\DeclareClass;
 use Spiral\Prototype\NodeVisitors\ClassDefinition\LocateStatements;
 use Spiral\Prototype\NodeVisitors\ClassDefinition\LocateVariables;
 
-final class Extractor
+/**
+ * @internal
+ */
+final class NodeExtractor
 {
     /** @var Parser */
     private $parser;
@@ -44,12 +46,12 @@ final class Extractor
     /**
      * @param string $filename
      * @param array  $dependencies
-     * @return ClassDefinition
+     * @return ClassNode
      *
      * @throws ClassNotDeclaredException
      * @throws \ReflectionException
      */
-    public function extract(string $filename, array $dependencies): ClassDefinition
+    public function extractNode(string $filename, array $dependencies): ClassNode
     {
         $definition = $this->makeDefinition($filename);
         $definition->dependencies = $dependencies;
@@ -68,11 +70,11 @@ final class Extractor
 
     /**
      * @param string $filename
-     * @return ClassDefinition
+     * @return ClassNode
      *
      * @throws ClassNotDeclaredException
      */
-    private function makeDefinition(string $filename): ClassDefinition
+    private function makeDefinition(string $filename): ClassNode
     {
         $declarator = new DeclareClass();
         $this->traverse($filename, $declarator);
@@ -82,10 +84,10 @@ final class Extractor
         }
 
         if ($declarator->getNamespace()) {
-            return ClassDefinition::createWithNamespace($declarator->getClass(), $declarator->getNamespace());
+            return ClassNode::createWithNamespace($declarator->getClass(), $declarator->getNamespace());
         }
 
-        return ClassDefinition::create($declarator->getClass());
+        return ClassNode::create($declarator->getClass());
     }
 
     /**
@@ -104,10 +106,10 @@ final class Extractor
     }
 
     /**
-     * @param ClassDefinition $definition
-     * @param array           $imports
+     * @param ClassNode $definition
+     * @param array     $imports
      */
-    private function fillStmts(ClassDefinition $definition, array $imports): void
+    private function fillStmts(ClassNode $definition, array $imports): void
     {
         foreach ($imports as $import) {
             $definition->addImportUsage($import['name'], $import['alias']);
@@ -115,11 +117,11 @@ final class Extractor
     }
 
     /**
-     * @param ClassDefinition $definition
+     * @param ClassNode $definition
      *
      * @throws \ReflectionException
      */
-    private function fillConstructorParams(ClassDefinition $definition): void
+    private function fillConstructorParams(ClassNode $definition): void
     {
         $reflection = new \ReflectionClass("{$definition->namespace}\\{$definition->class}");
 
@@ -137,10 +139,10 @@ final class Extractor
      * Collect all variable definitions from constructor method body.
      * Vars which are however also inserted via method are ignored (and still used as constructor params).
      *
-     * @param array           $vars
-     * @param ClassDefinition $definition
+     * @param array     $vars
+     * @param ClassNode $definition
      */
-    private function fillConstructorVars(array $vars, ClassDefinition $definition): void
+    private function fillConstructorVars(array $vars, ClassNode $definition): void
     {
         foreach ($vars as $k => $var) {
             if (isset($definition->constructorParams[$var])) {
@@ -152,9 +154,9 @@ final class Extractor
     }
 
     /**
-     * @param ClassDefinition $definition
+     * @param ClassNode $definition
      */
-    private function resolveConflicts(ClassDefinition $definition): void
+    private function resolveConflicts(ClassNode $definition): void
     {
         $this->namesResolver->resolve($definition);
         $this->namespacesResolver->resolve($definition);

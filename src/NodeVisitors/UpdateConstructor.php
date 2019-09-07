@@ -14,7 +14,7 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 use Spiral\Prototype\Annotation;
-use Spiral\Prototype\ClassDefinition;
+use Spiral\Prototype\ClassNode;
 use Spiral\Prototype\Dependency;
 use Spiral\Prototype\Utils;
 
@@ -23,13 +23,13 @@ use Spiral\Prototype\Utils;
  */
 final class UpdateConstructor extends NodeVisitorAbstract
 {
-    /** @var ClassDefinition */
+    /** @var ClassNode */
     private $definition;
 
     /**
-     * @param ClassDefinition $definition
+     * @param ClassNode $definition
      */
-    public function __construct(ClassDefinition $definition)
+    public function __construct(ClassNode $definition)
     {
         $this->definition = $definition;
     }
@@ -66,13 +66,20 @@ final class UpdateConstructor extends NodeVisitorAbstract
     private function addDependencies(Node\Stmt\ClassMethod $constructor): void
     {
         foreach ($this->definition->dependencies as $name => $dependency) {
-            $constructor->params[] = (new Param($dependency->var))->setType(new Node\Name($this->getPropertyType($dependency)))->getNode();
+            $constructor->params[] = (new Param($dependency->var))->setType(
+                new Node\Name($this->getPropertyType($dependency))
+            )->getNode();
 
             $prop = new Node\Expr\PropertyFetch(new Node\Expr\Variable("this"), $dependency->property);
 
             array_unshift(
                 $constructor->stmts,
-                new Node\Stmt\Expression(new Node\Expr\Assign($prop, new Node\Expr\Variable($dependency->var)))
+                new Node\Stmt\Expression(
+                    new Node\Expr\Assign(
+                        $prop,
+                        new Node\Expr\Variable($dependency->var)
+                    )
+                )
             );
         }
     }
@@ -105,8 +112,13 @@ final class UpdateConstructor extends NodeVisitorAbstract
         if ($parentConstructorDependencies) {
             array_unshift(
                 $constructor->stmts,
-                new Node\Stmt\Expression(new Node\Expr\StaticCall(new Node\Name('parent'), '__construct',
-                    $parentConstructorDependencies))
+                new Node\Stmt\Expression(
+                    new Node\Expr\StaticCall(
+                        new Node\Name('parent'),
+                        '__construct',
+                        $parentConstructorDependencies
+                    )
+                )
             );
         }
     }
@@ -167,7 +179,7 @@ final class UpdateConstructor extends NodeVisitorAbstract
             $placementID = $index + 1;
 
             // inject before this parameters
-            if ($line->is(['param', 'throws', 'return'])) {
+            if ($line->is(['throws', 'return'])) {
                 // insert before given node
                 $placementID--;
                 break;
@@ -177,7 +189,6 @@ final class UpdateConstructor extends NodeVisitorAbstract
         }
 
         if ($previous !== null && !$previous->isEmpty()) {
-            $an->lines = Utils::injectValues($an->lines, $placementID, [new Annotation\Line("")]);
             $placementID++;
         }
 
@@ -204,10 +215,10 @@ final class UpdateConstructor extends NodeVisitorAbstract
     }
 
     /**
-     * @param ClassDefinition\ConstructorParam $param
+     * @param ClassNode\ConstructorParam $param
      * @return string
      */
-    private function getParamType(ClassDefinition\ConstructorParam $param): string
+    private function getParamType(ClassNode\ConstructorParam $param): string
     {
         foreach ($this->definition->getStmts() as $stmt) {
             if ($stmt->name === $param->type->fullName) {

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype\Exception;
 
-final class ClassNotDeclaredException extends \Exception
+class ClassNotDeclaredException extends \Exception
 {
     /**
      * @param string $filename

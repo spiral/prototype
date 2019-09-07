@@ -9,9 +9,12 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype;
 
-use Spiral\Prototype\ClassDefinition\ConstructorParam;
+use Spiral\Prototype\ClassNode\ConstructorParam;
 
-final class ClassDefinition
+/**
+ * @internal
+ */
+final class ClassNode
 {
     /** @var string */
     public $namespace;
@@ -19,26 +22,26 @@ final class ClassDefinition
     /** @var string */
     public $class;
 
-    /** @var ClassDefinition\ClassStmt[] */
+    /** @var ClassNode\ClassStmt[] */
     private $stmts = [];
 
-    /** @var ClassDefinition\ConstructorParam[] */
+    /** @var bool */
+    public $hasConstructor = false;
+
+    /** @var ClassNode\ConstructorParam[] */
     public $constructorParams = [];
 
     /** @var string[] */
     public $constructorVars = [];
-
-    /** @var bool */
-    public $hasConstructor = false;
 
     /** @var Dependency[] */
     public $dependencies = [];
 
     /**
      * @param string $class
-     * @return ClassDefinition
+     * @return ClassNode
      */
-    public static function create(string $class): ClassDefinition
+    public static function create(string $class): ClassNode
     {
         $self = new self();
         $self->class = $class;
@@ -49,9 +52,9 @@ final class ClassDefinition
     /**
      * @param string $class
      * @param string $namespace
-     * @return ClassDefinition
+     * @return ClassNode
      */
-    public static function createWithNamespace(string $class, string $namespace): ClassDefinition
+    public static function createWithNamespace(string $class, string $namespace): ClassNode
     {
         $self = new self();
         $self->class = $class;
@@ -66,11 +69,11 @@ final class ClassDefinition
      */
     public function addImportUsage(string $name, ?string $alias): void
     {
-        $this->addStmt(ClassDefinition\ClassStmt::create($name, $alias));
+        $this->addStmt(ClassNode\ClassStmt::create($name, $alias));
     }
 
     /**
-     * @return ClassDefinition\ClassStmt[]
+     * @return ClassNode\ClassStmt[]
      */
     public function getStmts(): array
     {
@@ -88,9 +91,9 @@ final class ClassDefinition
     }
 
     /**
-     * @param ClassDefinition\ClassStmt $stmt
+     * @param ClassNode\ClassStmt $stmt
      */
-    private function addStmt(ClassDefinition\ClassStmt $stmt): void
+    private function addStmt(ClassNode\ClassStmt $stmt): void
     {
         $this->stmts[(string)$stmt] = $stmt;
     }

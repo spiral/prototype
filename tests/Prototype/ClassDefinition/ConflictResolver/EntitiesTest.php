@@ -3,7 +3,7 @@
 namespace Spiral\Prototype\Tests\ClassDefinition\ConflictResolver;
 
 use PHPUnit\Framework\TestCase;
-use Spiral\Prototype\ClassDefinition\ConflictResolver\Name_;
+use Spiral\Prototype\ClassNode\ConflictResolver\Name_;
 
 class EntitiesTest extends TestCase
 {

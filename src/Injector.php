@@ -70,12 +70,12 @@ final class Injector
      * Inject dependencies into PHP Class source code. Attention, resulted code will attempt to
      * preserve formatting but will affect it. Do not forget to add formatting fixer.
      *
-     * @param string          $code
-     * @param ClassDefinition $definition
-     * @param bool            $removeTrait
+     * @param string    $code
+     * @param ClassNode $definition
+     * @param bool      $removeTrait
      * @return string
      */
-    public function injectDependencies(string $code, ClassDefinition $definition, bool $removeTrait = false): string
+    public function injectDependencies(string $code, ClassNode $definition, bool $removeTrait = false): string
     {
         $tr = new NodeTraverser();
         $tr->addVisitor(new AddUse($definition));

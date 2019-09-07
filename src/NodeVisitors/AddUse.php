@@ -12,7 +12,7 @@ namespace Spiral\Prototype\NodeVisitors;
 use PhpParser\Builder\Use_;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
-use Spiral\Prototype\ClassDefinition;
+use Spiral\Prototype\ClassNode;
 use Spiral\Prototype\Utils;
 
 /**
@@ -20,16 +20,16 @@ use Spiral\Prototype\Utils;
  */
 final class AddUse extends NodeVisitorAbstract
 {
-    /** @var ClassDefinition */
+    /** @var ClassNode */
     private $definition;
 
     /** @var Node\Stmt\Use_[] */
     private $nodes = [];
 
     /**
-     * @param ClassDefinition $definition
+     * @param ClassNode $definition
      */
-    public function __construct(ClassDefinition $definition)
+    public function __construct(ClassNode $definition)
     {
         $this->definition = $definition;
     }

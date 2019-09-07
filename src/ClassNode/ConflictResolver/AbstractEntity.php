@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace Spiral\Prototype\ClassDefinition\ConflictResolver;
+namespace Spiral\Prototype\ClassNode\ConflictResolver;
 
 abstract class AbstractEntity
 {

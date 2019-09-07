@@ -12,7 +12,7 @@ namespace Spiral\Prototype;
 use Spiral\Prototype\Traits\PrototypeTrait;
 use Spiral\Tokenizer\ClassesInterface;
 
-final class Locator
+final class PrototypeLocator
 {
     /** @var ClassesInterface */
     private $classes;
@@ -28,7 +28,7 @@ final class Locator
     /**
      * Locate all classes requiring de-prototyping.
      *
-     * @return array
+     * @return \ReflectionClass[]
      */
     public function getTargetClasses(): array
     {

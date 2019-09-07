@@ -28,7 +28,7 @@ final class LocateProperties extends NodeVisitorAbstract
      *
      * @return array
      */
-    public function getDependencies(): array
+    public function getProperties(): array
     {
         return array_values(array_diff(
             array_values($this->requested),

@@ -4,8 +4,8 @@ namespace Spiral\Prototype\Tests\ClassDefinition\ConflictResolver;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
-use Spiral\Prototype\ClassDefinition;
-use Spiral\Prototype\ClassDefinition\ConflictResolver\Names;
+use Spiral\Prototype\ClassNode;
+use Spiral\Prototype\ClassNode\ConflictResolver\Names;
 use Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures;
 use Spiral\Prototype\Tests\Fixtures\Dependencies;
 
@@ -21,7 +21,7 @@ class NamesTest extends TestCase
      */
     public function testFind(string $method, array $vars, array $dependencies, array $expected)
     {
-        $cd = ClassDefinition::create('class\name');
+        $cd = ClassNode::create('class\name');
         $cd->constructorVars = $vars;
 
         foreach (Fixtures\Params::getParams($method) as $param) {

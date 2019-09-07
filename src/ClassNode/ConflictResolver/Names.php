@@ -7,9 +7,9 @@
  */
 declare(strict_types=1);
 
-namespace Spiral\Prototype\ClassDefinition\ConflictResolver;
+namespace Spiral\Prototype\ClassNode\ConflictResolver;
 
-use Spiral\Prototype\ClassDefinition;
+use Spiral\Prototype\ClassNode;
 use Spiral\Prototype\Utils;
 
 final class Names
@@ -26,9 +26,9 @@ final class Names
     }
 
     /**
-     * @param ClassDefinition $definition
+     * @param ClassNode $definition
      */
-    public function resolve(ClassDefinition $definition): void
+    public function resolve(ClassNode $definition): void
     {
         $reservedNames = $this->getConstructorReservedNames($definition);
         $counters = $this->initiateCounters($reservedNames);
@@ -37,10 +37,10 @@ final class Names
     }
 
     /**
-     * @param ClassDefinition $definition
+     * @param ClassNode $definition
      * @return array
      */
-    private function getConstructorReservedNames(ClassDefinition $definition): array
+    private function getConstructorReservedNames(ClassNode $definition): array
     {
         $names = [];
         foreach ($definition->constructorVars as $name) {
@@ -75,10 +75,10 @@ final class Names
     }
 
     /**
-     * @param ClassDefinition $definition
-     * @param array           $counters
+     * @param ClassNode $definition
+     * @param array     $counters
      */
-    private function addPostfixes(ClassDefinition $definition, array $counters): void
+    private function addPostfixes(ClassNode $definition, array $counters): void
     {
         foreach ($definition->dependencies as $dependency) {
             $name = $this->parseName($dependency->var);

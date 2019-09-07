@@ -9,35 +9,89 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype\Bootloader;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use Spiral\Boot\Bootloader;
-use Spiral\Boot\MemoryInterface;
 use Spiral\Bootloader\ConsoleBootloader;
+use Spiral\Core\Container;
 use Spiral\Prototype\Command;
+use Spiral\Prototype\PrototypeRegistry;
 
-final class PrototypeBootloader extends Bootloader\Bootloader implements Bootloader\DependedInterface
+/**
+ * Manages ide-friendly container injections via PrototypeTrait.
+ */
+final class PrototypeBootloader implements
+    Bootloader\BootloaderInterface,
+    Bootloader\DependedInterface,
+    Container\SingletonInterface
 {
-    public const MEMORY_SECTION = 'prototypeShortcuts';
-
-    private const SHORTCUTS = [
+    // Default spiral specific shortcuts, automatically checked on existence.
+    private const DEFAULT_SHORTCUTS = [
+        'app'          => ['resolve' => 'Spiral\Boot\KernelInterface'],
+        'logger'       => 'Psr\Log\LoggerInterface',
+        'memory'       => 'Spiral\Boot\MemoryInterface',
+        'container'    => 'Psr\Container\ContainerInterface',
+        'logs'         => 'Spiral\Logger\LogsInterface',
+        'http'         => 'Spiral\Http\Http',
+        'console'      => 'Spiral\Console\Console',
+        'queue'        => 'Spiral\Jobs\QueueInterface',
+        'paginators'   => 'Spiral\Pagination\PaginationProviderInterface',
+        'request'      => 'Spiral\Http\Request\InputManager',
+        'input'        => 'Spiral\Http\Request\InputManager',
+        'response'     => 'Spiral\Http\ResponseWrapper',
+        'router'       => 'Spiral\Router\RouterInterface',
+        'files'        => 'Spiral\Files\FilesInterface',
+        'encrypter'    => 'Spiral\Encrypter\EncrypterInterface',
+        'classLocator' => 'Spiral\Tokenizer\ClassesInterface',
+        'storage'      => 'Spiral\Storage\StorageInterface',
+        'views'        => 'Spiral\Views\ViewsInterface',
+        'i18n'         => 'Spiral\Translator\TranslatorInterface',
+        'dbal'         => 'Spiral\Database\DatabaseProviderInterface',
+        'db'           => 'Spiral\Database\DatabaseInterface',
+        'orm'          => 'Cycle\ORM\ORMInterface',
+        'guard'        => 'Spiral\Security\GuardInterface',
+        'validator'    => 'Spiral\Validation\ValidationInterface',
     ];
 
-    /** @var MemoryInterface */
-    private $memory;
+    /** @var PrototypeRegistry */
+    private $registry;
 
-    public function __construct(MemoryInterface $memory)
+    /**
+     * PrototypeBootloader constructor.
+     */
+    public function __construct()
     {
-        $this->memory = $memory;
+        $this->registry = new PrototypeRegistry();
     }
 
     /**
-     * @param ConsoleBootloader $console
+     * @param ConsoleBootloader  $console
+     * @param ContainerInterface $container
      */
-    public function boot(ConsoleBootloader $console)
+    public function boot(ConsoleBootloader $console, ContainerInterface $container)
     {
+        $console->addCommand(Command\DumpCommand::class);
         $console->addCommand(Command\ListCommand::class);
         $console->addCommand(Command\InjectCommand::class);
-        $console->addCommand(Command\AddShortcutCommand::class);
-        $console->addCommand(Command\DropShortcutsCommand::class);
+
+        $this->initDefaults($container);
+    }
+
+    /**
+     * @param string $property
+     * @param string $type
+     */
+    public function bindProperty(string $property, string $type)
+    {
+        $this->registry->bindProperty($property, $type);
+    }
+
+    /**
+     * @return array
+     */
+    public function defineSingletons(): array
+    {
+        return [PrototypeRegistry::class => $this->registry];
     }
 
     /**
@@ -45,9 +99,7 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Bootloa
      */
     public function defineBindings(): array
     {
-        $memorized = (array)$this->memory->loadData(self::MEMORY_SECTION);
-
-        return array_merge($memorized, static::SHORTCUTS, static::BINDINGS);
+        return [];
     }
 
     /**
@@ -56,8 +108,39 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Bootloa
     public function defineDependencies(): array
     {
         return [
+            Bootloader\CoreBootloader::class,
             ConsoleBootloader::class,
-            Bootloader\CoreBootloader::class
         ];
+    }
+
+    /**
+     * Init default prototype dependencies.
+     *
+     * @param ContainerInterface $container
+     */
+    private function initDefaults(ContainerInterface $container)
+    {
+        foreach (self::DEFAULT_SHORTCUTS as $property => $shortcut) {
+            if (is_array($shortcut) && isset($shortcut['resolve'])) {
+                try {
+                    $target = $container->get($shortcut['resolve']);
+                    if (is_object($target)) {
+                        $this->bindProperty($property, get_class($target));
+                    }
+
+                } catch (ContainerExceptionInterface $e) {
+                    continue;
+                }
+                continue;
+            }
+
+            if (
+                is_string($shortcut)
+                && (class_exists($shortcut, true) || interface_exists($shortcut, true)
+                )
+            ) {
+                $this->bindProperty($property, $shortcut);
+            }
+        }
     }
 }

@@ -4,8 +4,8 @@ namespace Spiral\Prototype\Tests\ClassDefinition\ConflictResolver;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
-use Spiral\Prototype\ClassDefinition;
-use Spiral\Prototype\ClassDefinition\ConflictResolver\Namespaces;
+use Spiral\Prototype\ClassNode;
+use Spiral\Prototype\ClassNode\ConflictResolver\Namespaces;
 use Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures;
 use Spiral\Prototype\Tests\Fixtures\Dependencies;
 
@@ -25,7 +25,7 @@ class NamespacesTest extends TestCase
      */
     public function testFind(array $stmts, array $dependencies, array $expected)
     {
-        $cd = ClassDefinition::create('class\name');
+        $cd = ClassNode::create('class\name');
 
         foreach ($stmts as $alias => $name) {
             $cd->addImportUsage($name, $alias);

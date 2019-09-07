@@ -7,9 +7,9 @@
  */
 declare(strict_types=1);
 
-namespace Spiral\Prototype\ClassDefinition\ConflictResolver;
+namespace Spiral\Prototype\ClassNode\ConflictResolver;
 
-use Spiral\Prototype\ClassDefinition;
+use Spiral\Prototype\ClassNode;
 use Spiral\Prototype\Utils;
 
 final class Namespaces
@@ -26,9 +26,9 @@ final class Namespaces
     }
 
     /**
-     * @param ClassDefinition $definition
+     * @param ClassNode $definition
      */
-    public function resolve(ClassDefinition $definition): void
+    public function resolve(ClassNode $definition): void
     {
         $namespaces = $this->getReservedNamespaces($definition);
         $counters = $this->initiateCounters($namespaces);
@@ -37,10 +37,10 @@ final class Namespaces
     }
 
     /**
-     * @param ClassDefinition $definition
+     * @param ClassNode $definition
      * @return array
      */
-    private function getReservedNamespaces(ClassDefinition $definition): array
+    private function getReservedNamespaces(ClassNode $definition): array
     {
         $namespaces = [];
         $namespaces = $this->getReservedNamespacesWithAlias($definition, $namespaces);
@@ -50,11 +50,11 @@ final class Namespaces
     }
 
     /**
-     * @param ClassDefinition $definition
-     * @param array           $namespaces
+     * @param ClassNode $definition
+     * @param array     $namespaces
      * @return array
      */
-    private function getReservedNamespacesWithAlias(ClassDefinition $definition, array $namespaces): array
+    private function getReservedNamespacesWithAlias(ClassNode $definition, array $namespaces): array
     {
         foreach ($definition->getStmts() as $stmt) {
             if (!$stmt->alias) {
@@ -68,11 +68,11 @@ final class Namespaces
     }
 
     /**
-     * @param ClassDefinition $definition
-     * @param array           $namespaces
+     * @param ClassNode $definition
+     * @param array     $namespaces
      * @return array
      */
-    private function getReservedNamespacesWithoutAlias(ClassDefinition $definition, array $namespaces): array
+    private function getReservedNamespacesWithoutAlias(ClassNode $definition, array $namespaces): array
     {
         foreach ($definition->getStmts() as $stmt) {
             if ($stmt->alias || isset($namespaces[$stmt->shortName])) {
@@ -106,10 +106,10 @@ final class Namespaces
     }
 
     /**
-     * @param ClassDefinition $definition
-     * @param array           $counters
+     * @param ClassNode $definition
+     * @param array     $counters
      */
-    private function resolveImportsNamespaces(ClassDefinition $definition, array $counters): void
+    private function resolveImportsNamespaces(ClassNode $definition, array $counters): void
     {
         if (!$definition->hasConstructor && $definition->constructorParams) {
             foreach ($definition->constructorParams as $param) {
@@ -179,10 +179,10 @@ final class Namespaces
     }
 
     /**
-     * @param ClassDefinition\Type $type
+     * @param ClassNode\Type $type
      * @return Namespace_
      */
-    private function parseNamespaceFromType(ClassDefinition\Type $type): Namespace_
+    private function parseNamespaceFromType(ClassNode\Type $type): Namespace_
     {
         return $this->parseNamespace($type->shortName, $type->fullName ?? $type->shortName);
     }
@@ -197,7 +197,10 @@ final class Namespaces
         if (preg_match("/\d+$/", $shortName, $match)) {
             $sequence = (int)$match[0];
             if ($sequence > 0) {
-                return Namespace_::createWithSequence(Utils::trimTrailingDigits($shortName, $sequence), $fullName, $sequence);
+                return Namespace_::createWithSequence(
+                    Utils::trimTrailingDigits($shortName, $sequence), $fullName,
+                    $sequence
+                );
             }
         }
 

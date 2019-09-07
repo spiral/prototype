@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype;
 
-use Spiral\Prototype\ClassDefinition\Type;
+use Spiral\Prototype\ClassNode\Type;
 
 final class Dependency
 {
@@ -23,11 +23,11 @@ final class Dependency
     public $var;
 
     /**
-     * @param string $type
      * @param string $name
+     * @param string $type
      * @return Dependency
      */
-    public static function create(string $type, string $name): Dependency
+    public static function create(string $name, string $type): Dependency
     {
         $dependency = new self();
         $dependency->type = Type::create($type);

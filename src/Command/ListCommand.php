@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype\Command;
 
+use Spiral\Prototype\Dependency;
+
 final class ListCommand extends AbstractCommand
 {
     public const NAME        = 'prototype:list';
@@ -19,47 +21,47 @@ final class ListCommand extends AbstractCommand
      */
     public function perform(): void
     {
-        $targets = $this->getTargets();
-        if (empty($targets)) {
+        $prototyped = $this->locator->getTargetClasses();
+        if ($prototyped === []) {
             $this->writeln('<comment>No prototyped classes found.</comment>');
-
             return;
         }
 
-        $grid = $this->table(['Class:', 'Dependencies:', 'Resolution:']);
+        $grid = $this->table(['Class:', 'Property:', 'Target:']);
 
-        foreach ($targets as $class) {
-            $dependencies = $this->fetchDependencies($class);
-            $grid->addRow([
-                $class->getName(),
-                join("\n", array_keys($dependencies)),
-                $this->mergeValues($dependencies)
-            ]);
+        foreach ($prototyped as $class) {
+            $proto = $this->getPrototypeProperties($class);
+
+            $grid->addRow([$class->getName(), $this->mergeNames($proto), $this->mergeTargets($proto)]);
         }
 
         $grid->render();
     }
 
     /**
-     * @param \Spiral\Prototype\Dependency[] $dependencies
+     * @param Dependency[] $properties
      * @return string
      */
-    private function mergeValues(array $dependencies): string
+    private function mergeNames(array $properties): string
+    {
+        return join("\n", array_keys($properties));
+    }
+
+    /**
+     * @param Dependency[] $properties
+     * @return string
+     */
+    private function mergeTargets(array $properties): string
     {
         $result = [];
 
-        foreach ($dependencies as $dependency) {
-            if ($dependency instanceof \Throwable) {
-                $result[] = sprintf('<fg=red>%s</fg=red>', $dependency->getMessage());
-                continue;
-            }
-
-            if ($dependency === null) {
+        foreach (array_values($properties) as $target) {
+            if ($target === null) {
                 $result[] = '<fg=yellow>undefined</fg=yellow>';
                 continue;
             }
 
-            $result[] = $dependency->type->fullName;
+            $result[] = $target->type->fullName;
         }
 
         return join("\n", $result);

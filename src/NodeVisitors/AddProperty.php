@@ -13,19 +13,19 @@ use PhpParser\Builder\Property;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
-use Spiral\Prototype\ClassDefinition;
+use Spiral\Prototype\ClassNode;
 use Spiral\Prototype\Dependency;
 use Spiral\Prototype\Utils;
 
 final class AddProperty extends NodeVisitorAbstract
 {
-    /** @var ClassDefinition */
+    /** @var ClassNode */
     private $definition;
 
     /**
-     * @param ClassDefinition $definition
+     * @param ClassNode $definition
      */
-    public function __construct(ClassDefinition $definition)
+    public function __construct(ClassNode $definition)
     {
         $this->definition = $definition;
     }

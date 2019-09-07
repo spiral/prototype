@@ -14,7 +14,10 @@ use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Spiral\Prototype\NodeVisitors\LocateProperties;
 
-final class Extractor
+/**
+ * @internal
+ */
+final class PropertyExtractor
 {
     /** @var Parser */
     private $parser;
@@ -31,9 +34,9 @@ final class Extractor
      * Get list of all virtual property names.
      *
      * @param string $code
-     * @return array
+     * @return string[]
      */
-    public function getPrototypeNames(string $code): array
+    public function getPrototypeProperties(string $code): array
     {
         $v = new LocateProperties();
 
@@ -41,6 +44,6 @@ final class Extractor
         $tr->addVisitor($v);
         $tr->traverse($this->parser->parse($code));
 
-        return $v->getDependencies();
+        return $v->getProperties();
     }
 }

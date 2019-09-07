@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype;
 
+/**
+ * @internal
+ */
 final class Utils
 {
     /**

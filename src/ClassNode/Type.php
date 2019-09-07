@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace Spiral\Prototype\ClassDefinition;
+namespace Spiral\Prototype\ClassNode;
 
 use Spiral\Prototype\Utils;
 
