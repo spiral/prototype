@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype\Bootloader;
 
+use Cycle\ORM;
+use Doctrine\Common\Inflector\Inflector;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\Bootloader;
@@ -51,6 +53,7 @@ final class PrototypeBootloader implements
         'orm'          => 'Cycle\ORM\ORMInterface',
         'guard'        => 'Spiral\Security\GuardInterface',
         'validator'    => 'Spiral\Validation\ValidationInterface',
+        'snapshots'    => 'Spiral\Snapshots\SnapshotterInterface'
     ];
 
     /** @var PrototypeRegistry */
@@ -75,6 +78,7 @@ final class PrototypeBootloader implements
         $console->addCommand(Command\InjectCommand::class);
 
         $this->initDefaults($container);
+        $this->initCycle($container);
     }
 
     /**
@@ -114,8 +118,6 @@ final class PrototypeBootloader implements
     }
 
     /**
-     * Init default prototype dependencies.
-     *
      * @param ContainerInterface $container
      */
     private function initDefaults(ContainerInterface $container)
@@ -141,6 +143,29 @@ final class PrototypeBootloader implements
             ) {
                 $this->bindProperty($property, $shortcut);
             }
+        }
+    }
+
+    /**
+     * @param ContainerInterface $container
+     */
+    protected function initCycle(ContainerInterface $container)
+    {
+        if (!$container->has(ORM\SchemaInterface::class)) {
+            return;
+        }
+
+        /** @var ORM\SchemaInterface $schema */
+        $schema = $container->get(ORM\SchemaInterface::class);
+
+        foreach ($schema->getRoles() as $role) {
+            $repository = $schema->define($role, ORM\SchemaInterface::REPOSITORY);
+            if ($repository === ORM\Select\Repository::class || $repository === null) {
+                // default repository can not be wired
+                continue;
+            }
+
+            $this->bindProperty(Inflector::pluralize($role), $repository);
         }
     }
 }

@@ -40,6 +40,8 @@ use Spiral\Prototype\PrototypeRegistry;
  * @property \Cycle\ORM\ORMInterface $orm
  * @property \Spiral\Security\GuardInterface $guard
  * @property \Spiral\Validation\ValidationInterface $validator
+ * @property \Spiral\Snapshots\SnapshotterInterface $snapshots
+ * @property \App\UserRepository $users
  */
 trait PrototypeTrait
 {
