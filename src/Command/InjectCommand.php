@@ -45,7 +45,7 @@ final class InjectCommand extends AbstractCommand
             }
 
             $this->sprintf(
-                "<fg=green>•</fg=green> <fg=yellow>%s</fg=yellow>: injecting %s\n",
+                "<fg=green>•</fg=green> <fg=yellow>%s</fg=yellow>: inject %s\n",
                 $class->getName(),
                 $this->mergeTargets($proto, '<fg=cyan>%s</fg=cyan> as <fg=green>%s</fg=green>')
             );
@@ -59,7 +59,7 @@ final class InjectCommand extends AbstractCommand
                     $this->option('remove')
                 );
 
-                //file_put_contents($class->getFileName(), $modified);
+                file_put_contents($class->getFileName(), $modified);
             } catch (\Throwable $e) {
                 $this->sprintf(
                     "<fg=red>•</fg=red> %s: <fg=red>%s [f: %s, l: %s]</fg=red>\n",

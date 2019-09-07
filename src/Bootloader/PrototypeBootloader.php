@@ -77,6 +77,11 @@ final class PrototypeBootloader implements
         $console->addCommand(Command\ListCommand::class);
         $console->addCommand(Command\InjectCommand::class);
 
+        $console->addConfigureSequence(
+            'prototype:dump',
+            '<fg=magenta>[prototype]</fg=magenta> <fg=cyan>actualizing prototype injections...</fg=cyan>'
+        );
+
         $this->initDefaults($container);
         $this->initCycle($container);
     }

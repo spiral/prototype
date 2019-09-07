@@ -71,6 +71,6 @@ trait PrototypeTrait
             throw new PrototypeException("Undefined prototype property `{$name}`");
         }
 
-        return $container->get($target);
+        return $container->get($target->type->fullName);
     }
 }

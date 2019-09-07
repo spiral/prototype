@@ -11,15 +11,12 @@ namespace Spiral\Prototype\Command;
 
 use Spiral\Prototype\Annotation;
 use Spiral\Prototype\Traits\PrototypeTrait;
-use Symfony\Component\Console\Input\InputOption;
 
 final class DumpCommand extends AbstractCommand
 {
     public const NAME        = 'prototype:dump';
-    public const DESCRIPTION = 'Dump all prototyped dependencies as PrototypeTrait docComment.';
-    public const OPTIONS     = [
-        ['render', 'r', InputOption::VALUE_NONE, 'Render PrototypeTrait DocComment']
-    ];
+    public const DESCRIPTION = 'Dump all prototyped dependencies as PrototypeTrait DOCComment.';
+    public const OPTIONS     = [];
 
     /**
      * Show list of available shortcuts and update trait docComment.
@@ -32,39 +29,42 @@ final class DumpCommand extends AbstractCommand
             return;
         }
 
-        $grid = $this->table(['Property:', 'Target:']);
-
-        foreach ($dependencies as $dependency) {
-            $grid->addRow([$dependency->var, $dependency->type->fullName]);
-        }
-
-        $grid->render();
-
-        if (!$this->option('render')) {
-            return;
-        }
-
-        $this->write("Updating <fg=yellow>PrototypeTrait</fg=yellow> DocComment... ");
+        $this->write("Updating <fg=yellow>PrototypeTrait</fg=yellow> DOCComment... ");
 
         $trait = new \ReflectionClass(PrototypeTrait::class);
         $docComment = $trait->getDocComment();
         if ($docComment === false) {
-            $this->write("<fg=reg>DocComment is missing</fg=red>");
+            $this->write("<fg=reg>DOCComment is missing</fg=red>");
             return;
         }
 
         $filename = $trait->getFileName();
 
-        file_put_contents(
-            $filename,
-            str_replace(
-                $docComment,
-                $this->buildAnnotation($dependencies),
-                file_get_contents($filename)
-            )
-        );
+        try {
+            file_put_contents(
+                $filename,
+                str_replace(
+                    $docComment,
+                    $this->buildAnnotation($dependencies),
+                    file_get_contents($filename)
+                )
+            );
+        } catch (\Throwable $e) {
+            $this->write("<fg=red>" . $e->getMessage() . "</fg=red>\n");
+            return;
+        }
 
-        $this->write("<fg=green>complete</fg=green>");
+        $this->write("<fg=green>complete</fg=green>\n");
+
+        if ($this->isVerbose()) {
+            $grid = $this->table(['Property:', 'Target:']);
+
+            foreach ($dependencies as $dependency) {
+                $grid->addRow([$dependency->var, $dependency->type->fullName]);
+            }
+
+            $grid->render();
+        }
     }
 
     /**

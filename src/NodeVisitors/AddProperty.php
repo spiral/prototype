@@ -73,7 +73,7 @@ final class AddProperty extends NodeVisitorAbstract
     private function buildProperty(Dependency $dependency): Node\Stmt\Property
     {
         $b = new Property($dependency->property);
-        $b->makeProtected();
+        $b->makePrivate();
         $b->setDocComment(new Doc(sprintf("/** @var %s */", $this->getPropertyType($dependency))));
 
         return $b->getNode();
