@@ -16,6 +16,32 @@ use Spiral\Prototype\PrototypeRegistry;
 
 /**
  * This DocComment is auto-generated, do not edit or commit this file to repository.
+ * 
+ * @property \App\App $app
+ * @property \Psr\Log\LoggerInterface $logger
+ * @property \Spiral\Boot\MemoryInterface $memory
+ * @property \Psr\Container\ContainerInterface $container
+ * @property \Spiral\Logger\LogsInterface $logs
+ * @property \Spiral\Http\Http $http
+ * @property \Spiral\Console\Console $console
+ * @property \Spiral\Jobs\QueueInterface $queue
+ * @property \Spiral\Pagination\PaginationProviderInterface $paginators
+ * @property \Spiral\Http\Request\InputManager $request
+ * @property \Spiral\Http\Request\InputManager $input
+ * @property \Spiral\Http\ResponseWrapper $response
+ * @property \Spiral\Router\RouterInterface $router
+ * @property \Spiral\Files\FilesInterface $files
+ * @property \Spiral\Encrypter\EncrypterInterface $encrypter
+ * @property \Spiral\Tokenizer\ClassesInterface $classLocator
+ * @property \Spiral\Views\ViewsInterface $views
+ * @property \Spiral\Translator\TranslatorInterface $i18n
+ * @property \Spiral\Database\DatabaseProviderInterface $dbal
+ * @property \Spiral\Database\DatabaseInterface $db
+ * @property \Cycle\ORM\ORMInterface $orm
+ * @property \Spiral\Security\GuardInterface $guard
+ * @property \Spiral\Validation\ValidationInterface $validator
+ * @property \Spiral\Snapshots\SnapshotterInterface $snapshots
+ * @property \App\UserRepository $users
  */
 trait PrototypeTrait
 {
