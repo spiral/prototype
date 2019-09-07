@@ -21,17 +21,17 @@ use Spiral\Prototype\Utils;
 final class AddUse extends NodeVisitorAbstract
 {
     /** @var ClassNode */
-    private $definition;
+    private $node;
 
     /** @var Node\Stmt\Use_[] */
     private $nodes = [];
 
     /**
-     * @param ClassNode $definition
+     * @param ClassNode $node
      */
-    public function __construct(ClassNode $definition)
+    public function __construct(ClassNode $node)
     {
-        $this->definition = $definition;
+        $this->node = $node;
     }
 
     /**
@@ -45,8 +45,8 @@ final class AddUse extends NodeVisitorAbstract
         }
 
         $imported = [];
-        if (!$this->definition->hasConstructor && $this->definition->constructorParams) {
-            foreach ($this->definition->constructorParams as $param) {
+        if (!$this->node->hasConstructor && $this->node->constructorParams) {
+            foreach ($this->node->constructorParams as $param) {
                 if (!empty($param->type) && $param->type->fullName) {
                     $import = [$param->type->fullName, $param->type->alias];
                     if (in_array($import, $imported, true)) {
@@ -59,19 +59,25 @@ final class AddUse extends NodeVisitorAbstract
             }
         }
 
-        foreach ($this->definition->dependencies as $dependency) {
+        foreach ($this->node->dependencies as $dependency) {
             $import = [$dependency->type->fullName, $dependency->type->alias];
             if (in_array($import, $imported, true)) {
                 continue;
             }
 
             $imported[] = $import;
-            $this->nodes[] = $this->buildUse($dependency->type->fullName, $dependency->type->alias);
+            $this->nodes[] = $this->buildUse(
+                $dependency->type->fullName,
+                $dependency->type->alias
+            );
         }
 
         $placementID = $this->definePlacementID($node);
-        $node->stmts = Utils::injectValues($node->stmts, $placementID,
-            $this->removeDuplicates($node->stmts, $this->nodes));
+        $node->stmts = Utils::injectValues(
+            $node->stmts,
+            $placementID,
+            $this->removeDuplicates($node->stmts, $this->nodes)
+        );
 
         return $node;
     }

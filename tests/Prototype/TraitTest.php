@@ -11,6 +11,8 @@ namespace Spiral\Prototype\Tests;
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
 use Spiral\Core\ContainerScope;
+use Spiral\Prototype\Exception\PrototypeException;
+use Spiral\Prototype\PrototypeRegistry;
 use Spiral\Prototype\Tests\Fixtures\TestClass;
 
 class TraitTest extends TestCase
@@ -31,19 +33,22 @@ class TraitTest extends TestCase
     {
         $t = new TestClass();
 
-        ContainerScope::runScope(new Container(), function () use ($t) {
+        $c = new Container();
+
+        ContainerScope::runScope($c, function () use ($t) {
             $t->getTest();
         });
     }
 
     /**
-     * @expectedException \Spiral\Core\Exception\ScopeException
+     * @expectedException \Spiral\Prototype\Exception\PrototypeException
      */
     public function testCascade()
     {
         $t = new TestClass();
         $c = new Container();
-        $c->bind('testClass', 'Invalid');
+        $c->bindSingleton(PrototypeRegistry::class, $p = new PrototypeRegistry());
+        $p->bindProperty('testClass', 'Invalid');
 
         ContainerScope::runScope($c, function () use ($t) {
             $t->getTest();
@@ -54,7 +59,9 @@ class TraitTest extends TestCase
     {
         $t = new TestClass();
         $c = new Container();
-        $c->bind('testClass', $t);
+        $c->bindSingleton(PrototypeRegistry::class, $p = new PrototypeRegistry());
+        $c->bindSingleton(TestClass::class, $t);
+        $p->bindProperty('testClass', TestClass::class);
 
         $r = ContainerScope::runScope($c, function () use ($t) {
             return $t->getTest();

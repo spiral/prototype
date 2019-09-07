@@ -71,23 +71,23 @@ final class Injector
      * preserve formatting but will affect it. Do not forget to add formatting fixer.
      *
      * @param string    $code
-     * @param ClassNode $definition
+     * @param ClassNode $node
      * @param bool      $removeTrait
      * @return string
      */
-    public function injectDependencies(string $code, ClassNode $definition, bool $removeTrait = false): string
+    public function injectDependencies(string $code, ClassNode $node, bool $removeTrait = false): string
     {
         $tr = new NodeTraverser();
-        $tr->addVisitor(new AddUse($definition));
+        $tr->addVisitor(new AddUse($node));
 
         if ($removeTrait) {
             $tr->addVisitor(new RemoveUse());
             $tr->addVisitor(new RemoveTrait());
         }
 
-        $tr->addVisitor(new AddProperty($definition));
+        $tr->addVisitor(new AddProperty($node));
         $tr->addVisitor(new DefineConstructor());
-        $tr->addVisitor(new UpdateConstructor($definition));
+        $tr->addVisitor(new UpdateConstructor($node));
 
         $nodes = $this->parser->parse($code);
         $tokens = $this->lexer->getTokens();

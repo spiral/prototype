@@ -1,6 +1,6 @@
 <?php
 
-namespace Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures;
+namespace Spiral\Prototype\Tests\ClassNode\ConflictResolver\Fixtures;
 
 class Params
 {

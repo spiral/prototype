@@ -12,7 +12,8 @@ use Spiral\Files\Files;
 use Spiral\Files\FilesInterface;
 use Spiral\Framework\Kernel;
 use Spiral\Prototype\Bootloader\PrototypeBootloader;
-use Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures;
+use Spiral\Prototype\PrototypeRegistry;
+use Spiral\Prototype\Tests\ClassNode\ConflictResolver\Fixtures;
 use Spiral\Prototype\Tests\Commands\Fixtures\InterfaceResolver;
 use Spiral\Prototype\Tests\Commands\Fixtures\ResolvedInterface;
 
@@ -32,10 +33,13 @@ class TestApp extends Kernel
 
     public function bindWithoutResolver(): void
     {
-        $this->container->bind('testClass', self::class);
-        $this->container->bind('test', Fixtures\Test::class);
-        $this->container->bind('test2', Fixtures\SubFolder\Test::class);
-        $this->container->bind('test3', Fixtures\ATest3Interface::class);
+        /** @var PrototypeRegistry $registry */
+        $registry = $this->container->get(PrototypeRegistry::class);
+
+        $registry->bindProperty('testClass', self::class);
+        $registry->bindProperty('test', Fixtures\Test::class);
+        $registry->bindProperty('test2', Fixtures\SubFolder\Test::class);
+        $registry->bindProperty('test3', Fixtures\ATest3Interface::class);
     }
 
     public function get(string $target)

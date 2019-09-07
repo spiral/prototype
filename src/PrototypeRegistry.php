@@ -39,7 +39,7 @@ final class PrototypeRegistry
     /**
      * @return Dependency[]
      */
-    public function getPrototypeDependencies(): array
+    public function getPropertyBindings(): array
     {
         return $this->dependencies;
     }
@@ -50,8 +50,9 @@ final class PrototypeRegistry
      * @param string $name
      * @return Dependency|null
      */
-    public function resolveDependency(string $name): ?Dependency
+    public function resolveProperty(string $name): ?Dependency
     {
+        // @todo: make it cloned?
         return $this->dependencies[$name] ?? null;
     }
 }

@@ -50,7 +50,7 @@ final class InjectCommand extends AbstractCommand
                 $this->mergeTargets($proto, '<fg=cyan>%s</fg=cyan> as <fg=green>%s</fg=green>')
             );
 
-            $classDefinition = $this->extractor->extractNode($class->getFilename(), $proto);
+            $classDefinition = $this->extractor->extract($class->getFilename(), $proto);
 
             try {
                 $modified = (new Injector())->injectDependencies(

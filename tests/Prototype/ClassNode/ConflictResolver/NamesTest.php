@@ -1,12 +1,12 @@
 <?php
 
-namespace Spiral\Prototype\Tests\ClassDefinition\ConflictResolver;
+namespace Spiral\Prototype\Tests\ClassNode\ConflictResolver;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
 use Spiral\Prototype\ClassNode;
 use Spiral\Prototype\ClassNode\ConflictResolver\Names;
-use Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures;
+use Spiral\Prototype\Tests\ClassNode\ConflictResolver\Fixtures;
 use Spiral\Prototype\Tests\Fixtures\Dependencies;
 
 class NamesTest extends TestCase

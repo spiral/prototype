@@ -9,21 +9,19 @@
 namespace Spiral\Prototype\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Spiral\Core\Container;
 use Spiral\Prototype\PrototypeLocator;
 use Spiral\Prototype\Tests\Fixtures\HydratedClass;
 use Spiral\Prototype\Tests\Fixtures\TestClass;
 use Spiral\Tokenizer\ClassesInterface;
 use Spiral\Tokenizer\ClassLocator;
-use Spiral\Tokenizer\Config\TokenizerConfig;
-use Spiral\Tokenizer\Tokenizer;
+use Symfony\Component\Finder\Finder;
 
 class LocatorTest extends TestCase
 {
     public function testLocate()
     {
         $classes = $this->makeClasses();
-        $l = new ClassLocator($classes);
+        $l = new PrototypeLocator($classes);
 
         $this->assertArrayHasKey(TestClass::class, $l->getTargetClasses());
     }
@@ -31,21 +29,15 @@ class LocatorTest extends TestCase
     public function testLocateNot()
     {
         $classes = $this->makeClasses();
-        $l = new ClassLocator($classes);
+        $l = new PrototypeLocator($classes);
 
         $this->assertArrayNotHasKey(HydratedClass::class, $l->getTargetClasses());
     }
 
     private function makeClasses(): ClassesInterface
     {
-        $c = new Container();
-        $c->bind(TokenizerConfig::class, new TokenizerConfig([
-            'directories' => [__DIR__ . '/Fixtures'],
-            'exclude'     => []
-        ]));
-
-        $c->bind(ClassesInterface::class, PrototypeLocator::class);
-
-        return $c->get(ClassesInterface::class);
+        return new ClassLocator(
+            (new Finder())->in([__DIR__ . '/Fixtures'])->files()
+        );
     }
 }

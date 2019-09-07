@@ -12,7 +12,8 @@ use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
 use Spiral\Prototype\ClassNode;
 use Spiral\Prototype\Injector;
-use Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures as ResolverFixtures;
+use Spiral\Prototype\NodeExtractor;
+use Spiral\Prototype\Tests\ClassNode\ConflictResolver\Fixtures as ResolverFixtures;
 use Spiral\Prototype\Tests\Fixtures\Dependencies;
 use Spiral\Prototype\Tests\Fixtures\TestClass;
 
@@ -123,7 +124,7 @@ class InjectorTest extends TestCase
     {
         $i = new Injector();
 
-        $filename = __DIR__ . '/ClassDefinition/ConflictResolver/Fixtures/ChildClass.php';
+        $filename = __DIR__ . '/ClassNode/ConflictResolver/Fixtures/ChildClass.php';
         $r = $i->injectDependencies(
             file_get_contents($filename),
             $this->getDefinition($filename, [
@@ -176,10 +177,10 @@ class InjectorTest extends TestCase
         return $this->getExtractor()->extract($filename, Dependencies::convert($dependencies));
     }
 
-    private function getExtractor(): ClassDefinition\DefinitionExtractor
+    private function getExtractor(): NodeExtractor
     {
         $container = new Container();
 
-        return $container->get(ClassDefinition\DefinitionExtractor::class);
+        return $container->get(NodeExtractor::class);
     }
 }

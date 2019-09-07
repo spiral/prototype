@@ -1,6 +1,6 @@
 <?php
 
-namespace Spiral\Prototype\Tests\ClassDefinition\ConflictResolver;
+namespace Spiral\Prototype\Tests\ClassNode\ConflictResolver;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;

@@ -23,7 +23,7 @@ final class DumpCommand extends AbstractCommand
      */
     public function perform()
     {
-        $dependencies = $this->registry->getPrototypeDependencies();
+        $dependencies = $this->registry->getPropertyBindings();
         if ($dependencies === []) {
             $this->writeln('<comment>No prototyped shortcuts found.</comment>');
             return;

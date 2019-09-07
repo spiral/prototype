@@ -1,12 +1,13 @@
 <?php
 
-namespace Spiral\Prototype\Tests\ClassDefinition\ConflictResolver;
+namespace Spiral\Prototype\Tests\ClassNode\ConflictResolver;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
 use Spiral\Prototype\ClassNode;
 use Spiral\Prototype\Injector;
-use Spiral\Prototype\Tests\ClassDefinition\ConflictResolver\Fixtures;
+use Spiral\Prototype\NodeExtractor;
+use Spiral\Prototype\Tests\ClassNode\ConflictResolver\Fixtures;
 use Spiral\Prototype\Tests\Fixtures\Dependencies;
 
 class ConflictResolverTest extends TestCase
@@ -119,10 +120,10 @@ class ConflictResolverTest extends TestCase
         return $this->getExtractor()->extract($filename, Dependencies::convert($dependencies));
     }
 
-    private function getExtractor(): ClassDefinition\DefinitionExtractor
+    private function getExtractor(): NodeExtractor
     {
         $container = new Container();
 
-        return $container->get(ClassDefinition\DefinitionExtractor::class);
+        return $container->get(NodeExtractor::class);
     }
 }

@@ -10,7 +10,7 @@ class Dependencies
     {
         $converted = [];
         foreach ($deps as $name => $type) {
-            $converted[$name] = Dependency::create($type, $name);
+            $converted[$name] = Dependency::create($name, $type);
         }
 
         return $converted;

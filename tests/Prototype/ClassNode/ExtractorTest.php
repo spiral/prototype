@@ -1,11 +1,11 @@
 <?php
 
-namespace Spiral\Prototype\Tests\ClassDefinition;
+namespace Spiral\Prototype\Tests\ClassNode;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
-use Spiral\Prototype\ClassNode\DefinitionExtractor;
 use Spiral\Prototype\Exception\ClassNotDeclaredException;
+use Spiral\Prototype\NodeExtractor;
 
 class ExtractorTest extends TestCase
 {
@@ -18,10 +18,10 @@ class ExtractorTest extends TestCase
         $this->getExtractor()->extract(dirname(__DIR__) . '/Fixtures/noClass.php', []);
     }
 
-    private function getExtractor(): DefinitionExtractor
+    private function getExtractor(): NodeExtractor
     {
         $container = new Container();
 
-        return $container->get(DefinitionExtractor::class);
+        return $container->get(NodeExtractor::class);
     }
 }

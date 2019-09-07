@@ -55,7 +55,7 @@ abstract class AbstractCommand extends Command
 
         $result = [];
         foreach ($proto as $name) {
-            $result[$name] = $this->registry->resolveDependency($name);
+            $result[$name] = $this->registry->resolveProperty($name);
         }
 
         return $result;

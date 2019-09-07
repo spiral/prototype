@@ -51,7 +51,7 @@ final class NodeExtractor
      * @throws ClassNotDeclaredException
      * @throws \ReflectionException
      */
-    public function extractNode(string $filename, array $dependencies): ClassNode
+    public function extract(string $filename, array $dependencies): ClassNode
     {
         $definition = $this->makeDefinition($filename);
         $definition->dependencies = $dependencies;
