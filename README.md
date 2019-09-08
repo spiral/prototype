@@ -4,7 +4,7 @@ Automatic dependency injection using AST
 [![Build Status](https://travis-ci.org/spiral/prototype.svg?branch=master)](https://travis-ci.org/spiral/prototype)
 [![Codecov](https://codecov.io/gh/spiral/prototype/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/prototype/)
 
-This extension enables [IDE friendly helpers](https://user-images.githubusercontent.com/796136/64488784-a04d0a00-d254-11e9-8650-6a25c71bf46c.png) and let's you to convert this ...
+This spiral framework extension enables [IDE friendly helpers](https://user-images.githubusercontent.com/796136/64488784-a04d0a00-d254-11e9-8650-6a25c71bf46c.png) and let's you to convert this ...
 
 ```php
 namespace App\Controller;
@@ -22,7 +22,7 @@ class HomeController
 }
 ```
 
-... into that via one console command:
+... into that via `php app.php proto:inject -r` console command:
 
 ```php
 namespace App\Controller;
@@ -49,6 +49,6 @@ class HomeController
 }
 ```
 
-```bash
-$ php app.php proto:inject -r
-```
+License:
+--------
+MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [Spiral Scout](https://spiralscout.com).
