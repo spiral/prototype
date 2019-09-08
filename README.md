@@ -49,6 +49,8 @@ class HomeController
 }
 ```
 
+Plugin includes collision prevention mechanism and able to modify existed constructors.
+
 License:
 --------
 MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [Spiral Scout](https://spiralscout.com).
