@@ -11,5 +11,4 @@ namespace Spiral\Prototype\Exception;
 
 class PrototypeException extends \RuntimeException
 {
-
 }

@@ -3,7 +3,7 @@
 namespace Spiral\Prototype\Tests\ClassNode\ConflictResolver;
 
 use PHPUnit\Framework\TestCase;
-use Spiral\Prototype\ClassNode\ConflictResolver\Name_;
+use Spiral\Prototype\ClassNode\ConflictResolver\NameEntity;
 
 class EntitiesTest extends TestCase
 {
@@ -16,7 +16,7 @@ class EntitiesTest extends TestCase
      */
     public function testName(string $name, int $sequence, string $expected)
     {
-        $this->assertEquals($expected, Name_::createWithSequence($name, $sequence)->fullName());
+        $this->assertEquals($expected, NameEntity::createWithSequence($name, $sequence)->fullName());
     }
 
     public function nameProvider(): array
