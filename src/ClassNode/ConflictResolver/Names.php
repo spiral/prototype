@@ -99,17 +99,17 @@ final class Names
 
     /**
      * @param string $name
-     * @return Name_
+     * @return NameEntity
      */
-    private function parseName(string $name): Name_
+    private function parseName(string $name): NameEntity
     {
         if (preg_match("/\d+$/", $name, $match)) {
             $sequence = (int)$match[0];
             if ($sequence > 0) {
-                return Name_::createWithSequence(Utils::trimTrailingDigits($name, $sequence), $sequence);
+                return NameEntity::createWithSequence(Utils::trimTrailingDigits($name, $sequence), $sequence);
             }
         }
 
-        return Name_::create($name);
+        return NameEntity::create($name);
     }
 }

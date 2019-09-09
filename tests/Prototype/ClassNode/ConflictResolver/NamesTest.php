@@ -15,9 +15,9 @@ class NamesTest extends TestCase
      * @dataProvider cdProvider
      *
      * @param string $method
-     * @param array  $vars
-     * @param array  $dependencies
-     * @param array  $expected
+     * @param array $vars
+     * @param array $dependencies
+     * @param array $expected
      */
     public function testFind(string $method, array $vars, array $dependencies, array $expected)
     {
@@ -51,7 +51,15 @@ class NamesTest extends TestCase
             [
                 'paramsSource',
                 ['v', 'v2'],
-                ['v2' => 'type1', 'v' => 'type2', 'vv' => 'type3', 't1' => 'type4', 't2' => 'type4', 't4' => 'type4', 't6' => 'type4'],
+                [
+                    'v2' => 'type1',
+                    'v' => 'type2',
+                    'vv' => 'type3',
+                    't1' => 'type4',
+                    't2' => 'type4',
+                    't4' => 'type4',
+                    't6' => 'type4'
+                ],
                 ['v3', 'v4', 'vv', 't', 't2', 't3', 't6']
             ],
             [

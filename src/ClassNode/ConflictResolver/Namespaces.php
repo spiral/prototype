@@ -163,11 +163,11 @@ final class Namespaces
     }
 
     /**
-     * @param Namespace_[] $counters
-     * @param Namespace_   $namespace
-     * @return Namespace_|null
+     * @param NamespaceEntity[] $counters
+     * @param NamespaceEntity   $namespace
+     * @return NamespaceEntity|null
      */
-    private function getAlreadyImportedNamespace(array $counters, Namespace_ $namespace): ?Namespace_
+    private function getAlreadyImportedNamespace(array $counters, NamespaceEntity $namespace): ?NamespaceEntity
     {
         foreach ($counters as $counter) {
             if ($counter->equals($namespace)) {
@@ -180,9 +180,9 @@ final class Namespaces
 
     /**
      * @param ClassNode\Type $type
-     * @return Namespace_
+     * @return NamespaceEntity
      */
-    private function parseNamespaceFromType(ClassNode\Type $type): Namespace_
+    private function parseNamespaceFromType(ClassNode\Type $type): NamespaceEntity
     {
         return $this->parseNamespace($type->shortName, $type->fullName ?? $type->shortName);
     }
@@ -190,14 +190,14 @@ final class Namespaces
     /**
      * @param string $shortName
      * @param string $fullName
-     * @return Namespace_
+     * @return NamespaceEntity
      */
-    private function parseNamespace(string $shortName, string $fullName): Namespace_
+    private function parseNamespace(string $shortName, string $fullName): NamespaceEntity
     {
         if (preg_match("/\d+$/", $shortName, $match)) {
             $sequence = (int)$match[0];
             if ($sequence > 0) {
-                return Namespace_::createWithSequence(
+                return NamespaceEntity::createWithSequence(
                     Utils::trimTrailingDigits($shortName, $sequence),
                     $fullName,
                     $sequence
@@ -205,6 +205,6 @@ final class Namespaces
             }
         }
 
-        return Namespace_::create($shortName, $fullName);
+        return NamespaceEntity::create($shortName, $fullName);
     }
 }

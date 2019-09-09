@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype\ClassNode\ConflictResolver;
 
-final class Namespace_ extends AbstractEntity
+final class NamespaceEntity extends AbstractEntity
 {
     /** @var string */
     private $fullName;
@@ -18,9 +18,9 @@ final class Namespace_ extends AbstractEntity
      * @param string $name
      * @param string $fullName
      * @param int    $sequence
-     * @return Namespace_
+     * @return NamespaceEntity
      */
-    public static function createWithSequence(string $name, string $fullName, int $sequence): Namespace_
+    public static function createWithSequence(string $name, string $fullName, int $sequence): NamespaceEntity
     {
         $self = new self();
         $self->name = $name;
@@ -33,9 +33,9 @@ final class Namespace_ extends AbstractEntity
     /**
      * @param string $name
      * @param string $fullName
-     * @return Namespace_
+     * @return NamespaceEntity
      */
-    public static function create(string $name, string $fullName): Namespace_
+    public static function create(string $name, string $fullName): NamespaceEntity
     {
         $self = new self();
         $self->name = $name;
@@ -45,10 +45,10 @@ final class Namespace_ extends AbstractEntity
     }
 
     /**
-     * @param Namespace_ $namespace
+     * @param NamespaceEntity $namespace
      * @return bool
      */
-    public function equals(Namespace_ $namespace): bool
+    public function equals(NamespaceEntity $namespace): bool
     {
         return $this->fullName === $namespace->fullName;
     }
