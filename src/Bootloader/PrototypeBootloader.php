@@ -29,30 +29,30 @@ final class PrototypeBootloader implements
 {
     // Default spiral specific shortcuts, automatically checked on existence.
     private const DEFAULT_SHORTCUTS = [
-        'app'          => ['resolve' => 'Spiral\Boot\KernelInterface'],
-        'logger'       => 'Psr\Log\LoggerInterface',
-        'memory'       => 'Spiral\Boot\MemoryInterface',
-        'container'    => 'Psr\Container\ContainerInterface',
-        'logs'         => 'Spiral\Logger\LogsInterface',
-        'http'         => 'Spiral\Http\Http',
-        'console'      => 'Spiral\Console\Console',
-        'queue'        => 'Spiral\Jobs\QueueInterface',
-        'paginators'   => 'Spiral\Pagination\PaginationProviderInterface',
-        'request'      => 'Spiral\Http\Request\InputManager',
-        'input'        => 'Spiral\Http\Request\InputManager',
-        'router'       => 'Spiral\Router\RouterInterface',
-        'files'        => 'Spiral\Files\FilesInterface',
-        'encrypter'    => 'Spiral\Encrypter\EncrypterInterface',
+        'app' => ['resolve' => 'Spiral\Boot\KernelInterface'],
+        'logger' => 'Psr\Log\LoggerInterface',
+        'memory' => 'Spiral\Boot\MemoryInterface',
+        'container' => 'Psr\Container\ContainerInterface',
+        'logs' => 'Spiral\Logger\LogsInterface',
+        'http' => 'Spiral\Http\Http',
+        'console' => 'Spiral\Console\Console',
+        'queue' => 'Spiral\Jobs\QueueInterface',
+        'paginators' => 'Spiral\Pagination\PaginationProviderInterface',
+        'request' => 'Spiral\Http\Request\InputManager',
+        'input' => 'Spiral\Http\Request\InputManager',
+        'router' => 'Spiral\Router\RouterInterface',
+        'files' => 'Spiral\Files\FilesInterface',
+        'encrypter' => 'Spiral\Encrypter\EncrypterInterface',
         'classLocator' => 'Spiral\Tokenizer\ClassesInterface',
-        'storage'      => 'Spiral\Storage\StorageInterface',
-        'views'        => 'Spiral\Views\ViewsInterface',
-        'i18n'         => 'Spiral\Translator\TranslatorInterface',
-        'dbal'         => 'Spiral\Database\DatabaseProviderInterface',
-        'db'           => 'Spiral\Database\DatabaseInterface',
-        'orm'          => 'Cycle\ORM\ORMInterface',
-        'guard'        => 'Spiral\Security\GuardInterface',
-        'validator'    => 'Spiral\Validation\ValidationInterface',
-        'snapshots'    => 'Spiral\Snapshots\SnapshotterInterface'
+        'storage' => 'Spiral\Storage\StorageInterface',
+        'views' => 'Spiral\Views\ViewsInterface',
+        'i18n' => 'Spiral\Translator\TranslatorInterface',
+        'dbal' => 'Spiral\Database\DatabaseProviderInterface',
+        'db' => 'Spiral\Database\DatabaseInterface',
+        'orm' => 'Cycle\ORM\ORMInterface',
+        'guard' => 'Spiral\Security\GuardInterface',
+        'validator' => 'Spiral\Validation\ValidationInterface',
+        'snapshots' => 'Spiral\Snapshots\SnapshotterInterface'
     ];
 
     /** @var PrototypeRegistry */
@@ -67,7 +67,7 @@ final class PrototypeBootloader implements
     }
 
     /**
-     * @param ConsoleBootloader  $console
+     * @param ConsoleBootloader $console
      * @param ContainerInterface $container
      */
     public function boot(ConsoleBootloader $console, ContainerInterface $container)
@@ -133,16 +133,14 @@ final class PrototypeBootloader implements
                     if (is_object($target)) {
                         $this->bindProperty($property, get_class($target));
                     }
-
                 } catch (ContainerExceptionInterface $e) {
                     continue;
                 }
                 continue;
             }
 
-            if (
-                is_string($shortcut)
-                && (class_exists($shortcut, true) || interface_exists($shortcut, true)
+            if (is_string($shortcut) && (
+                    class_exists($shortcut, true) || interface_exists($shortcut, true)
                 )
             ) {
                 $this->bindProperty($property, $shortcut);

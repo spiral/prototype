@@ -198,7 +198,8 @@ final class Namespaces
             $sequence = (int)$match[0];
             if ($sequence > 0) {
                 return Namespace_::createWithSequence(
-                    Utils::trimTrailingDigits($shortName, $sequence), $fullName,
+                    Utils::trimTrailingDigits($shortName, $sequence),
+                    $fullName,
                     $sequence
                 );
             }

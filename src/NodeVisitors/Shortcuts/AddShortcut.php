@@ -36,7 +36,9 @@ class AddShortcut extends NodeVisitorAbstract
 
     public function leaveNode(Node $node)
     {
-        if ($node instanceof Node\Const_ && $node->name->name === $this->constName && $node->value instanceof Node\Expr\Array_) {
+        if ($node instanceof Node\Const_ &&
+            $node->name->name === $this->constName &&
+            $node->value instanceof Node\Expr\Array_) {
             $node->value->items[] = new Node\Expr\ArrayItem(
                 $this->value(),
                 new Node\Scalar\String_($this->shortcut)

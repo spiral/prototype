@@ -33,7 +33,10 @@ final class RemoveTrait extends NodeVisitorAbstract
         foreach ($node->traits as $index => $use) {
             if ($use instanceof Node\Name) {
                 $name = $this->trimSlashes(join('\\', $use->parts));
-                if (in_array($name, [$this->trimSlashes(PrototypeTrait::class), Utils::shortName(PrototypeTrait::class)], true)) {
+                if (in_array($name, [
+                    $this->trimSlashes(PrototypeTrait::class),
+                    Utils::shortName(PrototypeTrait::class)
+                ], true)) {
                     unset($node->traits[$index]);
                 }
             }
