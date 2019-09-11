@@ -39,6 +39,7 @@ final class PrototypeBootloader implements
         'queue' => 'Spiral\Jobs\QueueInterface',
         'paginators' => 'Spiral\Pagination\PaginationProviderInterface',
         'request' => 'Spiral\Http\Request\InputManager',
+        'response'=>'Spiral\Http\ResponseWrapper',
         'input' => 'Spiral\Http\Request\InputManager',
         'router' => 'Spiral\Router\RouterInterface',
         'files' => 'Spiral\Files\FilesInterface',
