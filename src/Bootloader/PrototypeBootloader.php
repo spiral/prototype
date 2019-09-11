@@ -54,7 +54,7 @@ final class PrototypeBootloader implements
         'guard' => 'Spiral\Security\GuardInterface',
         'validator' => 'Spiral\Validation\ValidationInterface',
         'snapshots' => 'Spiral\Snapshots\SnapshotterInterface',
-        'rpc' => 'Spiral\Goridge\RPC'
+        'server' => 'Spiral\Goridge\RPC'
     ];
 
     /** @var PrototypeRegistry */
