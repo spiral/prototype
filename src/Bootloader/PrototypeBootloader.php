@@ -53,7 +53,8 @@ final class PrototypeBootloader implements
         'orm' => 'Cycle\ORM\ORMInterface',
         'guard' => 'Spiral\Security\GuardInterface',
         'validator' => 'Spiral\Validation\ValidationInterface',
-        'snapshots' => 'Spiral\Snapshots\SnapshotterInterface'
+        'snapshots' => 'Spiral\Snapshots\SnapshotterInterface',
+        'rpc' => 'Spiral\Goridge\RPC'
     ];
 
     /** @var PrototypeRegistry */
