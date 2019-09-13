@@ -135,8 +135,8 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
             }
 
             if (is_string($shortcut) && (
-                    class_exists($shortcut, true) || interface_exists($shortcut, true)
-                )
+                class_exists($shortcut, true) || interface_exists($shortcut, true)
+            )
             ) {
                 $this->bindProperty($property, $shortcut);
             }
