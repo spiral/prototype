@@ -9,6 +9,7 @@
 namespace Spiral\Prototype\Tests\Commands;
 
 use PHPUnit\Framework\TestCase;
+use Spiral\Boot\DirectoriesInterface;
 use Spiral\Prototype\Tests\Fixtures\TestApp;
 
 abstract class AbstractCommandsTest extends TestCase
@@ -23,9 +24,10 @@ abstract class AbstractCommandsTest extends TestCase
     public function setUp()
     {
         $this->app = TestApp::init([
-            'root'    => $this->dir(),
-            'config'  => $this->dir(),
-            'app'     => $this->dir(),
+            'root'   => $this->dir(),
+            'config' => $this->dir(),
+            'app'    => $this->dir(),
+            'cache'  => sys_get_temp_dir()
         ], null, false);
 
         foreach (self::STORE as $name) {

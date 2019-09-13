@@ -8,6 +8,7 @@
 
 namespace Spiral\Prototype\Tests\Fixtures;
 
+use Spiral\Boot\DirectoriesInterface;
 use Spiral\Files\Files;
 use Spiral\Files\FilesInterface;
 use Spiral\Framework\Kernel;
