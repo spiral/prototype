@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace Spiral\Prototype\Command;
 
 use Spiral\Console\Command;
-use Spiral\Prototype\PrototypeLocator;
 use Spiral\Prototype\NodeExtractor;
 use Spiral\Prototype\PropertyExtractor;
+use Spiral\Prototype\PrototypeLocator;
 use Spiral\Prototype\PrototypeRegistry;
 
 abstract class AbstractCommand extends Command
@@ -31,11 +31,8 @@ abstract class AbstractCommand extends Command
      * @param NodeExtractor     $extractor
      * @param PrototypeRegistry $registry
      */
-    public function __construct(
-        PrototypeLocator $locator,
-        NodeExtractor $extractor,
-        PrototypeRegistry $registry
-    ) {
+    public function __construct(PrototypeLocator $locator, NodeExtractor $extractor, PrototypeRegistry $registry)
+    {
         parent::__construct(null);
 
         $this->extractor = $extractor;

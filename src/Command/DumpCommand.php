@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Spiral\Prototype\Command;
 
 use Spiral\Prototype\Annotation;
+use Spiral\Prototype\Bootloader\PrototypeBootloader;
 use Spiral\Prototype\Traits\PrototypeTrait;
 
 final class DumpCommand extends AbstractCommand
@@ -20,9 +21,15 @@ final class DumpCommand extends AbstractCommand
 
     /**
      * Show list of available shortcuts and update trait docComment.
+     *
+     * @param PrototypeBootloader $prototypeBootloader
+     * @throws \ReflectionException
      */
-    public function perform()
+    public function perform(PrototypeBootloader $prototypeBootloader)
     {
+        // reindex annotations
+        $prototypeBootloader->initAnnotations($this->container, true);
+
         $dependencies = $this->registry->getPropertyBindings();
         if ($dependencies === []) {
             $this->writeln('<comment>No prototyped shortcuts found.</comment>');

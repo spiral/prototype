@@ -13,63 +13,69 @@ use Cycle\ORM;
 use Doctrine\Common\Inflector\Inflector;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Spiral\Annotations\AnnotationLocator;
 use Spiral\Boot\Bootloader;
+use Spiral\Boot\MemoryInterface;
 use Spiral\Bootloader\ConsoleBootloader;
 use Spiral\Core\Container;
+use Spiral\Prototype\Annotation\Prototyped;
 use Spiral\Prototype\Command;
 use Spiral\Prototype\PrototypeRegistry;
 
 /**
  * Manages ide-friendly container injections via PrototypeTrait.
  */
-final class PrototypeBootloader implements
-    Bootloader\BootloaderInterface,
-    Bootloader\DependedInterface,
-    Container\SingletonInterface
+final class PrototypeBootloader extends Bootloader\Bootloader implements Container\SingletonInterface
 {
     // Default spiral specific shortcuts, automatically checked on existence.
     private const DEFAULT_SHORTCUTS = [
-        'app' => ['resolve' => 'Spiral\Boot\KernelInterface'],
-        'logger' => 'Psr\Log\LoggerInterface',
-        'memory' => 'Spiral\Boot\MemoryInterface',
-        'container' => 'Psr\Container\ContainerInterface',
-        'logs' => 'Spiral\Logger\LogsInterface',
-        'http' => 'Spiral\Http\Http',
-        'console' => 'Spiral\Console\Console',
-        'queue' => 'Spiral\Jobs\QueueInterface',
-        'paginators' => 'Spiral\Pagination\PaginationProviderInterface',
-        'request' => 'Spiral\Http\Request\InputManager',
-        'response'=>'Spiral\Http\ResponseWrapper',
-        'input' => 'Spiral\Http\Request\InputManager',
-        'router' => 'Spiral\Router\RouterInterface',
-        'files' => 'Spiral\Files\FilesInterface',
-        'encrypter' => 'Spiral\Encrypter\EncrypterInterface',
+        'app'          => ['resolve' => 'Spiral\Boot\KernelInterface'],
+        'logger'       => 'Psr\Log\LoggerInterface',
+        'memory'       => 'Spiral\Boot\MemoryInterface',
+        'container'    => 'Psr\Container\ContainerInterface',
+        'logs'         => 'Spiral\Logger\LogsInterface',
+        'http'         => 'Spiral\Http\Http',
+        'console'      => 'Spiral\Console\Console',
+        'queue'        => 'Spiral\Jobs\QueueInterface',
+        'paginators'   => 'Spiral\Pagination\PaginationProviderInterface',
+        'request'      => 'Spiral\Http\Request\InputManager',
+        'response'     => 'Spiral\Http\ResponseWrapper',
+        'input'        => 'Spiral\Http\Request\InputManager',
+        'router'       => 'Spiral\Router\RouterInterface',
+        'files'        => 'Spiral\Files\FilesInterface',
+        'encrypter'    => 'Spiral\Encrypter\EncrypterInterface',
         'classLocator' => 'Spiral\Tokenizer\ClassesInterface',
-        'storage' => 'Spiral\Storage\StorageInterface',
-        'views' => 'Spiral\Views\ViewsInterface',
-        'i18n' => 'Spiral\Translator\TranslatorInterface',
-        'dbal' => 'Spiral\Database\DatabaseProviderInterface',
-        'db' => 'Spiral\Database\DatabaseInterface',
-        'orm' => 'Cycle\ORM\ORMInterface',
-        'guard' => 'Spiral\Security\GuardInterface',
-        'validator' => 'Spiral\Validation\ValidationInterface',
-        'snapshots' => 'Spiral\Snapshots\SnapshotterInterface',
-        'server' => 'Spiral\Goridge\RPC'
+        'storage'      => 'Spiral\Storage\StorageInterface',
+        'views'        => 'Spiral\Views\ViewsInterface',
+        'i18n'         => 'Spiral\Translator\TranslatorInterface',
+        'dbal'         => 'Spiral\Database\DatabaseProviderInterface',
+        'db'           => 'Spiral\Database\DatabaseInterface',
+        'orm'          => 'Cycle\ORM\ORMInterface',
+        'guard'        => 'Spiral\Security\GuardInterface',
+        'validator'    => 'Spiral\Validation\ValidationInterface',
+        'snapshots'    => 'Spiral\Snapshots\SnapshotterInterface',
+        'server'       => 'Spiral\Goridge\RPC'
     ];
+
+    const DEPENDENCIES = [Bootloader\CoreBootloader::class, ConsoleBootloader::class,];
+
+    /** @var MemoryInterface */
+    private $memory;
 
     /** @var PrototypeRegistry */
     private $registry;
 
     /**
-     * PrototypeBootloader constructor.
+     * @param MemoryInterface $memory
      */
-    public function __construct()
+    public function __construct(MemoryInterface $memory)
     {
+        $this->memory = $memory;
         $this->registry = new PrototypeRegistry();
     }
 
     /**
-     * @param ConsoleBootloader $console
+     * @param ConsoleBootloader  $console
      * @param ContainerInterface $container
      */
     public function boot(ConsoleBootloader $console, ContainerInterface $container)
@@ -83,8 +89,14 @@ final class PrototypeBootloader implements
             '<fg=magenta>[prototype]</fg=magenta> <fg=cyan>actualizing prototype injections...</fg=cyan>'
         );
 
+        $console->addUpdateSequence(
+            'prototype:dump',
+            '<fg=magenta>[prototype]</fg=magenta> <fg=cyan>actualizing prototype injections...</fg=cyan>'
+        );
+
         $this->initDefaults($container);
         $this->initCycle($container);
+        $this->initAnnotations($container, false);
     }
 
     /**
@@ -102,25 +114,6 @@ final class PrototypeBootloader implements
     public function defineSingletons(): array
     {
         return [PrototypeRegistry::class => $this->registry];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function defineBindings(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array
-     */
-    public function defineDependencies(): array
-    {
-        return [
-            Bootloader\CoreBootloader::class,
-            ConsoleBootloader::class,
-        ];
     }
 
     /**
@@ -152,8 +145,34 @@ final class PrototypeBootloader implements
 
     /**
      * @param ContainerInterface $container
+     * @param bool               $reset
      */
-    protected function initCycle(ContainerInterface $container)
+    public function initAnnotations(ContainerInterface $container, bool $reset = false)
+    {
+        $prototyped = $this->memory->loadData('prototyped');
+        if (!$reset && $prototyped !== null) {
+            foreach ($prototyped as $property => $class) {
+                $this->bindProperty($property, $class);
+            }
+            return;
+        }
+
+        /** @var AnnotationLocator $locator */
+        $locator = $container->get(AnnotationLocator::class);
+
+        $prototyped = [];
+        foreach ($locator->findClasses(Prototyped::class) as $class) {
+            $prototyped[$class->getAnnotation()->property] = $class->getClass()->getName();
+            $this->bindProperty($class->getAnnotation()->property, $class->getClass()->getName());
+        }
+
+        $this->memory->saveData('prototyped', $prototyped);
+    }
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function initCycle(ContainerInterface $container)
     {
         if (!$container->has(ORM\SchemaInterface::class)) {
             return;
