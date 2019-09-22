@@ -135,8 +135,8 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
             }
 
             if (is_string($shortcut) && (
-                class_exists($shortcut, true) || interface_exists($shortcut, true)
-            )
+                    class_exists($shortcut, true) || interface_exists($shortcut, true)
+                )
             ) {
                 $this->bindProperty($property, $shortcut);
             }
@@ -178,8 +178,11 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
             return;
         }
 
-        /** @var ORM\SchemaInterface $schema */
+        /** @var ORM\SchemaInterface|null $schema */
         $schema = $container->get(ORM\SchemaInterface::class);
+        if ($schema === null) {
+            return;
+        }
 
         foreach ($schema->getRoles() as $role) {
             $repository = $schema->define($role, ORM\SchemaInterface::REPOSITORY);
