@@ -52,6 +52,6 @@ trait PrototypeTrait
             );
         }
 
-        return $container->get($target->type->fullName);
+        return $container->get($target->type->name());
     }
 }

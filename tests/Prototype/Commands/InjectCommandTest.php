@@ -52,7 +52,6 @@ class InjectCommandTest extends AbstractCommandsTest
         $this->app->get(Console::class)->run('prototype:inject', $inp, $out);
 
         $result = $out->fetch();
-        print_r(compact('result'));
 
         $this->assertContains('Undefined class', $result);
         $this->assertContains('Invalid', $result);

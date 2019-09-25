@@ -184,7 +184,7 @@ final class Namespaces
      */
     private function parseNamespaceFromType(ClassNode\Type $type): NamespaceEntity
     {
-        return $this->parseNamespace($type->shortName, $type->fullName ?? $type->shortName);
+        return $this->parseNamespace($type->shortName, $type->name());
     }
 
     /**

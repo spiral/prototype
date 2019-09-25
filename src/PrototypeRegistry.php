@@ -63,17 +63,11 @@ final class PrototypeRegistry
     {
         $dependency = $this->dependencies[$name] ?? null;
         if ($dependency === null) {
-            print_r("one $name\n");
-            return null;
-        }
-
-        if ($dependency->type->fullName === null) {
-            print_r("two $name\n");
             return null;
         }
 
         try {
-            $this->container->get($dependency->type->fullName);
+            $this->container->get($dependency->type->name());
 
             return $dependency;
         } catch (ContainerExceptionInterface $e) {

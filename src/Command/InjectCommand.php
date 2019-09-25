@@ -40,7 +40,6 @@ final class InjectCommand extends AbstractCommand
         foreach ($prototyped as $class) {
             $proto = $this->getPrototypeProperties($class);
             foreach ($proto as $target) {
-                print_r(compact('target'));
                 if ($target instanceof \Throwable) {
                     $this->sprintf(
                         "<fg=red>•</fg=red> %s: <fg=red>%s [f: %s, l: %s]</fg=red>\n",

@@ -72,4 +72,9 @@ final class Type
 
         return $type;
     }
+
+    public function name(): string
+    {
+        return $this->fullName ?? $this->shortName;
+    }
 }
