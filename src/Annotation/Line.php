@@ -18,7 +18,7 @@ final class Line
     public $value = '';
 
     /** @var string|null */
-    public $type = null;
+    public $type;
 
     /**
      * @param string      $value

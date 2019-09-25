@@ -15,9 +15,9 @@ use PhpParser\ParserFactory;
 use Spiral\Prototype\Annotation\Parser;
 use Spiral\Prototype\ClassNode\ConflictResolver;
 use Spiral\Prototype\Exception\ClassNotDeclaredException;
-use Spiral\Prototype\NodeVisitors\ClassDefinition\DeclareClass;
-use Spiral\Prototype\NodeVisitors\ClassDefinition\LocateStatements;
-use Spiral\Prototype\NodeVisitors\ClassDefinition\LocateVariables;
+use Spiral\Prototype\NodeVisitors\ClassNode\DeclareClass;
+use Spiral\Prototype\NodeVisitors\ClassNode\LocateStatements;
+use Spiral\Prototype\NodeVisitors\ClassNode\LocateVariables;
 
 /**
  * @internal

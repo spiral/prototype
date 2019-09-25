@@ -19,9 +19,9 @@ use Spiral\Prototype\Tests\Fixtures\TestClass;
 
 class InjectorTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
-        if (ini_get('zend.assertions') == 1) {
+        if ((string)ini_get('zend.assertions') === 1) {
             ini_set('zend.assertions', 0);
         }
     }
@@ -29,7 +29,7 @@ class InjectorTest extends TestCase
     /**
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
-    public function testSimpleInjection()
+    public function testSimpleInjection(): void
     {
         $i = new Injector();
 
@@ -69,7 +69,7 @@ class InjectorTest extends TestCase
     /**
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
-    public function testParentConstructorCallInjection()
+    public function testParentConstructorCallInjection(): void
     {
         $i = new Injector();
 
@@ -86,7 +86,7 @@ class InjectorTest extends TestCase
     /**
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
-    public function testNoParentConstructorCallInjection()
+    public function testNoParentConstructorCallInjection(): void
     {
         $i = new Injector();
 
@@ -103,7 +103,7 @@ class InjectorTest extends TestCase
     /**
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
-    public function testModifyConstructor()
+    public function testModifyConstructor(): void
     {
         $i = new Injector();
 
@@ -120,7 +120,7 @@ class InjectorTest extends TestCase
     /**
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
-    public function testParentConstructorParamsTypeDefinition()
+    public function testParentConstructorParamsTypeDefinition(): void
     {
         $i = new Injector();
 
@@ -170,6 +170,7 @@ class InjectorTest extends TestCase
      * @param array  $dependencies
      *
      * @return ClassNode
+     * @throws \ReflectionException
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
     private function getDefinition(string $filename, array $dependencies): ClassNode

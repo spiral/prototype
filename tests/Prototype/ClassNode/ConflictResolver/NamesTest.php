@@ -18,8 +18,9 @@ class NamesTest extends TestCase
      * @param array $vars
      * @param array $dependencies
      * @param array $expected
+     * @throws \ReflectionException
      */
-    public function testFind(string $method, array $vars, array $dependencies, array $expected)
+    public function testFind(string $method, array $vars, array $dependencies, array $expected): void
     {
         $cd = ClassNode::create('class\name');
         $cd->constructorVars = $vars;

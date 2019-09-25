@@ -99,7 +99,7 @@ final class ClassNode
     }
 
     /**
-     * ClassDefinition constructor.
+     * ClassNode constructor.
      */
     private function __construct()
     {

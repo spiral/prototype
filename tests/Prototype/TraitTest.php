@@ -11,7 +11,6 @@ namespace Spiral\Prototype\Tests;
 use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
 use Spiral\Core\ContainerScope;
-use Spiral\Prototype\Exception\PrototypeException;
 use Spiral\Prototype\PrototypeRegistry;
 use Spiral\Prototype\Tests\Fixtures\TestClass;
 
@@ -20,7 +19,7 @@ class TraitTest extends TestCase
     /**
      * @expectedException \Spiral\Core\Exception\ScopeException
      */
-    public function testNoScope()
+    public function testNoScope(): void
     {
         $t = new TestClass();
         $t->getTest();
@@ -29,13 +28,13 @@ class TraitTest extends TestCase
     /**
      * @expectedException \Spiral\Core\Exception\ScopeException
      */
-    public function testNoScopeBound()
+    public function testNoScopeBound(): void
     {
         $t = new TestClass();
 
         $c = new Container();
 
-        ContainerScope::runScope($c, function () use ($t) {
+        ContainerScope::runScope($c, static function () use ($t) {
             $t->getTest();
         });
     }
@@ -43,19 +42,19 @@ class TraitTest extends TestCase
     /**
      * @expectedException \Spiral\Prototype\Exception\PrototypeException
      */
-    public function testCascade()
+    public function testCascade(): void
     {
         $t = new TestClass();
         $c = new Container();
         $c->bindSingleton(PrototypeRegistry::class, $p = new PrototypeRegistry());
         $p->bindProperty('testClass', 'Invalid');
 
-        ContainerScope::runScope($c, function () use ($t) {
+        ContainerScope::runScope($c, static function () use ($t) {
             $t->getTest();
         });
     }
 
-    public function testOK()
+    public function testOK(): void
     {
         $t = new TestClass();
         $c = new Container();
@@ -63,7 +62,7 @@ class TraitTest extends TestCase
         $c->bindSingleton(TestClass::class, $t);
         $p->bindProperty('testClass', TestClass::class);
 
-        $r = ContainerScope::runScope($c, function () use ($t) {
+        $r = ContainerScope::runScope($c, static function () use ($t) {
             return $t->getTest();
         });
 

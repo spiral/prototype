@@ -70,7 +70,7 @@ final class UpdateConstructor extends NodeVisitorAbstract
                 new Node\Name($this->getPropertyType($dependency))
             )->getNode();
 
-            $prop = new Node\Expr\PropertyFetch(new Node\Expr\Variable("this"), $dependency->property);
+            $prop = new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $dependency->property);
 
             array_unshift(
                 $constructor->stmts,
@@ -140,7 +140,7 @@ final class UpdateConstructor extends NodeVisitorAbstract
      */
     private function addComments(Doc $doc = null): Doc
     {
-        $an = new Annotation\Parser($doc ? $doc->getText() : "");
+        $an = new Annotation\Parser($doc ? $doc->getText() : '');
 
         $params = [];
 

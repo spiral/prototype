@@ -22,7 +22,6 @@ final class PrototypeRegistry
      */
     public function __construct()
     {
-        $this->dependencies = [];
     }
 
     /**
@@ -31,7 +30,7 @@ final class PrototypeRegistry
      * @param string $property
      * @param string $type
      */
-    public function bindProperty(string $property, string $type)
+    public function bindProperty(string $property, string $type): void
     {
         $this->dependencies[$property] = Dependency::create($property, $type);
     }

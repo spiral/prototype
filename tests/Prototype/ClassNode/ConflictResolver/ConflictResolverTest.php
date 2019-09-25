@@ -46,7 +46,7 @@ class ConflictResolverTest extends TestCase
     /**
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
-    public function testResolveImportConflicts()
+    public function testResolveImportConflicts(): void
     {
         $i = new Injector();
 

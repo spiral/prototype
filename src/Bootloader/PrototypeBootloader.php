@@ -57,7 +57,7 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
         'server'       => 'Spiral\Goridge\RPC'
     ];
 
-    const DEPENDENCIES = [Bootloader\CoreBootloader::class, ConsoleBootloader::class,];
+    public const DEPENDENCIES = [Bootloader\CoreBootloader::class, ConsoleBootloader::class,];
 
     /** @var MemoryInterface */
     private $memory;

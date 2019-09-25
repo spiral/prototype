@@ -10,9 +10,10 @@ use Spiral\Prototype\NodeExtractor;
 class ExtractorTest extends TestCase
 {
     /**
-     * @throws ClassNotDeclaredException
+     * @throws \ReflectionException
+     * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
-    public function testNoClass()
+    public function testNoClass(): void
     {
         $this->expectException(ClassNotDeclaredException::class);
         $this->getExtractor()->extract(dirname(__DIR__) . '/Fixtures/noClass.php', []);

@@ -36,12 +36,12 @@ final class DumpCommand extends AbstractCommand
             return;
         }
 
-        $this->write("Updating <fg=yellow>PrototypeTrait</fg=yellow> DOCComment... ");
+        $this->write('Updating <fg=yellow>PrototypeTrait</fg=yellow> DOCComment... ');
 
         $trait = new \ReflectionClass(PrototypeTrait::class);
         $docComment = $trait->getDocComment();
         if ($docComment === false) {
-            $this->write("<fg=reg>DOCComment is missing</fg=red>");
+            $this->write('<fg=reg>DOCComment is missing</fg=red>');
             return;
         }
 
@@ -57,7 +57,7 @@ final class DumpCommand extends AbstractCommand
                 )
             );
         } catch (\Throwable $e) {
-            $this->write("<fg=red>" . $e->getMessage() . "</fg=red>\n");
+            $this->write('<fg=red>' . $e->getMessage() . "</fg=red>\n");
             return;
         }
 

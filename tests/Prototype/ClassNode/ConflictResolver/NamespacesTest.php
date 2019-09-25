@@ -22,8 +22,9 @@ class NamespacesTest extends TestCase
      * @param array $stmts
      * @param array $dependencies
      * @param array $expected
+     * @throws \ReflectionException
      */
-    public function testFind(array $stmts, array $dependencies, array $expected)
+    public function testFind(array $stmts, array $dependencies, array $expected): void
     {
         $cd = ClassNode::create('class\name');
 

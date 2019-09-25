@@ -9,7 +9,6 @@
 namespace Spiral\Prototype\Tests\Commands;
 
 use PHPUnit\Framework\TestCase;
-use Spiral\Boot\DirectoriesInterface;
 use Spiral\Prototype\Tests\Fixtures\TestApp;
 
 abstract class AbstractCommandsTest extends TestCase

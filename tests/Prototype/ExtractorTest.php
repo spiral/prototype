@@ -13,7 +13,7 @@ use Spiral\Prototype\PropertyExtractor;
 
 class ExtractorTest extends TestCase
 {
-    public function testExtract()
+    public function testExtract(): void
     {
         $e = new PropertyExtractor();
 
@@ -23,7 +23,7 @@ class ExtractorTest extends TestCase
         $this->assertSame($expected, $prototypes);
     }
 
-    public function testExtractNone()
+    public function testExtractNone(): void
     {
         $e = new PropertyExtractor();
         $this->assertSame(
