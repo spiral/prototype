@@ -55,7 +55,12 @@ final class ListCommand extends AbstractCommand
     {
         $result = [];
 
-        foreach (array_values($properties) as $target) {
+        foreach ($properties as $target) {
+            if ($target instanceof \Throwable) {
+                $result[] = sprintf('<fg=red>%s</fg=red>', $target->getMessage());
+                continue;
+            }
+
             if ($target === null) {
                 $result[] = '<fg=yellow>undefined</fg=yellow>';
                 continue;

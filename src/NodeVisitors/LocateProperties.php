@@ -46,7 +46,8 @@ final class LocateProperties extends NodeVisitorAbstract
     {
         if ($node instanceof Node\Expr\PropertyFetch &&
             $node->var instanceof Node\Expr\Variable &&
-            $node->var->name === 'this') {
+            $node->var->name === 'this'
+        ) {
             $this->requested[$node->name->name] = $node->name->name;
         }
 

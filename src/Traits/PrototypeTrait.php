@@ -41,8 +41,15 @@ trait PrototypeTrait
         $registry = $container->get(PrototypeRegistry::class);
 
         $target = $registry->resolveProperty($name);
-        if ($target === null || $target->type->fullName === null) {
-            throw new PrototypeException("Undefined prototype property `{$name}`");
+        if ($target === null ||
+            $target instanceof \Throwable ||
+            $target->type->fullName === null
+        ) {
+            throw new PrototypeException(
+                "Undefined prototype property `{$name}`",
+                0,
+                $target instanceof \Throwable ? $target : null
+            );
         }
 
         return $container->get($target->type->fullName);

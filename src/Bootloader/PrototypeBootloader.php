@@ -66,12 +66,13 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
     private $registry;
 
     /**
-     * @param MemoryInterface $memory
+     * @param MemoryInterface   $memory
+     * @param PrototypeRegistry $registry
      */
-    public function __construct(MemoryInterface $memory)
+    public function __construct(MemoryInterface $memory, PrototypeRegistry $registry)
     {
         $this->memory = $memory;
-        $this->registry = new PrototypeRegistry();
+        $this->registry = $registry;
     }
 
     /**
@@ -154,6 +155,7 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
             foreach ($prototyped as $property => $class) {
                 $this->bindProperty($property, $class);
             }
+
             return;
         }
 

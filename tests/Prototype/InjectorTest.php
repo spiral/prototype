@@ -118,6 +118,7 @@ class InjectorTest extends TestCase
     }
 
     /**
+     * @throws \ReflectionException
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
     public function testParentConstructorParamsTypeDefinition(): void

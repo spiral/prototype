@@ -43,18 +43,18 @@ class InjectCommandTest extends AbstractCommandsTest
         $this->assertSame('', $result);
     }
 
-    // todo: fix this test
-//    public function testInvalid(): void
-//    {
-//        $this->app->get(PrototypeRegistry::class)->bindProperty('testClass', 'Invalid');
-//
-//        $inp = new ArrayInput([]);
-//        $out = new BufferedOutput();
-//        $this->app->get(Console::class)->run('prototype:inject', $inp, $out);
-//
-//        $result = $out->fetch();
-//
-//        $this->assertContains('Undefined class', $result);
-//        $this->assertContains('Invalid', $result);
-//    }
+    public function testInvalid(): void
+    {
+        $this->app->get(PrototypeRegistry::class)->bindProperty('testClass', 'Invalid');
+
+        $inp = new ArrayInput([]);
+        $out = new BufferedOutput();
+        $this->app->get(Console::class)->run('prototype:inject', $inp, $out);
+
+        $result = $out->fetch();
+        print_r(compact('result'));
+
+        $this->assertContains('Undefined class', $result);
+        $this->assertContains('Invalid', $result);
+    }
 }

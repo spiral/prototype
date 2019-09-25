@@ -9,6 +9,10 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype;
 
+use Psr\Container\ContainerExceptionInterface;
+use Spiral\Core\Container;
+use Spiral\Core\Exception\Container\ContainerException;
+
 /**
  * Contains aliases and targets for all declared prototype dependencies.
  */
@@ -17,11 +21,17 @@ final class PrototypeRegistry
     /** @var Dependency[] */
     private $dependencies = [];
 
+    /** @var \Spiral\Core\Container */
+    private $container;
+
     /**
      * PrototypeRegistry constructor.
+     *
+     * @param \Spiral\Core\Container $container
      */
-    public function __construct()
+    public function __construct(Container $container)
     {
+        $this->container = $container;
     }
 
     /**
@@ -47,11 +57,27 @@ final class PrototypeRegistry
      * Resolves the name of prototype dependency into target class name.
      *
      * @param string $name
-     * @return Dependency|null
+     * @return Dependency|null|ContainerExceptionInterface
      */
-    public function resolveProperty(string $name): ?Dependency
+    public function resolveProperty(string $name)
     {
-        // @todo: make it cloned?
-        return $this->dependencies[$name] ?? null;
+        $dependency = $this->dependencies[$name] ?? null;
+        if ($dependency === null) {
+            print_r("one $name\n");
+            return null;
+        }
+
+        if ($dependency->type->fullName === null) {
+            print_r("two $name\n");
+            return null;
+        }
+
+        try {
+            $this->container->get($dependency->type->fullName);
+
+            return $dependency;
+        } catch (ContainerExceptionInterface $e) {
+            return $e;
+        }
     }
 }

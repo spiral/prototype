@@ -46,7 +46,7 @@ class TraitTest extends TestCase
     {
         $t = new TestClass();
         $c = new Container();
-        $c->bindSingleton(PrototypeRegistry::class, $p = new PrototypeRegistry());
+        $c->bindSingleton(PrototypeRegistry::class, $p = new PrototypeRegistry($c));
         $p->bindProperty('testClass', 'Invalid');
 
         ContainerScope::runScope($c, static function () use ($t) {
@@ -58,7 +58,7 @@ class TraitTest extends TestCase
     {
         $t = new TestClass();
         $c = new Container();
-        $c->bindSingleton(PrototypeRegistry::class, $p = new PrototypeRegistry());
+        $c->bindSingleton(PrototypeRegistry::class, $p = new PrototypeRegistry($c));
         $c->bindSingleton(TestClass::class, $t);
         $p->bindProperty('testClass', TestClass::class);
 
