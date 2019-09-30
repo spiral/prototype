@@ -16,6 +16,7 @@ abstract class AbstractCommandsTest extends TestCase
 {
     protected const STORE = [
         'TestClass.php',
+        'TestEmptyClass.php',
         'ChildClass.php',
         'ChildWithConstructorClass.php',
         'WithConstructor.php',

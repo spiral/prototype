@@ -77,6 +77,10 @@ final class Injector
      */
     public function injectDependencies(string $code, ClassNode $node, bool $removeTrait = false): string
     {
+        if (empty($node->dependencies)) {
+            return $code;
+        }
+
         $tr = new NodeTraverser();
         $tr->addVisitor(new AddUse($node));
 

@@ -40,6 +40,10 @@ final class InjectCommand extends AbstractCommand
 
         foreach ($prototyped as $class) {
             $proto = $this->getPrototypeProperties($class);
+            if (empty($proto)) {
+                continue;
+            }
+
             foreach ($proto as $target) {
                 if ($target instanceof \Throwable) {
                     $targets[] = [$class->getName(), $target->getMessage(), $target->getFile(), $target->getLine()];

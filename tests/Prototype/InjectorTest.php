@@ -35,12 +35,30 @@ class InjectorTest extends TestCase
         $i = new Injector();
 
         $filename = __DIR__ . '/Fixtures/TestClass.php';
-        $r = $i->injectDependencies(
+        $printed = $i->injectDependencies(
             file_get_contents($filename),
             $this->getDefinition($filename, ['testClass' => TestClass::class])
         );
 
-        $this->assertContains(TestClass::class, $r);
+        $this->assertContains(TestClass::class, $printed);
+    }
+
+    /**
+     * @throws \ReflectionException
+     * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
+     */
+    public function testEmptyInjection(): void
+    {
+        $i = new Injector();
+
+        $filename = __DIR__ . '/Fixtures/TestEmptyClass.php';
+        $content = file_get_contents($filename);
+        $printed = $i->injectDependencies(
+            file_get_contents($filename),
+            $this->getDefinition($filename, [])
+        );
+
+        $this->assertEquals($content, $printed);
     }
 
     /**
