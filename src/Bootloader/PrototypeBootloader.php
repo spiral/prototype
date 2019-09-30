@@ -30,31 +30,32 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
     // Default spiral specific shortcuts, automatically checked on existence.
     private const DEFAULT_SHORTCUTS = [
         'app'          => ['resolve' => 'Spiral\Boot\KernelInterface'],
-        'logger'       => 'Psr\Log\LoggerInterface',
-        'memory'       => 'Spiral\Boot\MemoryInterface',
-        'container'    => 'Psr\Container\ContainerInterface',
-        'logs'         => 'Spiral\Logger\LogsInterface',
-        'http'         => 'Spiral\Http\Http',
+        'classLocator' => 'Spiral\Tokenizer\ClassesInterface',
         'console'      => 'Spiral\Console\Console',
-        'queue'        => 'Spiral\Jobs\QueueInterface',
+        'container'    => 'Psr\Container\ContainerInterface',
+        'db'           => 'Spiral\Database\DatabaseInterface',
+        'dbal'         => 'Spiral\Database\DatabaseProviderInterface',
+        'encrypter'    => 'Spiral\Encrypter\EncrypterInterface',
+        'env'          => 'Spiral\Boot\EnvironmentInterface',
+        'files'        => 'Spiral\Files\FilesInterface',
+        'guard'        => 'Spiral\Security\GuardInterface',
+        'http'         => 'Spiral\Http\Http',
+        'i18n'         => 'Spiral\Translator\TranslatorInterface',
+        'input'        => 'Spiral\Http\Request\InputManager',
+        'logger'       => 'Psr\Log\LoggerInterface',
+        'logs'         => 'Spiral\Logger\LogsInterface',
+        'memory'       => 'Spiral\Boot\MemoryInterface',
+        'orm'          => 'Cycle\ORM\ORMInterface',
         'paginators'   => 'Spiral\Pagination\PaginationProviderInterface',
+        'queue'        => 'Spiral\Jobs\QueueInterface',
         'request'      => 'Spiral\Http\Request\InputManager',
         'response'     => 'Spiral\Http\ResponseWrapper',
-        'input'        => 'Spiral\Http\Request\InputManager',
         'router'       => 'Spiral\Router\RouterInterface',
-        'files'        => 'Spiral\Files\FilesInterface',
-        'encrypter'    => 'Spiral\Encrypter\EncrypterInterface',
-        'classLocator' => 'Spiral\Tokenizer\ClassesInterface',
-        'storage'      => 'Spiral\Storage\StorageInterface',
-        'views'        => 'Spiral\Views\ViewsInterface',
-        'i18n'         => 'Spiral\Translator\TranslatorInterface',
-        'dbal'         => 'Spiral\Database\DatabaseProviderInterface',
-        'db'           => 'Spiral\Database\DatabaseInterface',
-        'orm'          => 'Cycle\ORM\ORMInterface',
-        'guard'        => 'Spiral\Security\GuardInterface',
-        'validator'    => 'Spiral\Validation\ValidationInterface',
+        'server'       => 'Spiral\Goridge\RPC',
         'snapshots'    => 'Spiral\Snapshots\SnapshotterInterface',
-        'server'       => 'Spiral\Goridge\RPC'
+        'storage'      => 'Spiral\Storage\StorageInterface',
+        'validator'    => 'Spiral\Validation\ValidationInterface',
+        'views'        => 'Spiral\Views\ViewsInterface',
     ];
 
     public const DEPENDENCIES = [Bootloader\CoreBootloader::class, ConsoleBootloader::class,];
@@ -136,8 +137,8 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
             }
 
             if (is_string($shortcut) && (
-                class_exists($shortcut, true) || interface_exists($shortcut, true)
-            )
+                    class_exists($shortcut, true) || interface_exists($shortcut, true)
+                )
             ) {
                 $this->bindProperty($property, $shortcut);
             }
