@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype\Command;
 
-use Spiral\Prototype\Dependency;
 use Spiral\Prototype\Exception\ClassNotDeclaredException;
 use Spiral\Prototype\Injector;
 use Symfony\Component\Console\Input\InputOption;
@@ -37,18 +36,14 @@ final class InjectCommand extends AbstractCommand
             return;
         }
 
+        $targets = [];
+        $errors = [];
+
         foreach ($prototyped as $class) {
             $proto = $this->getPrototypeProperties($class);
             foreach ($proto as $target) {
                 if ($target instanceof \Throwable) {
-                    $this->sprintf(
-                        "<fg=red>•</fg=red> %s: <fg=red>%s [f: %s, l: %s]</fg=red>\n",
-                        $class->getName(),
-                        $target->getMessage(),
-                        $target->getFile(),
-                        $target->getLine()
-                    );
-
+                    $errors[] = [$class->getName(), $target->getMessage(), $target->getFile(), $target->getLine()];
                     continue 2;
                 }
 
@@ -57,11 +52,7 @@ final class InjectCommand extends AbstractCommand
                 }
             }
 
-            $this->sprintf(
-                "<fg=green>•</fg=green> <fg=yellow>%s</fg=yellow>: inject %s\n",
-                $class->getName(),
-                $this->mergeTargets($proto, '<fg=cyan>%s</fg=cyan> as <fg=green>%s</fg=green>')
-            );
+            $targets[] = [$class->getName(), $this->mergeNames($proto), $this->mergeTargets($proto)];
 
             $classDefinition = $this->extractor->extract($class->getFilename(), $proto);
 
@@ -74,29 +65,26 @@ final class InjectCommand extends AbstractCommand
 
                 file_put_contents($class->getFileName(), $modified);
             } catch (\Throwable $e) {
-                $this->sprintf(
-                    "<fg=red>•</fg=red> %s: <fg=red>%s [f: %s, l: %s]</fg=red>\n",
-                    $class->getName(),
-                    $e->getMessage(),
-                    $e->getFile(),
-                    $e->getLine()
-                );
+                $errors[] = [$class, $e->getMessage(), $e->getFile(), $e->getLine()];
             }
         }
-    }
 
-    /**
-     * @param Dependency[] $dependencies
-     * @param string       $format
-     * @return string
-     */
-    private function mergeTargets(array $dependencies, string $format): string
-    {
-        $output = [];
-        foreach ($dependencies as $dependency) {
-            $output[] = sprintf($format, $dependency->type->fullName, $dependency->var);
+        if (!empty($targets)) {
+            $grid = $this->table(['Class:', 'Property:', 'Target:']);
+            foreach ($targets as $target) {
+                $grid->addRow($target);
+            }
+
+            $grid->render();
         }
 
-        return join(', ', $output);
+        if (!empty($errors)) {
+            $grid = $this->table(['Class:', 'Exception:', 'File:', 'Line:']);
+            foreach ($errors as $error) {
+                $grid->addRow($error);
+            }
+
+            $grid->render();
+        }
     }
 }

@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace Spiral\Prototype\Command;
 
-use Spiral\Prototype\Dependency;
-
 final class ListCommand extends AbstractCommand
 {
     public const NAME        = 'prototype:list';
@@ -24,6 +22,7 @@ final class ListCommand extends AbstractCommand
         $prototyped = $this->locator->getTargetClasses();
         if ($prototyped === []) {
             $this->writeln('<comment>No prototyped classes found.</comment>');
+
             return;
         }
 
@@ -36,39 +35,5 @@ final class ListCommand extends AbstractCommand
         }
 
         $grid->render();
-    }
-
-    /**
-     * @param Dependency[] $properties
-     * @return string
-     */
-    private function mergeNames(array $properties): string
-    {
-        return join("\n", array_keys($properties));
-    }
-
-    /**
-     * @param Dependency[] $properties
-     * @return string
-     */
-    private function mergeTargets(array $properties): string
-    {
-        $result = [];
-
-        foreach ($properties as $target) {
-            if ($target instanceof \Throwable) {
-                $result[] = sprintf('<fg=red>%s</fg=red>', $target->getMessage());
-                continue;
-            }
-
-            if ($target === null) {
-                $result[] = '<fg=yellow>undefined</fg=yellow>';
-                continue;
-            }
-
-            $result[] = $target->type->fullName;
-        }
-
-        return join("\n", $result);
     }
 }
