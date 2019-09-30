@@ -27,6 +27,7 @@ class InjectorTest extends TestCase
     }
 
     /**
+     * @throws \ReflectionException
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
     public function testSimpleInjection(): void
@@ -43,6 +44,7 @@ class InjectorTest extends TestCase
     }
 
     /**
+     * @throws \ReflectionException
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
     public function testTraitRemove(): void
@@ -67,6 +69,7 @@ class InjectorTest extends TestCase
     }
 
     /**
+     * @throws \ReflectionException
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
     public function testParentConstructorCallInjection(): void
@@ -84,6 +87,7 @@ class InjectorTest extends TestCase
     }
 
     /**
+     * @throws \ReflectionException
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
     public function testNoParentConstructorCallInjection(): void
@@ -101,20 +105,56 @@ class InjectorTest extends TestCase
     }
 
     /**
+     * @throws \ReflectionException
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
     public function testModifyConstructor(): void
     {
+        $filename = __DIR__ . '/Fixtures/WithConstructor.php';
+        $traverser = new Traverse\Extractor();
+
+        $parameters = $traverser->extractFromFilename($filename);
+        $this->assertArrayNotHasKey('testClass', $parameters);
+
         $i = new Injector();
 
-        $filename = __DIR__ . '/Fixtures/WithConstructor.php';
-        $r = $i->injectDependencies(
+        $printed = $i->injectDependencies(
             file_get_contents($filename),
             $this->getDefinition($filename, ['testClass' => TestClass::class])
         );
 
-        $this->assertContains('@param HydratedClass $h', $r);
-        $this->assertContains('@param TestClass $testClass', $r);
+        $this->assertContains('@param HydratedClass $h', $printed);
+        $this->assertContains('@param TestClass $testClass', $printed);
+
+        $parameters = $traverser->extractFromString($printed);
+        $this->assertArrayHasKey('testClass', $parameters);
+    }
+
+    /**
+     * @throws \ReflectionException
+     * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
+     */
+    public function testPriorOptionalConstructorParameters(): void
+    {
+        $filename = __DIR__ . '/Fixtures/OptionalConstructorArgsClass.php';
+        $traverser = new Traverse\Extractor();
+
+        $parameters = $traverser->extractFromFilename($filename);
+        $this->assertArrayNotHasKey('testClass', $parameters);
+
+        $i = new Injector();
+
+        $printed = $i->injectDependencies(
+            file_get_contents($filename),
+            $this->getDefinition($filename, ['testClass' => TestClass::class])
+        );
+
+        $parameters = $traverser->extractFromString($printed);
+        $this->assertArrayHasKey('testClass', $parameters);
+
+        foreach ($parameters as $parameter) {
+            $this->assertEmpty($parameter['optional']);
+        }
     }
 
     /**
@@ -126,7 +166,7 @@ class InjectorTest extends TestCase
         $i = new Injector();
 
         $filename = __DIR__ . '/ClassNode/ConflictResolver/Fixtures/ChildClass.php';
-        $r = $i->injectDependencies(
+        $printed = $i->injectDependencies(
             file_get_contents($filename),
             $this->getDefinition($filename, [
                 'test'  => ResolverFixtures\Test::class,
@@ -135,35 +175,51 @@ class InjectorTest extends TestCase
             ])
         );
 
-        $this->assertContains('string $str1,', $r);
-        $this->assertContains('* @param string $str', $r);
+        $traverser = new Traverse\Extractor();
+        $parameters = $traverser->extractFromString($printed);
 
-        $this->assertContains(', $var,', $r); //adding ", " to show that there's no type
-        $this->assertContains(' * @param $var', $r);
+        foreach ($parameters as $parameter) {
+            $this->assertFalse($parameter['optional']);
+        }
+
+        $this->assertArrayHasKey('str1', $parameters);
+        $this->assertEquals('string', $parameters['str1']['type']);
+        $this->assertContains('* @param string $str', $printed);
+
+        $this->assertArrayHasKey('var', $parameters);
+        $this->assertNull($parameters['var']['type']);
+        $this->assertContains(' * @param $var', $printed);
 
         //Parameter type ATest3 has an alias in a child class
-        $this->assertContains('ATestAlias $testApp,', $r);
-        $this->assertNotContains('ATest3 $testApp,', $r);
-        $this->assertContains('@param ATestAlias $testApp', $r);
-        $this->assertNotContains('@param ATest3 $testApp', $r);
+        $this->assertArrayHasKey('testApp', $parameters);
+        $this->assertEquals('ATestAlias', $parameters['testApp']['type']);
+        $this->assertContains('@param ATestAlias $testApp', $printed);
+        $this->assertNotContains('@param ATest3 $testApp', $printed);
 
-        $this->assertContains('?string $str2,', $r);
-        $this->assertContains('* @param string|null $str2', $r);
+        $this->assertArrayHasKey('str2', $parameters);
+        $this->assertEquals('?string', $parameters['str2']['type']);
+        $this->assertContains('* @param string|null $str2', $printed);
 
-        $this->assertContains('?\StdClass $nullableClass1,', $r);
-        $this->assertContains('* @param \StdClass|null $nullableClass1', $r);
+        //We do not track leading "\" in the class name here
+        $this->assertArrayHasKey('nullableClass1', $parameters);
+        $this->assertEquals('?StdClass', $parameters['nullableClass1']['type']);
+        $this->assertContains('* @param \StdClass|null $nullableClass1', $printed);
 
-        $this->assertContains('?Test $test1 = null,', $r);
-        $this->assertContains('* @param Test|null $test1', $r);
+        $this->assertArrayHasKey('test1', $parameters);
+        $this->assertEquals('?Test', $parameters['test1']['type']);
+        $this->assertContains('* @param Test|null $test1', $printed);
 
-        $this->assertContains('?string $str3 = null,', $r);
-        $this->assertContains('* @param string|null $str3', $r);
+        $this->assertArrayHasKey('str3', $parameters);
+        $this->assertEquals('?string', $parameters['str3']['type']);
+        $this->assertContains('* @param string|null $str3', $printed);
 
-        $this->assertContains('?int $int = 123,', $r);
-        $this->assertContains('* @param int|null $int', $r);
+        $this->assertArrayHasKey('int', $parameters);
+        $this->assertEquals('?int', $parameters['int']['type']);
+        $this->assertContains('* @param int|null $int', $printed);
 
-        $this->assertContains('?\StdClass $nullableClass2 = null,', $r);
-        $this->assertContains('* @param \StdClass|null $nullableClass2', $r);
+        $this->assertArrayHasKey('nullableClass2', $parameters);
+        $this->assertEquals('?StdClass', $parameters['nullableClass2']['type']);
+        $this->assertContains('* @param \StdClass|null $nullableClass2', $printed);
     }
 
     /**

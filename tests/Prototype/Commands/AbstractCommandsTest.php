@@ -10,15 +10,33 @@ namespace Spiral\Prototype\Tests\Commands;
 
 use PHPUnit\Framework\TestCase;
 use Spiral\Prototype\Tests\Fixtures\TestApp;
+use Spiral\Prototype\Tests\Storage;
 
 abstract class AbstractCommandsTest extends TestCase
 {
-    protected const STORE = ['TestClass.php', 'ChildClass.php', 'ChildWithConstructorClass.php', 'WithConstructor.php'];
+    protected const STORE = [
+        'TestClass.php',
+        'ChildClass.php',
+        'ChildWithConstructorClass.php',
+        'WithConstructor.php',
+        'OptionalConstructorArgsClass.php'
+    ];
 
     /** @var TestApp */
     protected $app;
 
+    /** @var array */
     protected $buf = [];
+    /**
+     * @var Storage
+     */
+    private $storage;
+
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
+        $this->storage = new Storage($this->dir() . '/Fixtures/');
+        parent::__construct($name, $data, $dataName);
+    }
 
     public function setUp()
     {
@@ -29,15 +47,15 @@ abstract class AbstractCommandsTest extends TestCase
             'cache'  => sys_get_temp_dir()
         ], null, false);
 
-        foreach (self::STORE as $name) {
-            $this->buf[$name] = file_get_contents($this->dir() . '/Fixtures/' . $name);
+        foreach (static::STORE as $name) {
+            $this->storage->store($name);
         }
     }
 
     public function tearDown()
     {
-        foreach (self::STORE as $name) {
-            file_put_contents($this->dir() . '/Fixtures/' . $name, $this->buf[$name]);
+        foreach (static::STORE as $name) {
+            $this->storage->restore($name);
         }
     }
 

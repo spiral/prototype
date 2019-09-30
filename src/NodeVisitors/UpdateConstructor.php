@@ -65,6 +65,10 @@ final class UpdateConstructor extends NodeVisitorAbstract
      */
     private function addDependencies(Node\Stmt\ClassMethod $constructor): void
     {
+        if (!empty($this->definition->dependencies)) {
+            $this->removeConstructorParamsOption($constructor);
+        }
+
         foreach ($this->definition->dependencies as $name => $dependency) {
             $constructor->params[] = (new Param($dependency->var))->setType(
                 new Node\Name($this->getPropertyType($dependency))
@@ -81,6 +85,16 @@ final class UpdateConstructor extends NodeVisitorAbstract
                     )
                 )
             );
+        }
+    }
+
+    /**
+     * @param Node\Stmt\ClassMethod $constructor
+     */
+    private function removeConstructorParamsOption(Node\Stmt\ClassMethod $constructor): void
+    {
+        foreach ($constructor->params as $param) {
+            $param->default = null;
         }
     }
 
