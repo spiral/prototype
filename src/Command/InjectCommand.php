@@ -37,13 +37,12 @@ final class InjectCommand extends AbstractCommand
         }
 
         $targets = [];
-        $errors = [];
 
         foreach ($prototyped as $class) {
             $proto = $this->getPrototypeProperties($class);
             foreach ($proto as $target) {
                 if ($target instanceof \Throwable) {
-                    $errors[] = [$class->getName(), $target->getMessage(), $target->getFile(), $target->getLine()];
+                    $targets[] = [$class->getName(), $target->getMessage(), $target->getFile(), $target->getLine()];
                     continue 2;
                 }
 
@@ -65,7 +64,7 @@ final class InjectCommand extends AbstractCommand
 
                 file_put_contents($class->getFileName(), $modified);
             } catch (\Throwable $e) {
-                $errors[] = [$class, $e->getMessage(), $e->getFile(), $e->getLine()];
+                $targets[] = [$class, $e->getMessage(), $e->getFile(), $e->getLine()];
             }
         }
 
@@ -73,15 +72,6 @@ final class InjectCommand extends AbstractCommand
             $grid = $this->table(['Class:', 'Property:', 'Target:']);
             foreach ($targets as $target) {
                 $grid->addRow($target);
-            }
-
-            $grid->render();
-        }
-
-        if (!empty($errors)) {
-            $grid = $this->table(['Class:', 'Exception:', 'File:', 'Line:']);
-            foreach ($errors as $error) {
-                $grid->addRow($error);
             }
 
             $grid->render();
