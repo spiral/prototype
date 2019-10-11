@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -23,6 +24,13 @@ final class Dependency
     public $var;
 
     /**
+     * Dependency constructor.
+     */
+    private function __construct()
+    {
+    }
+
+    /**
      * @param string $name
      * @param string $type
      * @return Dependency
@@ -35,12 +43,5 @@ final class Dependency
         $dependency->var = $name;
 
         return $dependency;
-    }
-
-    /**
-     * Dependency constructor.
-     */
-    private function __construct()
-    {
     }
 }

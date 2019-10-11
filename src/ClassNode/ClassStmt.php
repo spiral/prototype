@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -23,18 +24,10 @@ final class ClassStmt
     public $alias;
 
     /**
-     * @param string      $name
-     * @param string|null $alias
-     * @return ClassStmt
+     * ClassStmt constructor.
      */
-    public static function create(string $name, ?string $alias): ClassStmt
+    private function __construct()
     {
-        $stmt = new self();
-        $stmt->name = $name;
-        $stmt->shortName = Utils::shortName($name);
-        $stmt->alias = $alias;
-
-        return $stmt;
     }
 
     /**
@@ -50,9 +43,17 @@ final class ClassStmt
     }
 
     /**
-     * ClassStmt constructor.
+     * @param string      $name
+     * @param string|null $alias
+     * @return ClassStmt
      */
-    private function __construct()
+    public static function create(string $name, ?string $alias): ClassStmt
     {
+        $stmt = new self();
+        $stmt->name = $name;
+        $stmt->shortName = Utils::shortName($name);
+        $stmt->alias = $alias;
+
+        return $stmt;
     }
 }

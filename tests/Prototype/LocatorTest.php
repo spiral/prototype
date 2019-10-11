@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Spiral Framework.
  *
@@ -18,7 +21,7 @@ use Symfony\Component\Finder\Finder;
 
 class LocatorTest extends TestCase
 {
-    public function testLocate()
+    public function testLocate(): void
     {
         $classes = $this->makeClasses();
         $l = new PrototypeLocator($classes);
@@ -26,7 +29,7 @@ class LocatorTest extends TestCase
         $this->assertArrayHasKey(TestClass::class, $l->getTargetClasses());
     }
 
-    public function testLocateNot()
+    public function testLocateNot(): void
     {
         $classes = $this->makeClasses();
         $l = new PrototypeLocator($classes);

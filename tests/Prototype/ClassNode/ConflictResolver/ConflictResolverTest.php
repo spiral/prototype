@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spiral\Prototype\Tests\ClassNode\ConflictResolver;
 
 use PHPUnit\Framework\TestCase;
@@ -15,7 +17,7 @@ class ConflictResolverTest extends TestCase
     /**
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
-    public function testResolveInternalConflicts()
+    public function testResolveInternalConflicts(): void
     {
         $i = new Injector();
 
@@ -79,7 +81,7 @@ class ConflictResolverTest extends TestCase
     /**
      * @throws \Spiral\Prototype\Exception\ClassNotDeclaredException
      */
-    public function testResolveWithAliasForParentConstructor()
+    public function testResolveWithAliasForParentConstructor(): void
     {
         $i = new Injector();
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -41,7 +42,8 @@ trait PrototypeTrait
         $registry = $container->get(PrototypeRegistry::class);
 
         $target = $registry->resolveProperty($name);
-        if ($target === null ||
+        if (
+            $target === null ||
             $target instanceof \Throwable ||
             $target->type->fullName === null
         ) {

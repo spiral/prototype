@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -18,6 +19,13 @@ abstract class AbstractEntity
     public $sequence = 0;
 
     /**
+     * AbstractEntity constructor.
+     */
+    protected function __construct()
+    {
+    }
+
+    /**
      * @return string
      */
     public function fullName(): string
@@ -28,12 +36,5 @@ abstract class AbstractEntity
         }
 
         return $name;
-    }
-
-    /**
-     * AbstractEntity constructor.
-     */
-    protected function __construct()
-    {
     }
 }

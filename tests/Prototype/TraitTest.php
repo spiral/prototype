@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Spiral Framework.
  *
@@ -34,7 +37,7 @@ class TraitTest extends TestCase
 
         $c = new Container();
 
-        ContainerScope::runScope($c, static function () use ($t) {
+        ContainerScope::runScope($c, static function () use ($t): void {
             $t->getTest();
         });
     }
@@ -49,7 +52,7 @@ class TraitTest extends TestCase
         $c->bindSingleton(PrototypeRegistry::class, $p = new PrototypeRegistry($c));
         $p->bindProperty('testClass', 'Invalid');
 
-        ContainerScope::runScope($c, static function () use ($t) {
+        ContainerScope::runScope($c, static function () use ($t): void {
             $t->getTest();
         });
     }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Spiral Framework.
  *
@@ -39,7 +42,7 @@ abstract class AbstractCommandsTest extends TestCase
         parent::__construct($name, $data, $dataName);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->app = TestApp::init([
             'root'   => $this->dir(),
@@ -53,7 +56,7 @@ abstract class AbstractCommandsTest extends TestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach (static::STORE as $name) {
             $this->storage->restore($name);

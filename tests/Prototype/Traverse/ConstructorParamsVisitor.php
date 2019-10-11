@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -20,7 +21,7 @@ class ConstructorParamsVisitor extends NodeVisitorAbstract
     /**
      * {@inheritDoc}
      */
-    public function leaveNode(Node $node)
+    public function leaveNode(Node $node): void
     {
         if ($node instanceof Node\Stmt\ClassMethod && $node->name->name === '__construct') {
             foreach ($node->params as $param) {
@@ -31,7 +32,7 @@ class ConstructorParamsVisitor extends NodeVisitorAbstract
                         $type = join('\\', $param->type->type->parts);
                     }
 
-                    $type="?$type";
+                    $type = "?$type";
                 } elseif ($param->type instanceof Node\Name) {
                     $type = join('\\', $param->type->parts);
                 } else {

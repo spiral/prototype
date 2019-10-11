@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -24,7 +25,7 @@ class Storage
 
     public function store(string $name): void
     {
-        $this->storage[$name] = file_get_contents($this->dir .  $name);
+        $this->storage[$name] = file_get_contents($this->dir . $name);
     }
 
     public function restore(string $name): void

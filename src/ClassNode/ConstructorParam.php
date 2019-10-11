@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -28,6 +29,13 @@ final class ConstructorParam
 
     /** @var bool */
     private $builtIn;
+
+    /**
+     * ConstructorParam constructor.
+     */
+    private function __construct()
+    {
+    }
 
     /**
      * @param \ReflectionParameter $parameter
@@ -60,12 +68,5 @@ final class ConstructorParam
     public function isBuiltIn(): bool
     {
         return $this->builtIn;
-    }
-
-    /**
-     * ConstructorParam constructor.
-     */
-    private function __construct()
-    {
     }
 }

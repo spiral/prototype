@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Spiral Framework.
  *
@@ -19,7 +22,7 @@ class TestClass
         return $this->testClass;
     }
 
-    public function method()
+    public function method(): void
     {
         $test2 = $this->test2;
         $test3 = $this->test3;

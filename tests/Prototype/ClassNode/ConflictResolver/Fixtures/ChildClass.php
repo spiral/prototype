@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spiral\Prototype\Tests\ClassNode\ConflictResolver\Fixtures;
 
 use Spiral\Prototype\Tests\ClassNode\ConflictResolver\Fixtures\ATest3 as ATestAlias;

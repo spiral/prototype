@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Spiral Framework.
  *
@@ -14,11 +17,11 @@ class TestEmptyClass
 {
     use PrototypeTrait;
 
-    public function getTest()
+    public function getTest(): void
     {
     }
 
-    public function method()
+    public function method(): void
     {
     }
 }

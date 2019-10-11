@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -44,7 +45,8 @@ final class LocateProperties extends NodeVisitorAbstract
      */
     public function enterNode(Node $node)
     {
-        if ($node instanceof Node\Expr\PropertyFetch &&
+        if (
+            $node instanceof Node\Expr\PropertyFetch &&
             $node->var instanceof Node\Expr\Variable &&
             $node->var->name === 'this'
         ) {

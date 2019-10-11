@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spiral\Prototype\Tests\Fixtures;
 
 use Spiral\Prototype\Traits\PrototypeTrait;
@@ -17,7 +19,7 @@ class ChildWithConstructorClass extends WithConstructor
         return $this->testClass;
     }
 
-    public function method()
+    public function method(): void
     {
         $test2 = $this->test2;
         $test3 = $this->test3;

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Spiral Framework.
  *
@@ -19,7 +22,7 @@ use Spiral\Prototype\Tests\Commands\Fixtures\ResolvedInterface;
 
 class TestApp extends Kernel
 {
-    const LOAD = [
+    public const LOAD = [
         PrototypeBootloader::class
     ];
 

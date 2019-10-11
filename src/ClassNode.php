@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -22,9 +23,6 @@ final class ClassNode
     /** @var string */
     public $class;
 
-    /** @var ClassNode\ClassStmt[] */
-    private $stmts = [];
-
     /** @var bool */
     public $hasConstructor = false;
 
@@ -36,6 +34,16 @@ final class ClassNode
 
     /** @var Dependency[] */
     public $dependencies = [];
+
+    /** @var ClassNode\ClassStmt[] */
+    private $stmts = [];
+
+    /**
+     * ClassNode constructor.
+     */
+    private function __construct()
+    {
+    }
 
     /**
      * @param string $class
@@ -96,12 +104,5 @@ final class ClassNode
     private function addStmt(ClassNode\ClassStmt $stmt): void
     {
         $this->stmts[(string)$stmt] = $stmt;
-    }
-
-    /**
-     * ClassNode constructor.
-     */
-    private function __construct()
-    {
     }
 }

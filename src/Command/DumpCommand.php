@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -25,7 +26,7 @@ final class DumpCommand extends AbstractCommand
      * @param PrototypeBootloader $prototypeBootloader
      * @throws \ReflectionException
      */
-    public function perform(PrototypeBootloader $prototypeBootloader)
+    public function perform(PrototypeBootloader $prototypeBootloader): void
     {
         // reindex annotations
         $prototypeBootloader->initAnnotations($this->container, true);

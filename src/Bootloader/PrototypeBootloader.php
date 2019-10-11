@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -27,6 +28,7 @@ use Spiral\Prototype\PrototypeRegistry;
  */
 final class PrototypeBootloader extends Bootloader\Bootloader implements Container\SingletonInterface
 {
+    public const DEPENDENCIES = [Bootloader\CoreBootloader::class, ConsoleBootloader::class,];
     // Default spiral specific shortcuts, automatically checked on existence.
     private const DEFAULT_SHORTCUTS = [
         'app'          => ['resolve' => 'Spiral\Boot\KernelInterface'],
@@ -42,6 +44,8 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
         'http'         => 'Spiral\Http\Http',
         'i18n'         => 'Spiral\Translator\TranslatorInterface',
         'input'        => 'Spiral\Http\Request\InputManager',
+        'session'      => ['resolve' => 'Spiral\Session\SessionScope', 'with' => ['Spiral\Session\SessionInterface']],
+        'cookies'      => 'Spiral\Cookies\CookieManager',
         'logger'       => 'Psr\Log\LoggerInterface',
         'logs'         => 'Spiral\Logger\LogsInterface',
         'memory'       => 'Spiral\Boot\MemoryInterface',
@@ -57,8 +61,6 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
         'validator'    => 'Spiral\Validation\ValidationInterface',
         'views'        => 'Spiral\Views\ViewsInterface',
     ];
-
-    public const DEPENDENCIES = [Bootloader\CoreBootloader::class, ConsoleBootloader::class,];
 
     /** @var MemoryInterface */
     private $memory;
@@ -80,7 +82,7 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
      * @param ConsoleBootloader  $console
      * @param ContainerInterface $container
      */
-    public function boot(ConsoleBootloader $console, ContainerInterface $container)
+    public function boot(ConsoleBootloader $console, ContainerInterface $container): void
     {
         $console->addCommand(Command\DumpCommand::class);
         $console->addCommand(Command\ListCommand::class);
@@ -105,7 +107,7 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
      * @param string $property
      * @param string $type
      */
-    public function bindProperty(string $property, string $type)
+    public function bindProperty(string $property, string $type): void
     {
         $this->registry->bindProperty($property, $type);
     }
@@ -120,36 +122,9 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
 
     /**
      * @param ContainerInterface $container
-     */
-    private function initDefaults(ContainerInterface $container)
-    {
-        foreach (self::DEFAULT_SHORTCUTS as $property => $shortcut) {
-            if (is_array($shortcut) && isset($shortcut['resolve'])) {
-                try {
-                    $target = $container->get($shortcut['resolve']);
-                    if (is_object($target)) {
-                        $this->bindProperty($property, get_class($target));
-                    }
-                } catch (ContainerExceptionInterface $e) {
-                    continue;
-                }
-                continue;
-            }
-
-            if (is_string($shortcut) && (
-                    class_exists($shortcut, true) || interface_exists($shortcut, true)
-                )
-            ) {
-                $this->bindProperty($property, $shortcut);
-            }
-        }
-    }
-
-    /**
-     * @param ContainerInterface $container
      * @param bool               $reset
      */
-    public function initAnnotations(ContainerInterface $container, bool $reset = false)
+    public function initAnnotations(ContainerInterface $container, bool $reset = false): void
     {
         $prototyped = $this->memory->loadData('prototyped');
         if (!$reset && $prototyped !== null) {
@@ -175,7 +150,7 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
     /**
      * @param ContainerInterface $container
      */
-    public function initCycle(ContainerInterface $container)
+    public function initCycle(ContainerInterface $container): void
     {
         if (!$container->has(ORM\SchemaInterface::class)) {
             return;
@@ -195,6 +170,44 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
             }
 
             $this->bindProperty(Inflector::pluralize($role), $repository);
+        }
+    }
+
+    /**
+     * @param ContainerInterface $container
+     */
+    private function initDefaults(ContainerInterface $container): void
+    {
+        foreach (self::DEFAULT_SHORTCUTS as $property => $shortcut) {
+            if (is_array($shortcut) && isset($shortcut['resolve'])) {
+                if (isset($shortcut['with'])) {
+                    // check dependencies
+                    foreach ($shortcut['with'] as $dep) {
+                        if (!class_exists($dep, true) && !interface_exists($dep, true)) {
+                            continue 2;
+                        }
+                    }
+                }
+
+                try {
+                    $target = $container->get($shortcut['resolve']);
+                    if (is_object($target)) {
+                        $this->bindProperty($property, get_class($target));
+                    }
+                } catch (ContainerExceptionInterface $e) {
+                    continue;
+                }
+
+                continue;
+            }
+
+            if (
+                is_string($shortcut)
+                && (class_exists($shortcut, true)
+                || interface_exists($shortcut, true))
+            ) {
+                $this->bindProperty($property, $shortcut);
+            }
         }
     }
 }

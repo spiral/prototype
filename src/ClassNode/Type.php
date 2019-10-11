@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -43,15 +44,6 @@ final class Type
     }
 
     /**
-     * @param string $type
-     * @return bool
-     */
-    private function hasShortName(string $type): bool
-    {
-        return mb_strpos($type, '\\') !== false;
-    }
-
-    /**
      * @return string
      */
     public function getAliasOrShortName(): string
@@ -76,5 +68,14 @@ final class Type
     public function name(): string
     {
         return $this->fullName ?? $this->shortName;
+    }
+
+    /**
+     * @param string $type
+     * @return bool
+     */
+    private function hasShortName(string $type): bool
+    {
+        return mb_strpos($type, '\\') !== false;
     }
 }
