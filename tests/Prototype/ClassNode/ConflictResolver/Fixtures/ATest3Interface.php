@@ -6,6 +6,7 @@
  * @license MIT
  * @author  Valentin V (vvval)
  */
+
 declare(strict_types=1);
 
 namespace Spiral\Prototype\Tests\ClassNode\ConflictResolver\Fixtures;

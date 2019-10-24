@@ -6,6 +6,7 @@
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
+
 declare(strict_types=1);
 
 namespace Spiral\Prototype\Bootloader;
@@ -28,7 +29,11 @@ use Spiral\Prototype\PrototypeRegistry;
  */
 final class PrototypeBootloader extends Bootloader\Bootloader implements Container\SingletonInterface
 {
-    public const DEPENDENCIES = [Bootloader\CoreBootloader::class, ConsoleBootloader::class,];
+    protected const DEPENDENCIES = [
+        Bootloader\CoreBootloader::class,
+        ConsoleBootloader::class,
+    ];
+
     // Default spiral specific shortcuts, automatically checked on existence.
     private const DEFAULT_SHORTCUTS = [
         'app'          => ['resolve' => 'Spiral\Boot\KernelInterface'],
@@ -60,6 +65,8 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
         'storage'      => 'Spiral\Storage\StorageInterface',
         'validator'    => 'Spiral\Validation\ValidationInterface',
         'views'        => 'Spiral\Views\ViewsInterface',
+        'auth'         => ['Spiral\Auth\AuthScope', 'with' => ['Spiral\Auth\AuthContextInterface']],
+        'authTokens'   => 'Spiral\Auth\TokenStorageInterface'
     ];
 
     /** @var MemoryInterface */
@@ -204,7 +211,7 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
             if (
                 is_string($shortcut)
                 && (class_exists($shortcut, true)
-                || interface_exists($shortcut, true))
+                    || interface_exists($shortcut, true))
             ) {
                 $this->bindProperty($property, $shortcut);
             }
