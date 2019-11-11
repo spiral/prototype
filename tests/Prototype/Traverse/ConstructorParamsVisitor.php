@@ -42,7 +42,9 @@ class ConstructorParamsVisitor extends NodeVisitorAbstract
 
                 $this->params[$param->var->name] = [
                     'type'     => $type,
-                    'optional' => !empty($param->default)
+                    'optional' => !empty($param->default),
+                    'byRef'    => !empty($param->byRef),
+                    'variadic' => !empty($param->variadic),
                 ];
             }
         }

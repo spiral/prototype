@@ -29,6 +29,12 @@ final class ConstructorParam
     public $type;
 
     /** @var bool */
+    public $byRef = false;
+
+    /** @var bool */
+    public $isVariadic = false;
+
+    /** @var bool */
     private $builtIn;
 
     /**
@@ -50,15 +56,20 @@ final class ConstructorParam
         $stmt->name = $parameter->getName();
 
         if ($parameter->hasType()) {
-            $stmt->type = Type::create($parameter->getType()->getName());
-            $stmt->builtIn = $parameter->getType()->isBuiltin();
-            $stmt->nullable = $parameter->getType()->allowsNull();
-
-            if ($parameter->isDefaultValueAvailable()) {
-                $stmt->hasDefault = true;
-                $stmt->default = $parameter->getDefaultValue();
-            }
+            /** @var \ReflectionType $type */
+            $type = $parameter->getType();
+            $stmt->type = Type::create($type->getName());
+            $stmt->builtIn = $type->isBuiltin();
+            $stmt->nullable = $type->allowsNull();
         }
+
+        if ($parameter->isDefaultValueAvailable()) {
+            $stmt->hasDefault = true;
+            $stmt->default = $parameter->getDefaultValue();
+        }
+
+        $stmt->byRef = $parameter->isPassedByReference();
+        $stmt->isVariadic = $parameter->isVariadic();
 
         return $stmt;
     }

@@ -173,9 +173,11 @@ class InjectorTest extends TestCase
         $parameters = $traverser->extractFromString($printed);
         $this->assertArrayHasKey('testClass', $parameters);
 
-        foreach ($parameters as $parameter) {
-            $this->assertEmpty($parameter['optional']);
-        }
+        $this->assertFalse($parameters['a']['optional']);
+        $this->assertFalse($parameters['b']['optional']);
+        $this->assertTrue($parameters['c']['optional']);
+        $this->assertTrue($parameters['d']['optional']);
+        $this->assertTrue($parameters['e']['optional']);
     }
 
     /**
@@ -199,48 +201,74 @@ class InjectorTest extends TestCase
         $traverser = new Traverse\Extractor();
         $parameters = $traverser->extractFromString($printed);
 
-        foreach ($parameters as $parameter) {
-            $this->assertFalse($parameter['optional']);
-        }
-
         $this->assertArrayHasKey('str1', $parameters);
         $this->assertEquals('string', $parameters['str1']['type']);
         $this->assertContains('* @param string $str', $printed);
+        $this->assertFalse($parameters['str1']['optional']);
+        $this->assertFalse($parameters['str1']['byRef']);
+        $this->assertFalse($parameters['str1']['variadic']);
 
         $this->assertArrayHasKey('var', $parameters);
         $this->assertNull($parameters['var']['type']);
         $this->assertContains(' * @param $var', $printed);
+        $this->assertFalse($parameters['var']['optional']);
+
+        $this->assertArrayHasKey('untypedVarWithDefault', $parameters);
+        $this->assertNull($parameters['untypedVarWithDefault']['type']);
+        $this->assertContains('* @param $untypedVarWithDefault', $printed);
+        $this->assertTrue($parameters['untypedVarWithDefault']['optional']);
+
+        $this->assertArrayHasKey('refVar', $parameters);
+        $this->assertNull($parameters['refVar']['type']);
+        $this->assertContains('* @param $refVar', $printed);
+        $this->assertFalse($parameters['refVar']['optional']);
+        $this->assertTrue($parameters['refVar']['byRef']);
+        $this->assertFalse($parameters['refVar']['variadic']);
 
         //Parameter type ATest3 has an alias in a child class
         $this->assertArrayHasKey('testApp', $parameters);
         $this->assertEquals('ATestAlias', $parameters['testApp']['type']);
         $this->assertContains('@param ATestAlias $testApp', $printed);
         $this->assertNotContains('@param ATest3 $testApp', $printed);
+        $this->assertFalse($parameters['testApp']['optional']);
 
         $this->assertArrayHasKey('str2', $parameters);
         $this->assertEquals('?string', $parameters['str2']['type']);
         $this->assertContains('* @param string|null $str2', $printed);
+        $this->assertFalse($parameters['str2']['optional']);
 
         //We do not track leading "\" in the class name here
         $this->assertArrayHasKey('nullableClass1', $parameters);
         $this->assertEquals('?StdClass', $parameters['nullableClass1']['type']);
         $this->assertContains('* @param \StdClass|null $nullableClass1', $printed);
+        $this->assertFalse($parameters['nullableClass1']['optional']);
 
         $this->assertArrayHasKey('test1', $parameters);
         $this->assertEquals('?Test', $parameters['test1']['type']);
         $this->assertContains('* @param Test|null $test1', $printed);
+        $this->assertTrue($parameters['test1']['optional']);
 
         $this->assertArrayHasKey('str3', $parameters);
         $this->assertEquals('?string', $parameters['str3']['type']);
         $this->assertContains('* @param string|null $str3', $printed);
+        $this->assertTrue($parameters['str3']['optional']);
 
         $this->assertArrayHasKey('int', $parameters);
         $this->assertEquals('?int', $parameters['int']['type']);
         $this->assertContains('* @param int|null $int', $printed);
+        $this->assertTrue($parameters['int']['optional']);
 
         $this->assertArrayHasKey('nullableClass2', $parameters);
         $this->assertEquals('?StdClass', $parameters['nullableClass2']['type']);
         $this->assertContains('* @param \StdClass|null $nullableClass2', $printed);
+        $this->assertTrue($parameters['nullableClass2']['optional']);
+
+        $this->assertArrayHasKey('variadicVar', $parameters);
+        $this->assertEquals('string', $parameters['variadicVar']['type']);
+        $this->assertContains('* @param string ...$variadicVar', $printed);
+        $this->assertFalse($parameters['variadicVar']['optional']);
+        $this->assertFalse($parameters['variadicVar']['byRef']);
+        $this->assertTrue($parameters['variadicVar']['variadic']);
     }
 
     /**

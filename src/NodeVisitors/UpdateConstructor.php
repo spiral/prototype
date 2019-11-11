@@ -47,11 +47,10 @@ final class UpdateConstructor extends NodeVisitorAbstract
         }
 
         $constructor = $this->getConstructorAttribute($node);
+        $this->addDependencies($constructor);
         if (!$this->definition->hasConstructor && $this->definition->constructorParams) {
             $this->addParentConstructorCall($constructor);
         }
-
-        $this->addDependencies($constructor);
 
         $constructor->setDocComment(
             $this->addComments($constructor->getDocComment())
@@ -67,10 +66,6 @@ final class UpdateConstructor extends NodeVisitorAbstract
      */
     private function addDependencies(Node\Stmt\ClassMethod $constructor): void
     {
-        if (!empty($this->definition->dependencies)) {
-            $this->removeConstructorParamsOption($constructor);
-        }
-
         foreach ($this->definition->dependencies as $name => $dependency) {
             $constructor->params[] = (new Param($dependency->var))->setType(
                 new Node\Name($this->getPropertyType($dependency))
@@ -93,16 +88,6 @@ final class UpdateConstructor extends NodeVisitorAbstract
     /**
      * @param Node\Stmt\ClassMethod $constructor
      */
-    private function removeConstructorParamsOption(Node\Stmt\ClassMethod $constructor): void
-    {
-        foreach ($constructor->params as $param) {
-            $param->default = null;
-        }
-    }
-
-    /**
-     * @param Node\Stmt\ClassMethod $constructor
-     */
     private function addParentConstructorCall(Node\Stmt\ClassMethod $constructor): void
     {
         $parentConstructorDependencies = [];
@@ -117,6 +102,14 @@ final class UpdateConstructor extends NodeVisitorAbstract
                 }
 
                 $cp->setType(new Node\Name($type));
+            }
+
+            if ($param->byRef) {
+                $cp->makeByRef();
+            }
+
+            if ($param->isVariadic) {
+                $cp->makeVariadic();
             }
 
             if ($param->hasDefault) {
@@ -160,6 +153,13 @@ final class UpdateConstructor extends NodeVisitorAbstract
 
         $params = [];
 
+        foreach ($this->definition->dependencies as $name => $dependency) {
+            $params[] = new Annotation\Line(
+                sprintf('%s $%s', $this->getPropertyType($dependency), $dependency->var),
+                'param'
+            );
+        }
+
         if (!$this->definition->hasConstructor) {
             foreach ($this->definition->constructorParams as $param) {
                 if (!empty($param->type)) {
@@ -169,7 +169,7 @@ final class UpdateConstructor extends NodeVisitorAbstract
                     }
 
                     $params[] = new Annotation\Line(
-                        sprintf('%s $%s', $type, $param->name),
+                        sprintf($param->isVariadic ? '%s ...$%s' : '%s $%s', $type, $param->name),
                         'param'
                     );
                 } else {
@@ -179,13 +179,6 @@ final class UpdateConstructor extends NodeVisitorAbstract
                     );
                 }
             }
-        }
-
-        foreach ($this->definition->dependencies as $name => $dependency) {
-            $params[] = new Annotation\Line(
-                sprintf('%s $%s', $this->getPropertyType($dependency), $dependency->var),
-                'param'
-            );
         }
 
         $placementID = 0;
