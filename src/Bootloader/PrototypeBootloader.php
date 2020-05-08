@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Spiral\Prototype\Bootloader;
 
 use Cycle\ORM;
-use Doctrine\Common\Inflector\Inflector;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Annotations\AnnotationLocator;
@@ -75,6 +74,9 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
     /** @var PrototypeRegistry */
     private $registry;
 
+    /** @var \Doctrine\Inflector\Inflector */
+    private $inflector;
+
     /**
      * @param MemoryInterface   $memory
      * @param PrototypeRegistry $registry
@@ -83,6 +85,7 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
     {
         $this->memory = $memory;
         $this->registry = $registry;
+        $this->inflector = (new \Doctrine\Inflector\Rules\English\InflectorFactory())->build();
     }
 
     /**
@@ -176,7 +179,7 @@ final class PrototypeBootloader extends Bootloader\Bootloader implements Contain
                 continue;
             }
 
-            $this->bindProperty(Inflector::pluralize($role), $repository);
+            $this->bindProperty($this->inflector->pluralize($role), $repository);
         }
     }
 
