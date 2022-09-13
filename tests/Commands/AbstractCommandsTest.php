@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Spiral Framework.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Spiral\Tests\Prototype\Commands;
@@ -30,15 +23,9 @@ abstract class AbstractCommandsTest extends TestCase
         'InheritedInjection/ChildClass.php',
     ];
 
-    /** @var TestApp */
-    protected $app;
-
-    /** @var array */
-    protected $buf = [];
-    /**
-     * @var Storage
-     */
-    private $storage;
+    protected TestApp $app;
+    protected array $buf = [];
+    private Storage $storage;
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
@@ -52,12 +39,12 @@ abstract class AbstractCommandsTest extends TestCase
             $this->markTestSkipped('A "spiral/framework" dependency is required to run these tests');
         }
 
-        $this->app = TestApp::init([
+        $this->app = TestApp::create([
             'root'   => $this->dir(),
             'config' => $this->dir(),
             'app'    => $this->dir(),
             'cache'  => sys_get_temp_dir()
-        ], null, false);
+        ], false)->run();
 
         foreach (static::STORE as $name) {
             $this->storage->store($name);

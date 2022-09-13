@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Spiral Framework.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Spiral\Tests\Prototype\Fixtures;
@@ -23,7 +16,7 @@ use Spiral\Tests\Prototype\Commands\Fixtures\ResolvedInterface;
 class TestApp extends Kernel
 {
     public const LOAD = [
-        PrototypeBootloader::class
+        PrototypeBootloader::class,
     ];
 
     public function bindApp(): void

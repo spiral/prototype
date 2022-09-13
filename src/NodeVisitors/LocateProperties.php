@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Spiral Framework.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Spiral\Prototype\NodeVisitors;
@@ -19,34 +12,32 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class LocateProperties extends NodeVisitorAbstract
 {
-    /** @var array */
-    private $properties = [];
-
-    /** @var array */
-    private $requested = [];
+    /** @var array<non-empty-string, non-empty-string> */
+    private array $properties = [];
+    /** @var array<non-empty-string, non-empty-string> */
+    private array $requested = [];
 
     /**
      * Get names of all virtual properties.
      */
     public function getProperties(): array
     {
-        return array_values(array_diff(
-            array_values($this->requested),
-            array_values($this->properties)
+        return \array_values(\array_diff(
+            \array_values($this->requested),
+            \array_values($this->properties)
         ));
     }
 
     /**
      * Detected declared and requested nodes.
-     *
-     * @return int|null|Node
      */
-    public function enterNode(Node $node)
+    public function enterNode(Node $node): void
     {
         if (
             $node instanceof Node\Expr\PropertyFetch &&
             $node->var instanceof Node\Expr\Variable &&
-            $node->var->name === 'this'
+            $node->var->name === 'this' &&
+            $node->name instanceof Node\Identifier
         ) {
             $this->requested[$node->name->name] = $node->name->name;
         }
@@ -58,7 +49,5 @@ final class LocateProperties extends NodeVisitorAbstract
                 }
             }
         }
-
-        return null;
     }
 }

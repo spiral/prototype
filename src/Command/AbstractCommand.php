@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Spiral Framework.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Spiral\Prototype\Command;
@@ -17,38 +10,28 @@ use Spiral\Prototype\NodeExtractor;
 use Spiral\Prototype\PropertyExtractor;
 use Spiral\Prototype\PrototypeLocator;
 use Spiral\Prototype\PrototypeRegistry;
-use Psr\Container\ContainerExceptionInterface;
+use Throwable;
 
 abstract class AbstractCommand extends Command
 {
-    /** @var PrototypeLocator */
-    protected $locator;
+    private array $cache = [];
 
-    /** @var NodeExtractor */
-    protected $extractor;
-
-    /** @var PrototypeRegistry */
-    protected $registry;
-
-    /** @var array */
-    private $cache = [];
-
-    public function __construct(PrototypeLocator $locator, NodeExtractor $extractor, PrototypeRegistry $registry)
-    {
+    public function __construct(
+        protected readonly PrototypeLocator $locator,
+        protected readonly NodeExtractor $extractor,
+        protected readonly PrototypeRegistry $registry
+    ) {
         parent::__construct();
-
-        $this->extractor = $extractor;
-        $this->locator = $locator;
-        $this->registry = $registry;
     }
 
     /**
      * Fetch class dependencies.
      *
-     * @return null[]|Dependency[]|\Throwable[]
+     * @return array<array-key, Dependency|Throwable|null>
      */
     protected function getPrototypeProperties(\ReflectionClass $class, array $all = []): array
     {
+        /** @var array<int, array<non-empty-string, Dependency|Throwable|null>> $results */
         $results = [$this->readProperties($class)];
 
         $parent = $class->getParentClass();
@@ -66,23 +49,23 @@ abstract class AbstractCommand extends Command
     }
 
     /**
-     * @param Dependency[] $properties
+     * @param non-empty-array<array-key, Dependency|Throwable|null> $properties
      */
     protected function mergeNames(array $properties): string
     {
-        return implode("\n", array_keys($properties));
+        return \implode("\n", \array_keys($properties));
     }
 
     /**
-     * @param Dependency[] $properties
+     * @param non-empty-array<array-key, Dependency|Throwable|null> $properties
      */
     protected function mergeTargets(array $properties): string
     {
         $result = [];
 
         foreach ($properties as $target) {
-            if ($target instanceof \Throwable) {
-                $result[] = sprintf(
+            if ($target instanceof Throwable) {
+                $result[] = \sprintf(
                     '<fg=red>%s [f: %s, l: %s]</fg=red>',
                     $target->getMessage(),
                     $target->getFile(),
@@ -99,18 +82,18 @@ abstract class AbstractCommand extends Command
             $result[] = $target->type->fullName;
         }
 
-        return implode("\n", $result);
+        return \implode("\n", $result);
     }
 
     /**
-     * @return array<string, Dependency|ContainerExceptionInterface|null>
+     * @return array<non-empty-string, Dependency|Throwable|null>
      */
     private function readProperties(\ReflectionClass $class): array
     {
         if (isset($this->cache[$class->getFileName()])) {
             $proto = $this->cache[$class->getFileName()];
         } else {
-            $proto = $this->getExtractor()->getPrototypeProperties(file_get_contents($class->getFilename()));
+            $proto = $this->getExtractor()->getPrototypeProperties(\file_get_contents($class->getFileName()));
             $this->cache[$class->getFileName()] = $proto;
         }
 
@@ -125,9 +108,11 @@ abstract class AbstractCommand extends Command
     }
 
     /**
-     * @param null[]|Dependency[]|\Throwable[] $results
+     * @template T
+     * @template TK
+     * @param array<array-key, array<TK, T>> $results
      *
-     * @return \Generator<array-key, null|Dependency|\Throwable, mixed, void>
+     * @return \Generator<TK, T>
      */
     private function reverse(array $results): \Generator
     {
