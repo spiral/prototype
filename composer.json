@@ -41,7 +41,7 @@
     "require-dev": {
         "mockery/mockery": "^1.5",
         "phpunit/phpunit": "^9.5.20",
-        "spiral/framework": "^3.0",
+        "spiral/framework": "^3.1",
         "vimeo/psalm": "^4.27"
     },
     "autoload-dev": {
@@ -51,7 +51,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0.x-dev"
+            "dev-master": "3.1.x-dev"
         }
     },
     "config": {
