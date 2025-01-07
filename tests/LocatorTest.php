@@ -20,7 +20,7 @@ class LocatorTest extends TestCase
         $classes = $this->makeClasses();
         $l = new PrototypeLocator($classes);
 
-        self::assertArrayHasKey(TestClass::class, $l->getTargetClasses());
+        $this->assertArrayHasKey(TestClass::class, $l->getTargetClasses());
     }
 
     public function testLocateNot(): void
@@ -28,7 +28,7 @@ class LocatorTest extends TestCase
         $classes = $this->makeClasses();
         $l = new PrototypeLocator($classes);
 
-        self::assertArrayNotHasKey(HydratedClass::class, $l->getTargetClasses());
+        $this->assertArrayNotHasKey(HydratedClass::class, $l->getTargetClasses());
     }
 
     private function makeClasses(): ScopedClassesInterface

@@ -59,6 +59,6 @@ class TraitTest extends TestCase
 
         $r = ContainerScope::runScope($c, static fn() => $t->getTest());
 
-        self::assertSame($t, $r);
+        $this->assertSame($t, $r);
     }
 }
