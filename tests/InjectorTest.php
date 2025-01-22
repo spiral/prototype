@@ -17,7 +17,7 @@ use Spiral\Tests\Prototype\Fixtures\TestClass;
 
 class InjectorTest extends TestCase
 {
-    protected function setUp(): void
+    public function setUp(): void
     {
         if ((string)ini_get('zend.assertions') === 1) {
             ini_set('zend.assertions', 0);
@@ -38,7 +38,7 @@ class InjectorTest extends TestCase
             $this->getDefinition($filename, ['testClass' => TestClass::class])
         );
 
-        self::assertStringContainsString('private readonly TestClass $testClass', $printed);
+        $this->assertStringContainsString('private readonly TestClass $testClass', $printed);
     }
 
     public function testPromotedParamInjection(): void
@@ -51,7 +51,10 @@ class InjectorTest extends TestCase
             $this->getDefinition($filename, ['two' => InjectionTwo::class])
         );
 
-        self::assertStringContainsString('__construct(private readonly InjectionTwo $two, string $foo, private InjectionOne $one)', $printed);
+        $this->assertStringContainsString(
+            '__construct(private readonly InjectionTwo $two, string $foo, private InjectionOne $one)',
+            $printed
+        );
     }
 
     /**
@@ -69,7 +72,7 @@ class InjectorTest extends TestCase
             $this->getDefinition($filename, [])
         );
 
-        self::assertEquals($content, $printed);
+        $this->assertEquals($content, $printed);
     }
 
     /**
@@ -86,7 +89,7 @@ class InjectorTest extends TestCase
             $this->getDefinition($filename, ['testClass' => TestClass::class])
         );
 
-        self::assertStringContainsString('use PrototypeTrait;', $r);
+        $this->assertStringContainsString('use PrototypeTrait;', $r);
 
         $r = $i->injectDependencies(
             file_get_contents($filename),
@@ -94,7 +97,7 @@ class InjectorTest extends TestCase
             true
         );
 
-        self::assertStringNotContainsString('use PrototypeTrait;', $r);
+        $this->assertStringNotContainsString('use PrototypeTrait;', $r);
     }
 
     /**
@@ -111,8 +114,8 @@ class InjectorTest extends TestCase
             $this->getDefinition($filename, ['testClass' => TestClass::class])
         );
 
-        self::assertStringContainsString(TestClass::class, $r);
-        self::assertStringContainsString('parent::__construct(', $r);
+        $this->assertStringContainsString(TestClass::class, $r);
+        $this->assertStringContainsString('parent::__construct(', $r);
     }
 
     /**
@@ -129,8 +132,8 @@ class InjectorTest extends TestCase
             $this->getDefinition($filename, ['testClass' => TestClass::class])
         );
 
-        self::assertStringContainsString(TestClass::class, $r);
-        self::assertStringNotContainsString('parent::__construct(', $r);
+        $this->assertStringContainsString(TestClass::class, $r);
+        $this->assertStringNotContainsString('parent::__construct(', $r);
     }
 
     /**
@@ -143,7 +146,7 @@ class InjectorTest extends TestCase
         $extractor = new Traverse\Extractor();
 
         $parameters = $extractor->extractFromFilename($filename);
-        self::assertArrayNotHasKey('testClass', $parameters);
+        $this->assertArrayNotHasKey('testClass', $parameters);
 
         $i = new Injector();
 
@@ -152,11 +155,11 @@ class InjectorTest extends TestCase
             $this->getDefinition($filename, ['testClass' => TestClass::class])
         );
 
-        self::assertStringContainsString('@param HydratedClass $h', $printed);
-        self::assertStringContainsString('private readonly TestClass $testClass', $printed);
+        $this->assertStringContainsString('@param HydratedClass $h', $printed);
+        $this->assertStringContainsString('private readonly TestClass $testClass', $printed);
 
         $parameters = $extractor->extractFromString($printed);
-        self::assertArrayHasKey('testClass', $parameters);
+        $this->assertArrayHasKey('testClass', $parameters);
     }
 
     /**
@@ -169,7 +172,7 @@ class InjectorTest extends TestCase
         $extractor = new Traverse\Extractor();
 
         $parameters = $extractor->extractFromFilename($filename);
-        self::assertArrayNotHasKey('testClass', $parameters);
+        $this->assertArrayNotHasKey('testClass', $parameters);
 
         $i = new Injector();
 
@@ -179,13 +182,13 @@ class InjectorTest extends TestCase
         );
 
         $parameters = $extractor->extractFromString($printed);
-        self::assertSame(['testClass', 'a', 'b', 'c', 'd', 'e'], array_keys($parameters));
+        $this->assertSame(['testClass', 'a', 'b', 'c', 'd', 'e'], array_keys($parameters));
 
-        self::assertFalse($parameters['a']['optional']);
-        self::assertFalse($parameters['b']['optional']);
-        self::assertTrue($parameters['c']['optional']);
-        self::assertTrue($parameters['d']['optional']);
-        self::assertTrue($parameters['e']['optional']);
+        $this->assertFalse($parameters['a']['optional']);
+        $this->assertFalse($parameters['b']['optional']);
+        $this->assertTrue($parameters['c']['optional']);
+        $this->assertTrue($parameters['d']['optional']);
+        $this->assertTrue($parameters['e']['optional']);
     }
 
     /**
@@ -212,61 +215,61 @@ class InjectorTest extends TestCase
         $extractor = new Traverse\Extractor();
         $parameters = $extractor->extractFromString($printed);
 
-        self::assertArrayHasKey('str1', $parameters);
-        self::assertEquals('string', $parameters['str1']['type']);
-        self::assertFalse($parameters['str1']['optional']);
-        self::assertFalse($parameters['str1']['byRef']);
-        self::assertFalse($parameters['str1']['variadic']);
+        $this->assertArrayHasKey('str1', $parameters);
+        $this->assertEquals('string', $parameters['str1']['type']);
+        $this->assertFalse($parameters['str1']['optional']);
+        $this->assertFalse($parameters['str1']['byRef']);
+        $this->assertFalse($parameters['str1']['variadic']);
 
-        self::assertArrayHasKey('var', $parameters);
-        self::assertNull($parameters['var']['type']);
-        self::assertFalse($parameters['var']['optional']);
+        $this->assertArrayHasKey('var', $parameters);
+        $this->assertNull($parameters['var']['type']);
+        $this->assertFalse($parameters['var']['optional']);
 
-        self::assertArrayHasKey('untypedVarWithDefault', $parameters);
-        self::assertNull($parameters['untypedVarWithDefault']['type']);
-        self::assertTrue($parameters['untypedVarWithDefault']['optional']);
+        $this->assertArrayHasKey('untypedVarWithDefault', $parameters);
+        $this->assertNull($parameters['untypedVarWithDefault']['type']);
+        $this->assertTrue($parameters['untypedVarWithDefault']['optional']);
 
-        self::assertArrayHasKey('refVar', $parameters);
-        self::assertNull($parameters['refVar']['type']);
-        self::assertFalse($parameters['refVar']['optional']);
-        self::assertTrue($parameters['refVar']['byRef']);
-        self::assertFalse($parameters['refVar']['variadic']);
+        $this->assertArrayHasKey('refVar', $parameters);
+        $this->assertNull($parameters['refVar']['type']);
+        $this->assertFalse($parameters['refVar']['optional']);
+        $this->assertTrue($parameters['refVar']['byRef']);
+        $this->assertFalse($parameters['refVar']['variadic']);
 
         //Parameter type ATest3 has an alias in a child class
-        self::assertArrayHasKey('testApp', $parameters);
-        self::assertEquals('ATestAlias', $parameters['testApp']['type']);
-        self::assertFalse($parameters['testApp']['optional']);
+        $this->assertArrayHasKey('testApp', $parameters);
+        $this->assertEquals('ATestAlias', $parameters['testApp']['type']);
+        $this->assertFalse($parameters['testApp']['optional']);
 
-        self::assertArrayHasKey('str2', $parameters);
-        self::assertEquals('?string', $parameters['str2']['type']);
-        self::assertFalse($parameters['str2']['optional']);
+        $this->assertArrayHasKey('str2', $parameters);
+        $this->assertEquals('?string', $parameters['str2']['type']);
+        $this->assertFalse($parameters['str2']['optional']);
 
         //We do not track leading "\" in the class name here
-        self::assertArrayHasKey('nullableClass1', $parameters);
-        self::assertEquals('?StdClass', $parameters['nullableClass1']['type']);
-        self::assertFalse($parameters['nullableClass1']['optional']);
+        $this->assertArrayHasKey('nullableClass1', $parameters);
+        $this->assertEquals('?StdClass', $parameters['nullableClass1']['type']);
+        $this->assertFalse($parameters['nullableClass1']['optional']);
 
-        self::assertArrayHasKey('test1', $parameters);
-        self::assertEquals('?Some', $parameters['test1']['type']);
-        self::assertTrue($parameters['test1']['optional']);
+        $this->assertArrayHasKey('test1', $parameters);
+        $this->assertEquals('?Some', $parameters['test1']['type']);
+        $this->assertTrue($parameters['test1']['optional']);
 
-        self::assertArrayHasKey('str3', $parameters);
-        self::assertEquals('?string', $parameters['str3']['type']);
-        self::assertTrue($parameters['str3']['optional']);
+        $this->assertArrayHasKey('str3', $parameters);
+        $this->assertEquals('?string', $parameters['str3']['type']);
+        $this->assertTrue($parameters['str3']['optional']);
 
-        self::assertArrayHasKey('int', $parameters);
-        self::assertEquals('?int', $parameters['int']['type']);
-        self::assertTrue($parameters['int']['optional']);
+        $this->assertArrayHasKey('int', $parameters);
+        $this->assertEquals('?int', $parameters['int']['type']);
+        $this->assertTrue($parameters['int']['optional']);
 
-        self::assertArrayHasKey('nullableClass2', $parameters);
-        self::assertEquals('?StdClass', $parameters['nullableClass2']['type']);
-        self::assertTrue($parameters['nullableClass2']['optional']);
+        $this->assertArrayHasKey('nullableClass2', $parameters);
+        $this->assertEquals('?StdClass', $parameters['nullableClass2']['type']);
+        $this->assertTrue($parameters['nullableClass2']['optional']);
 
-        self::assertArrayHasKey('variadicVar', $parameters);
-        self::assertEquals('string', $parameters['variadicVar']['type']);
-        self::assertFalse($parameters['variadicVar']['optional']);
-        self::assertFalse($parameters['variadicVar']['byRef']);
-        self::assertTrue($parameters['variadicVar']['variadic']);
+        $this->assertArrayHasKey('variadicVar', $parameters);
+        $this->assertEquals('string', $parameters['variadicVar']['type']);
+        $this->assertFalse($parameters['variadicVar']['optional']);
+        $this->assertFalse($parameters['variadicVar']['byRef']);
+        $this->assertTrue($parameters['variadicVar']['variadic']);
     }
 
     /**

@@ -9,7 +9,8 @@ use PhpParser\NodeVisitorAbstract;
 
 class ConstructorParamsVisitor extends NodeVisitorAbstract
 {
-    private array $params = [];
+    /** @var array */
+    private $params = [];
 
     /**
      * {@inheritDoc}

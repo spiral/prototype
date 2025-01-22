@@ -18,7 +18,7 @@ class UsageCommandTest extends AbstractCommandsTestCase
 
         $result = $out->fetch();
 
-        self::assertStringContainsString('prototype:usage', $result);
+        $this->assertStringContainsString('prototype:usage', $result);
     }
 
     public function testPrototypes(): void
@@ -29,8 +29,8 @@ class UsageCommandTest extends AbstractCommandsTestCase
 
         $result = $out->fetch();
 
-        self::assertStringContainsString('testClass', $result);
-        self::assertStringContainsString('undefined', $result);
+        $this->assertStringContainsString('testClass', $result);
+        $this->assertStringContainsString('undefined', $result);
     }
 
     public function testPrototypesBound(): void
@@ -43,10 +43,10 @@ class UsageCommandTest extends AbstractCommandsTestCase
 
         $result = $out->fetch();
 
-        self::assertStringContainsString('testClass', $result);
-        self::assertStringNotContainsString('undefined', $result);
-        self::assertStringNotContainsString('Undefined class', $result);
-        self::assertStringContainsString(TestApp::class, $result);
+        $this->assertStringContainsString('testClass', $result);
+        $this->assertStringNotContainsString('undefined', $result);
+        $this->assertStringNotContainsString('Undefined class', $result);
+        $this->assertStringContainsString(TestApp::class, $result);
     }
 
     public function testPrototypesBoundWithoutResolve(): void
@@ -59,8 +59,8 @@ class UsageCommandTest extends AbstractCommandsTestCase
 
         $result = $out->fetch();
 
-        self::assertStringContainsString('testClass', $result);
-        self::assertStringContainsString('Can\'t resolve', $result);
-        self::assertStringContainsString(TestApp::class, $result);
+        $this->assertStringContainsString('testClass', $result);
+        $this->assertStringContainsString('Can\'t resolve', $result);
+        $this->assertStringContainsString(TestApp::class, $result);
     }
 }

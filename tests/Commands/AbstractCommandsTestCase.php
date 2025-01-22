@@ -27,7 +27,13 @@ abstract class AbstractCommandsTestCase extends TestCase
     protected array $buf = [];
     private readonly Storage $storage;
 
-    protected function setUp(): void
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
+        $this->storage = new Storage($this->dir() . '/Fixtures/');
+        parent::__construct($name, $data, $dataName);
+    }
+
+    public function setUp(): void
     {
         if (!\class_exists(Kernel::class)) {
             $this->markTestSkipped('A "spiral/framework" dependency is required to run these tests');
@@ -40,14 +46,12 @@ abstract class AbstractCommandsTestCase extends TestCase
             'cache'  => sys_get_temp_dir()
         ], false)->run();
 
-        $this->storage = new Storage($this->dir() . '/Fixtures/');
-
         foreach (static::STORE as $name) {
             $this->storage->store($name);
         }
     }
 
-    protected function tearDown(): void
+    public function tearDown(): void
     {
         foreach (static::STORE as $name) {
             $this->storage->restore($name);

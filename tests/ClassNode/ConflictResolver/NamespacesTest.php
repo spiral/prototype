@@ -35,7 +35,7 @@ class NamespacesTest extends TestCase
             $resolved[$dependency->property] = $dependency->type->getAliasOrShortName();
         }
 
-        self::assertEquals($expected, $resolved);
+        $this->assertEquals($expected, $resolved);
     }
 
     public static function cdProvider(): \Traversable
