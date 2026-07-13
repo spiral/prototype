@@ -11,7 +11,7 @@ final class Utils
 {
     public static function hasShortName(string $name): bool
     {
-        return \mb_strpos($name, '\\') !== false;
+        return \str_contains($name, '\\');
     }
 
     /**
@@ -43,7 +43,7 @@ final class Utils
      */
     public static function trimTrailingDigits(string $name, int $number): string
     {
-        $pos = \mb_strripos($name, (string)$number);
+        $pos = \mb_strripos($name, (string) $number);
         if ($pos === false) {
             return $name;
         }

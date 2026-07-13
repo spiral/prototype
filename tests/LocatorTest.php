@@ -13,14 +13,14 @@ use Spiral\Tokenizer\ScopedClassesInterface;
 use Spiral\Tokenizer\ScopedClassLocator;
 use Spiral\Tokenizer\Tokenizer;
 
-class LocatorTest extends TestCase
+final class LocatorTest extends TestCase
 {
     public function testLocate(): void
     {
         $classes = $this->makeClasses();
         $l = new PrototypeLocator($classes);
 
-        $this->assertArrayHasKey(TestClass::class, $l->getTargetClasses());
+        self::assertArrayHasKey(TestClass::class, $l->getTargetClasses());
     }
 
     public function testLocateNot(): void
@@ -28,7 +28,7 @@ class LocatorTest extends TestCase
         $classes = $this->makeClasses();
         $l = new PrototypeLocator($classes);
 
-        $this->assertArrayNotHasKey(HydratedClass::class, $l->getTargetClasses());
+        self::assertArrayNotHasKey(HydratedClass::class, $l->getTargetClasses());
     }
 
     private function makeClasses(): ScopedClassesInterface

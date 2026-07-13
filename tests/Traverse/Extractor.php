@@ -11,27 +11,18 @@ use PhpParser\ParserFactory;
 
 class Extractor
 {
-    /** @var Parser */
-    private $parser;
+    private readonly Parser $parser;
 
-    public function __construct(Parser $parser = null)
+    public function __construct(?Parser $parser = null)
     {
-        $this->parser = $parser ?? (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
+        $this->parser = $parser ?? (new ParserFactory())->createForHostVersion();
     }
 
-    /**
-     * @param string $filename
-     * @return array
-     */
     public function extractFromFilename(string $filename): array
     {
-        return $this->extractFromString(file_get_contents($filename));
+        return $this->extractFromString(\file_get_contents($filename));
     }
 
-    /**
-     * @param string $code
-     * @return array
-     */
     public function extractFromString(string $code): array
     {
         $params = new ConstructorParamsVisitor();
@@ -40,10 +31,6 @@ class Extractor
         return $params->getParams();
     }
 
-    /**
-     * @param string      $code
-     * @param NodeVisitor ...$visitors
-     */
     private function traverse(string $code, NodeVisitor ...$visitors): void
     {
         $tr = new NodeTraverser();

@@ -12,7 +12,10 @@ use Spiral\Prototype\ClassNode\ConstructorParam;
 final class ClassNode
 {
     public string $namespace;
+
+    /** @var non-empty-string */
     public string $class;
+
     public bool $hasConstructor = false;
 
     /** @var ClassNode\ConstructorParam[] */
@@ -27,9 +30,7 @@ final class ClassNode
     /** @var ClassNode\ClassStmt[] */
     private array $stmts = [];
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public static function create(string $class): ClassNode
     {
@@ -71,6 +72,6 @@ final class ClassNode
 
     private function addStmt(ClassNode\ClassStmt $stmt): void
     {
-        $this->stmts[(string)$stmt] = $stmt;
+        $this->stmts[(string) $stmt] = $stmt;
     }
 }

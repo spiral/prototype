@@ -19,9 +19,8 @@ final class AddUse extends NodeVisitorAbstract
     private array $nodes = [];
 
     public function __construct(
-        private readonly ClassNode $node
-    ) {
-    }
+        private readonly ClassNode $node,
+    ) {}
 
     public function leaveNode(Node $node): ?Node
     {
@@ -53,7 +52,7 @@ final class AddUse extends NodeVisitorAbstract
             $imported[] = $import;
             $this->nodes[] = $this->buildUse(
                 $dependency->type->fullName,
-                $dependency->type->alias
+                $dependency->type->alias,
             );
         }
 
@@ -61,7 +60,7 @@ final class AddUse extends NodeVisitorAbstract
         $node->stmts = Utils::injectValues(
             $node->stmts,
             $placementID,
-            $this->removeDuplicates($node->stmts, $this->nodes)
+            $this->removeDuplicates($node->stmts, $this->nodes),
         );
 
         return $node;
@@ -93,7 +92,7 @@ final class AddUse extends NodeVisitorAbstract
             }
 
             foreach ($node->uses as $use) {
-                if (\in_array($use->name->parts, $uses, true)) {
+                if (\in_array($use->name->getParts(), $uses, true)) {
                     unset($nodes[$i]);
                 }
             }
@@ -118,7 +117,7 @@ final class AddUse extends NodeVisitorAbstract
             }
 
             foreach ($stmt->uses as $use) {
-                $uses[] = $use->name->parts;
+                $uses[] = $use->name->getParts();
             }
         }
 

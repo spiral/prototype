@@ -16,9 +16,9 @@ final class PropertyExtractor
 {
     private readonly Parser $parser;
 
-    public function __construct(Parser $parser = null)
+    public function __construct(?Parser $parser = null)
     {
-        $this->parser = $parser ?? (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
+        $this->parser = $parser ?? (new ParserFactory())->createForHostVersion();
     }
 
     /**

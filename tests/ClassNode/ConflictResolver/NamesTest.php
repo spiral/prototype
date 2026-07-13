@@ -12,7 +12,7 @@ use Spiral\Prototype\ClassNode\ConflictResolver\Names;
 use Spiral\Tests\Prototype\ClassNode\ConflictResolver\Fixtures;
 use Spiral\Tests\Prototype\Fixtures\Dependencies;
 
-class NamesTest extends TestCase
+final class NamesTest extends TestCase
 {
     #[DataProvider('cdProvider')]
     public function testFind(string $method, array $vars, array $dependencies, array $expected): void
@@ -32,7 +32,7 @@ class NamesTest extends TestCase
             $resolved[] = $dependency->var;
         }
 
-        $this->assertEquals($expected, $resolved);
+        self::assertEquals($expected, $resolved);
     }
 
     public static function cdProvider(): \Traversable
