@@ -10,6 +10,7 @@ use Spiral\Prototype\NodeExtractor;
 use Spiral\Prototype\PropertyExtractor;
 use Spiral\Prototype\PrototypeLocator;
 use Spiral\Prototype\PrototypeRegistry;
+use Throwable;
 
 abstract class AbstractCommand extends Command
 {
@@ -17,7 +18,7 @@ abstract class AbstractCommand extends Command
 
     public function __construct(
         protected readonly PrototypeLocator $locator,
-        protected readonly NodeExtractor $extractor,
+        protected readonly NodeExtractor $extractor
     ) {
         parent::__construct();
     }
@@ -25,11 +26,11 @@ abstract class AbstractCommand extends Command
     /**
      * Fetch class dependencies.
      *
-     * @return array<array-key, Dependency|\Throwable|null>
+     * @return array<array-key, Dependency|Throwable|null>
      */
     protected function getPrototypeProperties(\ReflectionClass $class, array $all = []): array
     {
-        /** @var array<int, array<non-empty-string, Dependency|\Throwable|null>> $results */
+        /** @var array<int, array<non-empty-string, Dependency|Throwable|null>> $results */
         $results = [$this->readProperties($class)];
 
         $parent = $class->getParentClass();
@@ -52,7 +53,7 @@ abstract class AbstractCommand extends Command
     }
 
     /**
-     * @param non-empty-array<array-key, Dependency|\Throwable|null> $properties
+     * @param non-empty-array<array-key, Dependency|Throwable|null> $properties
      */
     protected function mergeNames(array $properties): string
     {
@@ -60,19 +61,19 @@ abstract class AbstractCommand extends Command
     }
 
     /**
-     * @param non-empty-array<array-key, Dependency|\Throwable|null> $properties
+     * @param non-empty-array<array-key, Dependency|Throwable|null> $properties
      */
     protected function mergeTargets(array $properties): string
     {
         $result = [];
 
         foreach ($properties as $target) {
-            if ($target instanceof \Throwable) {
+            if ($target instanceof Throwable) {
                 $result[] = \sprintf(
                     '<fg=red>%s [f: %s, l: %s]</fg=red>',
                     $target->getMessage(),
                     $target->getFile(),
-                    $target->getLine(),
+                    $target->getLine()
                 );
                 continue;
             }
@@ -89,7 +90,7 @@ abstract class AbstractCommand extends Command
     }
 
     /**
-     * @return array<non-empty-string, Dependency|\Throwable|null>
+     * @return array<non-empty-string, Dependency|Throwable|null>
      */
     private function readProperties(\ReflectionClass $class): array
     {

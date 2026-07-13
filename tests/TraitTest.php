@@ -12,7 +12,7 @@ use Spiral\Prototype\Exception\PrototypeException;
 use Spiral\Prototype\PrototypeRegistry;
 use Spiral\Tests\Prototype\Fixtures\TestClass;
 
-final class TraitTest extends TestCase
+class TraitTest extends TestCase
 {
     public function testNoScope(): void
     {
@@ -57,8 +57,10 @@ final class TraitTest extends TestCase
         $c->bindSingleton(TestClass::class, $t);
         $p->bindProperty('testClass', TestClass::class);
 
-        $r = ContainerScope::runScope($c, static fn() => $t->getTest());
+        $r = ContainerScope::runScope($c, static function () use ($t) {
+            return $t->getTest();
+        });
 
-        self::assertSame($t, $r);
+        $this->assertSame($t, $r);
     }
 }

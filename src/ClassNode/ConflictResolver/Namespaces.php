@@ -10,8 +10,9 @@ use Spiral\Prototype\Utils;
 final class Namespaces
 {
     public function __construct(
-        private readonly Sequences $sequences,
-    ) {}
+        private readonly Sequences $sequences
+    ) {
+    }
 
     public function resolve(ClassNode $definition): void
     {
@@ -146,12 +147,12 @@ final class Namespaces
     private function parseNamespace(string $shortName, string $fullName): NamespaceEntity
     {
         if (\preg_match("/\d+$/", $shortName, $match)) {
-            $sequence = (int) $match[0];
+            $sequence = (int)$match[0];
             if ($sequence > 0) {
                 return NamespaceEntity::createWithSequence(
                     Utils::trimTrailingDigits($shortName, $sequence),
                     $fullName,
-                    $sequence,
+                    $sequence
                 );
             }
         }

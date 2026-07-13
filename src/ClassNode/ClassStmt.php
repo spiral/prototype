@@ -12,16 +12,8 @@ final class ClassStmt implements \Stringable
     public string $shortName;
     public ?string $alias = null;
 
-    private function __construct() {}
-
-    public static function create(string $name, ?string $alias): ClassStmt
+    private function __construct()
     {
-        $stmt = new self();
-        $stmt->name = $name;
-        $stmt->shortName = Utils::shortName($name);
-        $stmt->alias = $alias;
-
-        return $stmt;
     }
 
     public function __toString(): string
@@ -31,5 +23,15 @@ final class ClassStmt implements \Stringable
         }
 
         return $this->name;
+    }
+
+    public static function create(string $name, ?string $alias): ClassStmt
+    {
+        $stmt = new self();
+        $stmt->name = $name;
+        $stmt->shortName = Utils::shortName($name);
+        $stmt->alias = $alias;
+
+        return $stmt;
     }
 }

@@ -20,7 +20,6 @@ final class Parser
 
         foreach ($lines as $line) {
             // strip up comment prefix
-            /** @var string $line */
             $line = \preg_replace('/[\t ]*[\/]?\*[\/]? ?/', '', $line);
 
             if (\preg_match('/ *@([^ ]+) (.*)/u', $line, $matches)) {

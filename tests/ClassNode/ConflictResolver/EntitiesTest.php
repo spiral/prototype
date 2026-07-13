@@ -8,12 +8,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Spiral\Prototype\ClassNode\ConflictResolver\NameEntity;
 
-final class EntitiesTest extends TestCase
+class EntitiesTest extends TestCase
 {
     #[DataProvider('nameProvider')]
     public function testName(string $name, int $sequence, string $expected): void
     {
-        self::assertSame($expected, NameEntity::createWithSequence($name, $sequence)->fullName());
+        $this->assertEquals($expected, NameEntity::createWithSequence($name, $sequence)->fullName());
     }
 
     public static function nameProvider(): \Traversable

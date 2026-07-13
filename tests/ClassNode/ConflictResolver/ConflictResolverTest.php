@@ -12,7 +12,7 @@ use Spiral\Prototype\NodeExtractor;
 use Spiral\Tests\Prototype\ClassNode\ConflictResolver\Fixtures;
 use Spiral\Tests\Prototype\Fixtures\Dependencies;
 
-final class ConflictResolverTest extends TestCase
+class ConflictResolverTest extends TestCase
 {
     /**
      * @throws \Throwable
@@ -34,10 +34,10 @@ final class ConflictResolverTest extends TestCase
             )
         );
 
-        self::assertStringContainsString(Fixtures\Some::class . ';', $r);
-        self::assertStringContainsString(Fixtures\SubFolder\Some::class . ' as Some2;', $r);
-        self::assertStringNotContainsString(Fixtures\SubFolder\Some::class . ';', $r);
-        self::assertStringContainsString(Fixtures\ATest3::class . ';', $r);
+        $this->assertStringContainsString(Fixtures\Some::class . ';', $r);
+        $this->assertStringContainsString(Fixtures\SubFolder\Some::class . ' as Some2;', $r);
+        $this->assertStringNotContainsString(Fixtures\SubFolder\Some::class . ';', $r);
+        $this->assertStringContainsString(Fixtures\ATest3::class . ';', $r);
     }
 
     /**
@@ -49,7 +49,7 @@ final class ConflictResolverTest extends TestCase
 
         $filename = __DIR__ . '/Fixtures/TestClassWithImports.php';
         $r = $i->injectDependencies(
-            \file_get_contents($filename),
+            file_get_contents($filename),
             $this->getDefinition(
                 $filename,
                 [
@@ -60,12 +60,12 @@ final class ConflictResolverTest extends TestCase
             )
         );
 
-        self::assertStringContainsString(Fixtures\Some::class . ' as FTest;', $r);
-        self::assertStringNotContainsString(Fixtures\Some::class . ';', $r);
-        self::assertStringContainsString(Fixtures\SubFolder\Some::class . ' as TestAlias;', $r);
-        self::assertStringNotContainsString(Fixtures\SubFolder\Some::class . ';', $r);
-        self::assertStringContainsString(Fixtures\ATest3::class . ' as ATest;', $r);
-        self::assertStringNotContainsString(Fixtures\ATest3::class . ';', $r);
+        $this->assertStringContainsString(Fixtures\Some::class . ' as FTest;', $r);
+        $this->assertStringNotContainsString(Fixtures\Some::class . ';', $r);
+        $this->assertStringContainsString(Fixtures\SubFolder\Some::class . ' as TestAlias;', $r);
+        $this->assertStringNotContainsString(Fixtures\SubFolder\Some::class . ';', $r);
+        $this->assertStringContainsString(Fixtures\ATest3::class . ' as ATest;', $r);
+        $this->assertStringNotContainsString(Fixtures\ATest3::class . ';', $r);
     }
 
     /**
@@ -88,11 +88,11 @@ final class ConflictResolverTest extends TestCase
             )
         );
 
-        self::assertStringContainsString(Fixtures\Some::class . ';', $r);
-        self::assertStringContainsString(Fixtures\SubFolder\Some::class . ' as Some2;', $r);
-        self::assertStringNotContainsString(Fixtures\SubFolder\Some::class . ';', $r);
-        self::assertStringContainsString(Fixtures\ATest3::class . ' as ATestAlias;', $r);
-        self::assertStringNotContainsString(Fixtures\ATest3::class . ';', $r);
+        $this->assertStringContainsString(Fixtures\Some::class . ';', $r);
+        $this->assertStringContainsString(Fixtures\SubFolder\Some::class . ' as Some2;', $r);
+        $this->assertStringNotContainsString(Fixtures\SubFolder\Some::class . ';', $r);
+        $this->assertStringContainsString(Fixtures\ATest3::class . ' as ATestAlias;', $r);
+        $this->assertStringNotContainsString(Fixtures\ATest3::class . ';', $r);
     }
 
     public function testDuplicateProperty(): void
@@ -101,7 +101,7 @@ final class ConflictResolverTest extends TestCase
 
         $filename = __DIR__ . '/Fixtures/DuplicatePropertyClass.php';
         $r = $i->injectDependencies(
-            \file_get_contents($filename),
+            file_get_contents($filename),
             $this->getDefinition(
                 $filename,
                 [
@@ -110,11 +110,15 @@ final class ConflictResolverTest extends TestCase
             )
         );
 
-        self::assertStringContainsString(Fixtures\Some::class . ';', $r);
-        self::assertStringContainsString('__construct(private readonly Some $test)', $r);
+        $this->assertStringContainsString(Fixtures\Some::class . ';', $r);
+        $this->assertStringContainsString('__construct(private readonly Some $test)', $r);
     }
 
     /**
+     * @param string $filename
+     * @param array  $dependencies
+     *
+     * @return ClassNode
      * @throws \Throwable
      */
     private function getDefinition(string $filename, array $dependencies): ClassNode
@@ -123,6 +127,7 @@ final class ConflictResolverTest extends TestCase
     }
 
     /**
+     * @return NodeExtractor
      * @throws \Throwable
      */
     private function getExtractor(): NodeExtractor

@@ -31,6 +31,7 @@ final class PrototypeBootloader extends Bootloader\Bootloader
         TokenizerListenerBootloader::class,
         AttributesBootloader::class,
     ];
+
     protected const SINGLETONS = [
         PrototypeRegistry::class => [self::class, 'initRegistry'],
     ];
@@ -79,8 +80,9 @@ final class PrototypeBootloader extends Bootloader\Bootloader
     ];
 
     public function __construct(
-        private readonly ConfiguratorInterface $config,
-    ) {}
+        private readonly ConfiguratorInterface $config
+    ) {
+    }
 
     public function init(ConsoleBootloader $console): void
     {
@@ -91,25 +93,25 @@ final class PrototypeBootloader extends Bootloader\Bootloader
 
         $console->addConfigureSequence(
             'prototype:dump',
-            '<fg=magenta>[prototype]</fg=magenta> <fg=cyan>actualizing prototype injections...</fg=cyan>',
+            '<fg=magenta>[prototype]</fg=magenta> <fg=cyan>actualizing prototype injections...</fg=cyan>'
         );
 
         $console->addUpdateSequence(
             'prototype:dump',
-            '<fg=magenta>[prototype]</fg=magenta> <fg=cyan>actualizing prototype injections...</fg=cyan>',
+            '<fg=magenta>[prototype]</fg=magenta> <fg=cyan>actualizing prototype injections...</fg=cyan>'
         );
 
         $this->config->setDefaults(
             PrototypeConfig::CONFIG,
             [
                 'bindings' => self::DEFAULT_SHORTCUTS,
-            ],
+            ]
         );
     }
 
     public function boot(
         TokenizerListenerRegistryInterface $listenerRegistry,
-        PrototypeLocatorListener $listener,
+        PrototypeLocatorListener $listener
     ): void {
         $listenerRegistry->addListener($listener);
     }

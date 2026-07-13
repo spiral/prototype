@@ -26,12 +26,20 @@ final class Injector
     private readonly NodeTraverser $cloner;
 
     public function __construct(
-        ?Lexer $lexer = null,
-        private readonly PrettyPrinterAbstract $printer = new Standard(),
+        Lexer $lexer = null,
+        private readonly PrettyPrinterAbstract $printer = new Standard()
     ) {
-        $this->lexer = $lexer ?? new Lexer\Emulative();
+        $this->lexer = $lexer ?? new Lexer\Emulative([
+            'usedAttributes' => [
+                'comments',
+                'startLine',
+                'endLine',
+                'startTokenPos',
+                'endTokenPos',
+            ],
+        ]);
 
-        $this->parser = new Parser\Php8($this->lexer);
+        $this->parser = new Parser\Php7($this->lexer);
 
         $this->cloner = new NodeTraverser();
         $this->cloner->addVisitor(new CloningVisitor());
@@ -72,7 +80,7 @@ final class Injector
     private function traverse(string $code, NodeTraverser $tr): string
     {
         $nodes = $this->parser->parse($code);
-        $tokens = $this->lexer->tokenize($code);
+        $tokens = $this->lexer->getTokens();
 
         $output = $tr->traverse($this->cloner->traverse($nodes));
 

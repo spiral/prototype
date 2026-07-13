@@ -9,7 +9,8 @@ use PhpParser\NodeVisitorAbstract;
 
 class ConstructorParamsVisitor extends NodeVisitorAbstract
 {
-    private array $params = [];
+    /** @var array */
+    private $params = [];
 
     /**
      * {@inheritDoc}
@@ -22,12 +23,12 @@ class ConstructorParamsVisitor extends NodeVisitorAbstract
                     if ($param->type->type instanceof Node\Identifier) {
                         $type = $param->type->type->name;
                     } else {
-                        $type = implode('\\', $param->type->type->getParts());
+                        $type = implode('\\', $param->type->type->parts);
                     }
 
                     $type = "?$type";
                 } elseif ($param->type instanceof Node\Name) {
-                    $type = implode('\\', $param->type->getParts());
+                    $type = implode('\\', $param->type->parts);
                 } else {
                     $type = $param->type->name ?? null;
                 }
@@ -42,6 +43,9 @@ class ConstructorParamsVisitor extends NodeVisitorAbstract
         }
     }
 
+    /**
+     * @return array
+     */
     public function getParams(): array
     {
         return $this->params;

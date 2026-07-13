@@ -16,28 +16,18 @@ use Spiral\Prototype\Dependency;
 final class UpdateConstructor extends NodeVisitorAbstract
 {
     public function __construct(
-        private readonly ClassNode $definition,
-    ) {}
+        private readonly ClassNode $definition
+    ) {
+    }
 
-    public function leaveNode(Node $node): ?Node
+    public function leaveNode(Node $node): int|Node|null
     {
         if (!$node instanceof Node\Stmt\Class_) {
             return null;
         }
 
-        $constructor = $this->getConstructor($node);
-        if ($constructor === null) {
-            if ($this->definition->dependencies === []) {
-                return $node;
-            }
-
-            // Add constructor
-            $constructor = new Node\Stmt\ClassMethod('__construct');
-            \array_unshift($node->stmts, $constructor);
-        }
-
+        $constructor = $this->getConstructorAttribute($node);
         $this->addDependencies($constructor);
-
         if (!$this->definition->hasConstructor && $this->definition->constructorParams) {
             $this->addParentConstructorCall($constructor);
         }
@@ -101,16 +91,16 @@ final class UpdateConstructor extends NodeVisitorAbstract
                     new Node\Expr\StaticCall(
                         new Node\Name('parent'),
                         '__construct',
-                        $parentConstructorDependencies,
-                    ),
-                ),
+                        $parentConstructorDependencies
+                    )
+                )
             );
         }
     }
 
-    private function getConstructor(Node\Stmt\Class_ $node): ?Node\Stmt\ClassMethod
+    private function getConstructorAttribute(Node\Stmt\Class_ $node): Node\Stmt\ClassMethod
     {
-        return $node->getMethod('__construct');
+        return $node->getAttribute('constructor');
     }
 
     private function getPropertyType(Dependency $dependency): string

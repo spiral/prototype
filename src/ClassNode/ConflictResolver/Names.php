@@ -10,8 +10,9 @@ use Spiral\Prototype\Utils;
 final class Names
 {
     public function __construct(
-        private readonly Sequences $sequences,
-    ) {}
+        private readonly Sequences $sequences
+    ) {
+    }
 
     public function resolve(ClassNode $definition): void
     {
@@ -69,7 +70,7 @@ final class Names
     private function parseName(string $name): NameEntity
     {
         if (\preg_match("/\d+$/", $name, $match)) {
-            $sequence = (int) $match[0];
+            $sequence = (int)$match[0];
             if ($sequence > 0) {
                 return NameEntity::createWithSequence(Utils::trimTrailingDigits($name, $sequence), $sequence);
             }

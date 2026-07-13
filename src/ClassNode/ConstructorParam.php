@@ -15,9 +15,12 @@ final class ConstructorParam
     public bool $isVariadic = false;
     private bool $builtIn = false;
 
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
+     *
      * @throws \ReflectionException
      */
     public static function createFromReflection(\ReflectionParameter $parameter): ConstructorParam

@@ -12,12 +12,10 @@ final class Dependency
     public string $property;
     public string $var;
 
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
-    /**
-     * @param non-empty-string $name
-     * @param non-empty-string $type
-     */
     public static function create(string $name, string $type): Dependency
     {
         $dependency = new self();

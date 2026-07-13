@@ -7,7 +7,7 @@ namespace Spiral\Tests\Prototype;
 use PHPUnit\Framework\TestCase;
 use Spiral\Prototype\PropertyExtractor;
 
-final class ExtractorTest extends TestCase
+class ExtractorTest extends TestCase
 {
     public function testExtract(): void
     {
@@ -16,12 +16,15 @@ final class ExtractorTest extends TestCase
         $expected = ['test', 'test2', 'test3', 'testClass'];
         $prototypes = $e->getPrototypeProperties(file_get_contents(__DIR__ . '/Fixtures/TestClass.php'));
         sort($prototypes);
-        self::assertSame($expected, $prototypes);
+        $this->assertSame($expected, $prototypes);
     }
 
     public function testExtractNone(): void
     {
         $e = new PropertyExtractor();
-        self::assertSame([], $e->getPrototypeProperties(file_get_contents(__DIR__ . '/Fixtures/HydratedClass.php')));
+        $this->assertSame(
+            [],
+            $e->getPrototypeProperties(file_get_contents(__DIR__ . '/Fixtures/HydratedClass.php'))
+        );
     }
 }

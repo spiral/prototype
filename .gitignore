@@ -17,4 +17,3 @@ Thumbs.db
 clover.xml
 .env
 builds
-tests/runtime/

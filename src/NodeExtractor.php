@@ -24,14 +24,12 @@ final class NodeExtractor
     public function __construct(
         private readonly ConflictResolver\Names $namesResolver,
         private readonly ConflictResolver\Namespaces $namespacesResolver,
-        ?Parser $parser = null,
+        Parser $parser = null
     ) {
-        $this->parser = $parser ?? (new ParserFactory())->createForHostVersion();
+        $this->parser = $parser ?? (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
     }
 
     /**
-     * @param non-empty-string $filename
-     *
      * @throws ClassNotDeclaredException
      * @throws \ReflectionException
      */

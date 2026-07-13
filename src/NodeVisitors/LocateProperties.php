@@ -14,7 +14,6 @@ final class LocateProperties extends NodeVisitorAbstract
 {
     /** @var array<non-empty-string, non-empty-string> */
     private array $properties = [];
-
     /** @var array<non-empty-string, non-empty-string> */
     private array $requested = [];
 
@@ -25,7 +24,7 @@ final class LocateProperties extends NodeVisitorAbstract
     {
         return \array_values(\array_diff(
             \array_values($this->requested),
-            \array_values($this->properties),
+            \array_values($this->properties)
         ));
     }
 

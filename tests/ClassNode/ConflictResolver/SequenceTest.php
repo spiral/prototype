@@ -9,12 +9,12 @@ use PHPUnit\Framework\TestCase;
 use Spiral\Core\Container;
 use Spiral\Prototype\ClassNode\ConflictResolver\Sequences;
 
-final class SequenceTest extends TestCase
+class SequenceTest extends TestCase
 {
     #[DataProvider('findProvider')]
     public function testFind(array $sequence, int $pos, int $expected): void
     {
-        self::assertSame($expected, $this->sequences()->find($sequence, $pos));
+        $this->assertEquals($expected, $this->sequences()->find($sequence, $pos));
     }
 
     public static function findProvider(): \Traversable

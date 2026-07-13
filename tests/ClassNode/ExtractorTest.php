@@ -9,7 +9,7 @@ use Spiral\Core\Container;
 use Spiral\Prototype\Exception\ClassNotDeclaredException;
 use Spiral\Prototype\NodeExtractor;
 
-final class ExtractorTest extends TestCase
+class ExtractorTest extends TestCase
 {
     /**
      * @throws \ReflectionException
